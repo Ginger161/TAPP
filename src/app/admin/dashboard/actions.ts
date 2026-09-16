@@ -372,9 +372,8 @@ export async function initiateSupply(payload: {
     });
   }
 
-  revalidatePath('/manager/supplies');
-  revalidatePath('/manager/dashboard');
-  revalidatePath('/admin/dashboard');
+  revalidatePath('/manager', 'layout');
+  revalidatePath('/admin', 'layout');
 
   return { success: true };
 }

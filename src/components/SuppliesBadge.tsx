@@ -7,6 +7,10 @@ export default function SuppliesBadge({ initialCount, stationId }: { initialCoun
   const [count, setCount] = useState(initialCount);
 
   useEffect(() => {
+    setCount(initialCount);
+  }, [initialCount]);
+
+  useEffect(() => {
     if (!stationId) return;
 
     const supabase = createClient();

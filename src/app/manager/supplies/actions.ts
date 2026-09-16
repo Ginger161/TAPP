@@ -68,9 +68,8 @@ export async function acceptSupply(transactionId: string) {
     evaluateStockAndAlert(stationId, transaction.product_id).catch(console.error)
   }
 
-  revalidatePath('/manager/supplies', 'page')
-  revalidatePath('/manager/dashboard', 'page')
-  revalidatePath('/admin/dashboard', 'page')
+  revalidatePath('/manager', 'layout')
+  revalidatePath('/admin', 'layout')
   return { success: true }
 }
 
@@ -114,8 +113,7 @@ export async function rejectSupply(transactionId: string) {
     station_id: stationId
   })
 
-  revalidatePath('/manager/supplies', 'page')
-  revalidatePath('/manager/dashboard', 'page')
-  revalidatePath('/admin/dashboard', 'page')
+  revalidatePath('/manager', 'layout')
+  revalidatePath('/admin', 'layout')
   return { success: true }
 }
