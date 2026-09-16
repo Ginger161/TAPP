@@ -16,6 +16,15 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "TAPP - Tycoon App",
   description: "Tycoon Oil and Gas Operations System",
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'TAPP',
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
 
 export const viewport = {
@@ -23,7 +32,8 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  interactiveWidget: 'resizes-content'
+  interactiveWidget: 'resizes-content',
+  themeColor: '#1a202c',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

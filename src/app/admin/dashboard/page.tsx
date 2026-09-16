@@ -6,6 +6,7 @@ import UrgencyBadge from '@/components/UrgencyBadge';
 import SalesChart, { SalesData } from '@/components/SalesChart';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
+import NotificationManager from '@/components/NotificationManager';
 
 type DashboardData = {
   kpi: { volume: number, revenue: number, pendingVolume: number };
@@ -133,6 +134,9 @@ export default function AdminDashboard() {
 
       {/* Main Content Area (Full Screen Grid) */}
       <div className="flex-1 overflow-y-auto p-4 md:p-8">
+        {/* Push Notification Manager */}
+        <NotificationManager />
+
         {/* PENDING SUPPLIES */}
         {data.pendingSuppliesList && data.pendingSuppliesList.length > 0 && (
           <div className="mb-8">
