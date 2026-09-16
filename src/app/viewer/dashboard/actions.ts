@@ -381,9 +381,11 @@ export async function initiateSupply(payload: {
 
   const { data: assignment } = await supabase
     .from('station_assignments')
-    .select('user_id')
+    .select('user_id, users!inner(role)')
     .eq('station_id', payload.stationId)
-    .single();
+    .eq('users.role', 'manager')
+    .limit(1)
+    .maybeSingle();
 
   const { data: productData } = await supabase.from('products').select('name').eq('id', payload.productId).single();
   const { data: stationData } = await supabase.from('stations').select('name').eq('id', payload.stationId).single();

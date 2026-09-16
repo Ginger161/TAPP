@@ -52,9 +52,11 @@ export async function createSupply(formData: FormData) {
   // Phase 7: Trigger notification to Manager
   const { data: assignment } = await supabase
     .from('station_assignments')
-    .select('user_id')
+    .select('user_id, users!inner(role)')
     .eq('station_id', stationId)
-    .single()
+    .eq('users.role', 'manager')
+    .limit(1)
+    .maybeSingle()
 
   const { data: productData } = await supabase.from('products').select('name').eq('id', productId).single()
   const { data: stationData } = await supabase.from('stations').select('name').eq('id', stationId).single()

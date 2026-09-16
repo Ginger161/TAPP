@@ -429,8 +429,10 @@ export async function verifyExpense(
   if (expenseData?.station_id) {
     const { data: assignmentData } = await supabase
       .from('station_assignments')
-      .select('user_id')
+      .select('user_id, users!inner(role)')
       .eq('station_id', expenseData.station_id)
+      .eq('users.role', 'manager')
+      .limit(1)
       .maybeSingle();
 
     if (assignmentData?.user_id) {

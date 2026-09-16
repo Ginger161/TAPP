@@ -65,8 +65,10 @@ export async function createNotification(payload: NotificationPayload) {
     if (payload.station_id) {
       const { data: managerAssignment } = await supabase
         .from('station_assignments')
-        .select('user_id')
+        .select('user_id, users!inner(role)')
         .eq('station_id', payload.station_id)
+        .eq('users.role', 'manager')
+        .limit(1)
         .maybeSingle()
       if (managerAssignment) {
         managerId = managerAssignment.user_id
