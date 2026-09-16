@@ -8,6 +8,8 @@ import SalesChart, { SalesData } from '@/components/SalesChart';
 import { Truck, Edit2, X, HelpCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { createClient } from '@/utils/supabase/client';
+import { useEffect } from 'react';
 
 export type ManagerData = {
   stationName: string;
@@ -51,6 +53,22 @@ export default function ManagerDashboardClient({ initialData }: { initialData: M
   const [editingItem, setEditingItem] = useState<{ id: string, type: 'sale'|'expense', name: string, amount: number } | null>(null);
   const [editValue, setEditValue] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+    const channel = supabase.channel('manager_supply_updates')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'supply_transactions' }, () => {
+        router.refresh();
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'supply_transactions' }, () => {
+        router.refresh();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [router]);
 
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,5 +1,31 @@
 import { createClient } from '@/utils/supabase/server'
 import { createAdminClient } from '@/utils/supabase/admin'
+import webpush from 'web-push'
+
+async function sendWebPush(userId: string, title: string, body: string) {
+  if (!process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || !process.env.VAPID_PRIVATE_KEY) return;
+  webpush.setVapidDetails(
+    'mailto:test@example.com',
+    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+    process.env.VAPID_PRIVATE_KEY
+  );
+
+  const adminSupabase = createAdminClient();
+  const { data: subs } = await adminSupabase.from('push_subscriptions').select('subscription').eq('user_id', userId);
+  
+  if (subs && subs.length > 0) {
+    for (const sub of subs) {
+      try {
+        await webpush.sendNotification(
+          sub.subscription as any,
+          JSON.stringify({ title, body, icon: '/icon.png' })
+        );
+      } catch (err) {
+        console.error('Failed to send web push for user', userId, err);
+      }
+    }
+  }
+}
 
 type NotificationPayload = {
   title: string
@@ -24,6 +50,7 @@ export async function createNotification(payload: NotificationPayload) {
       product_id: payload.product_id || null
     })
     if (error) console.error('Error inserting notification:', error)
+    else await sendWebPush(payload.recipient_id, payload.title, payload.message)
 
     const adminSupabase = createAdminClient()
     const { data: userData } = await adminSupabase.auth.admin.getUserById(payload.recipient_id)
@@ -63,6 +90,7 @@ export async function createNotification(payload: NotificationPayload) {
           product_id: payload.product_id || null
         })
         if (error) console.error('Error inserting broadcast notification:', error)
+        else await sendWebPush(userId, payload.title, payload.message)
       }
     }
   }

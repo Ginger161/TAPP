@@ -5,6 +5,7 @@ import { Bell, CheckCircle2 } from 'lucide-react'
 import { getRecentNotifications, markNotificationAsRead } from '@/app/actions/notificationActions'
 import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { createClient } from '@/utils/supabase/client'
 
 export type Notification = {
   id: string
@@ -23,10 +24,25 @@ export default function NotificationBell() {
   const pathname = usePathname()
 
   useEffect(() => {
-    getRecentNotifications().then(res => {
-      setNotifications(res.notifications)
-      setUnreadCount(res.unreadCount)
-    })
+    const fetchNotifications = () => {
+      getRecentNotifications().then(res => {
+        setNotifications(res.notifications)
+        setUnreadCount(res.unreadCount)
+      })
+    }
+    
+    fetchNotifications()
+
+    const supabase = createClient()
+    const channel = supabase.channel('realtime_notifications')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications' }, payload => {
+        fetchNotifications()
+      })
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
   }, [])
 
   useEffect(() => {

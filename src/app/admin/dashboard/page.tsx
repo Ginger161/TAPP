@@ -7,6 +7,7 @@ import SalesChart, { SalesData } from '@/components/SalesChart';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import NotificationManager from '@/components/NotificationManager';
+import { createClient } from '@/utils/supabase/client';
 
 type DashboardData = {
   kpi: { volume: number, revenue: number, pendingVolume: number };
@@ -46,6 +47,20 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     getAdminDashboardData().then(setData);
+
+    const supabase = createClient();
+    const channel = supabase.channel('admin_supply_updates')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'supply_transactions' }, () => {
+        getAdminDashboardData().then(setData);
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'supply_transactions' }, () => {
+        getAdminDashboardData().then(setData);
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   useEffect(() => {

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { Bell, BellRing, Send } from 'lucide-react'
-import { sendTestPushNotification } from '@/app/admin/dashboard/pushActions'
+import { sendTestPushNotification, savePushSubscription } from '@/app/admin/dashboard/pushActions'
 import toast from 'react-hot-toast'
 
 // Helper to convert VAPID public key
@@ -67,7 +67,14 @@ export default function NotificationManager() {
 
       setSubscription(sub)
       setIsSubscribed(true)
-      toast.success('Successfully enabled notifications!')
+      
+      const subJson = JSON.parse(JSON.stringify(sub))
+      const saveRes = await savePushSubscription(subJson)
+      if (saveRes.error) {
+        toast.error('Enabled locally, but failed to save to server.')
+      } else {
+        toast.success('Successfully enabled notifications!')
+      }
     } catch (err: any) {
       console.error('Failed to subscribe:', err)
       toast.error('Failed to subscribe: ' + err.message)
