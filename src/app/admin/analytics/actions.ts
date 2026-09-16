@@ -26,15 +26,26 @@ export async function getMultiYearSalesData(stationId?: string, targetYears?: st
 
   let stationName = 'All Stations (Global)';
 
+  let salesData = null;
+  let error = null;
+
   if (stationId) {
     query = query.eq('station_id', stationId);
-    const { data: stationRecord } = await supabase.from('stations').select('name').eq('id', stationId).single();
-    if (stationRecord) {
-      stationName = stationRecord.name;
+    const [stationRes, salesRes] = await Promise.all([
+      supabase.from('stations').select('name').eq('id', stationId).single(),
+      query
+    ]);
+    if (stationRes.data) {
+      stationName = stationRes.data.name;
     }
+    salesData = salesRes.data;
+    error = salesRes.error;
+  } else {
+    const res = await query;
+    salesData = res.data;
+    error = res.error;
   }
 
-  const { data: salesData, error } = await query;
   if (error) {
     console.error("Error fetching historical sales:", error);
     return { data: [], years, stationName };

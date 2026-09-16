@@ -34,19 +34,46 @@ export type Anomaly = {
 export async function getAdminDashboardData() {
   const supabase = await createClient();
 
-  // 1. Fetch User Role
-  const { data: { user } } = await supabase.auth.getUser();
-  const { data: userRecord } = await supabase.from('users').select('role').eq('id', user?.id).single();
-  const isViewer = userRecord?.role === 'viewer';
-
-  // 2. Fetch KPIs
+  // 1. Prepare Dates
   const today = new Date().toISOString().split('T')[0];
-  
-  const { data: salesToday } = await supabase
-    .from('sales_transactions')
-    .select('quantity_sold, selling_price')
-    .eq('date', today);
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  const dateString = sevenDaysAgo.toISOString().split('T')[0];
 
+  // 2. Fetch Data Concurrently
+  const [
+    { data: { user } },
+    { data: salesToday },
+    { data: pendingSupplies },
+    { data: stations },
+    { data: stockLedger },
+    { data: products },
+    { data: sales7Days },
+    { data: configData },
+    { data: allPendingExpenses },
+    { data: assignments },
+    { data: unresolvedAnomalies }
+  ] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase.from('sales_transactions').select('quantity_sold, selling_price').eq('date', today),
+    supabase.from('supply_transactions').select('id, quantity, cost_price, date, stations(name), products(name)').eq('status', 'pending'),
+    supabase.from('stations').select('*'),
+    supabase.from('stock_ledger').select('*'),
+    supabase.from('products').select('*'),
+    supabase.from('sales_transactions').select('station_id, product_id, quantity_sold').gte('date', dateString),
+    supabase.from('urgency_config').select('*').limit(1).single(),
+    supabase.from('expenses').select('station_id').eq('status', 'pending'),
+    supabase.from('station_assignments').select('station_id, users(email)'),
+    supabase.from('inventory_reconciliations').select('id, theoretical_volume, actual_dip_volume, variance, created_at, stations(name), products(name)').eq('is_flagged', true).eq('admin_resolved', false)
+  ]);
+
+  let isViewer = false;
+  if (user) {
+    const { data: userRecord } = await supabase.from('users').select('role').eq('id', user.id).single();
+    isViewer = userRecord?.role === 'viewer';
+  }
+
+  // 3. Process KPIs
   let totalVolumeSoldToday = 0;
   let totalRevenueToday = 0;
   if (salesToday) {
@@ -55,11 +82,6 @@ export async function getAdminDashboardData() {
       totalRevenueToday += Number(sale.selling_price); // assuming selling_price is total revenue for that transaction
     });
   }
-
-  const { data: pendingSupplies } = await supabase
-    .from('supply_transactions')
-    .select('id, quantity, cost_price, date, stations(name), products(name)')
-    .eq('status', 'pending');
 
   let totalPendingVolume = 0;
   let pendingSuppliesList: any[] = [];
@@ -79,35 +101,11 @@ export async function getAdminDashboardData() {
     });
   }
 
-  // 3. Fetch Map & Urgency Data
-  const { data: stations } = await supabase.from('stations').select('*');
-  const { data: stockLedger } = await supabase.from('stock_ledger').select('*');
-  const { data: products } = await supabase.from('products').select('*');
-  
-  const sevenDaysAgo = new Date();
-  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-  const dateString = sevenDaysAgo.toISOString().split('T')[0];
-
-  const { data: sales7Days } = await supabase
-    .from('sales_transactions')
-    .select('station_id, product_id, quantity_sold')
-    .gte('date', dateString);
-
-  const { data: configData } = await supabase.from('urgency_config').select('*').limit(1).single();
   const config = {
     green_threshold: configData ? Number(configData.green_threshold) : 7,
     yellow_threshold: configData ? Number(configData.yellow_threshold) : 3,
     red_threshold: configData ? Number(configData.red_threshold) : 1,
   };
-
-  const { data: allPendingExpenses } = await supabase
-    .from('expenses')
-    .select('station_id')
-    .eq('status', 'pending');
-
-  const { data: assignments } = await supabase
-    .from('station_assignments')
-    .select('station_id, users(email)');
 
   const mapStations: MapStation[] = [];
 
@@ -163,14 +161,6 @@ export async function getAdminDashboardData() {
     return val[b.urgency] - val[a.urgency];
   });
 
-
-
-  const { data: unresolvedAnomalies } = await supabase
-    .from('inventory_reconciliations')
-    .select('id, theoretical_volume, actual_dip_volume, variance, created_at, stations(name), products(name)')
-    .eq('is_flagged', true)
-    .eq('admin_resolved', false);
-
   const anomalies: Anomaly[] = (unresolvedAnomalies || []).map((a: any) => ({
     id: a.id,
     stationName: a.stations?.name || 'Unknown Station',
@@ -202,12 +192,23 @@ export async function getStationDeepDive(stationId: string) {
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
   const dateString = sevenDaysAgo.toISOString().split('T')[0];
 
-  const { data: sales7Days } = await supabase
-    .from('sales_transactions')
-    .select('date, quantity_sold')
-    .eq('station_id', stationId)
-    .gte('date', dateString)
-    .order('date', { ascending: true });
+  const [
+    { data: sales7Days },
+    { data: stockData },
+    { data: products }
+  ] = await Promise.all([
+    supabase
+      .from('sales_transactions')
+      .select('date, quantity_sold')
+      .eq('station_id', stationId)
+      .gte('date', dateString)
+      .order('date', { ascending: true }),
+    supabase
+      .from('stock_ledger')
+      .select('product_id, quantity')
+      .eq('station_id', stationId),
+    supabase.from('products').select('id, name')
+  ]);
 
   const salesTrendMap: Record<string, number> = {};
   for (let i = 6; i >= 0; i--) {
@@ -226,14 +227,6 @@ export async function getStationDeepDive(stationId: string) {
     date,
     volume: salesTrendMap[date]
   }));
-
-  // 2. Fetch current stock
-  const { data: stockData } = await supabase
-    .from('stock_ledger')
-    .select('product_id, quantity')
-    .eq('station_id', stationId);
-
-  const { data: products } = await supabase.from('products').select('id, name');
 
   const stockList = products?.map(p => ({
     id: p.id,

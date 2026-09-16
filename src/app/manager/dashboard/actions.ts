@@ -22,18 +22,34 @@ export async function getManagerDashboardData() {
 
   const stationId = assignments[0].station_id;
 
-  const { data: station } = await supabase
-    .from('stations')
-    .select('name')
-    .eq('id', stationId)
-    .single();
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  const thirtyDaysStr = thirtyDaysAgo.toISOString().split('T')[0];
 
-  const { data: urgencyConfig } = await supabase
-    .from('urgency_config')
-    .select('*')
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .single();
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+  const minDateStr = sevenDaysAgo.toISOString().split('T')[0];
+  const todayStr = new Date().toISOString().split('T')[0];
+
+  const [
+    { data: station },
+    { data: urgencyConfig },
+    { data: pendingSupplies },
+    { data: products },
+    { data: allStock },
+    { data: allSales30Days },
+    { data: salesData },
+    { data: expenses }
+  ] = await Promise.all([
+    supabase.from('stations').select('name').eq('id', stationId).single(),
+    supabase.from('urgency_config').select('*').order('created_at', { ascending: false }).limit(1).single(),
+    supabase.from('supply_transactions').select('id, quantity, products(name)').eq('station_id', stationId).eq('status', 'pending'),
+    supabase.from('products').select('*'),
+    supabase.from('stock_ledger').select('product_id, quantity').eq('station_id', stationId),
+    supabase.from('sales_transactions').select('product_id, quantity_sold').eq('station_id', stationId).gte('date', thirtyDaysStr),
+    supabase.from('sales_transactions').select('date, quantity_sold, id, products(name), is_edited, edited_by, original_value').eq('station_id', stationId).gte('date', minDateStr),
+    supabase.from('expenses').select('id, expense_type, amount, description, is_edited, edited_by, original_value, status').eq('station_id', stationId).eq('date', todayStr)
+  ]);
 
   const thresholds = urgencyConfig || {
     green_threshold: 7,
@@ -41,36 +57,13 @@ export async function getManagerDashboardData() {
     red_threshold: 1
   };
 
-  const { data: pendingSupplies } = await supabase
-    .from('supply_transactions')
-    .select('id, quantity, products(name)')
-    .eq('station_id', stationId)
-    .eq('status', 'pending');
-
-  const { data: products } = await supabase.from('products').select('*');
-
   const productStatus = [];
 
   for (const product of products || []) {
-    const { data: ledger } = await supabase
-      .from('stock_ledger')
-      .select('quantity')
-      .eq('station_id', stationId)
-      .eq('product_id', product.id)
-      .single();
-
+    const ledger = allStock?.find(s => s.product_id === product.id);
     const stock = ledger?.quantity || 0;
 
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    const dateString = thirtyDaysAgo.toISOString().split('T')[0];
-
-    const { data: pastSales } = await supabase
-      .from('sales_transactions')
-      .select('quantity_sold')
-      .eq('station_id', stationId)
-      .eq('product_id', product.id)
-      .gte('date', dateString);
+    const pastSales = allSales30Days?.filter(s => s.product_id === product.id);
 
     let averageDailySales = 0;
     if (pastSales && pastSales.length > 0) {
@@ -98,16 +91,6 @@ export async function getManagerDashboardData() {
     });
   }
 
-  const sevenDaysAgo = new Date();
-  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
-  const minDateStr = sevenDaysAgo.toISOString().split('T')[0];
-
-  const { data: salesData } = await supabase
-    .from('sales_transactions')
-    .select('date, quantity_sold, id, products(name), is_edited, edited_by, original_value')
-    .eq('station_id', stationId)
-    .gte('date', minDateStr);
-
   const salesTrendMap: Record<string, number> = {};
   for (let i = 0; i < 7; i++) {
     const d = new Date();
@@ -115,7 +98,6 @@ export async function getManagerDashboardData() {
     salesTrendMap[d.toISOString().split('T')[0]] = 0;
   }
 
-  const todayStr = new Date().toISOString().split('T')[0];
   const todaySales: any[] = [];
 
   salesData?.forEach(sale => {
@@ -138,12 +120,6 @@ export async function getManagerDashboardData() {
     date,
     volume: salesTrendMap[date]
   }));
-
-  const { data: expenses } = await supabase
-    .from('expenses')
-    .select('id, expense_type, amount, description, is_edited, edited_by, original_value, status')
-    .eq('station_id', stationId)
-    .eq('date', todayStr);
 
   return {
     stationName: station?.name || 'Assigned Station',
