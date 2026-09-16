@@ -40,8 +40,9 @@ export async function createNotification(payload: NotificationPayload) {
   const supabase = await createClient()
 
   // 1. Fetch phone number and send WhatsApp if needed, and insert rows
+  const adminSupabase = createAdminClient()
   if (payload.recipient_id) {
-    const { error } = await supabase.from('notifications').insert({
+    const { error } = await adminSupabase.from('notifications').insert({
       title: payload.title,
       message: payload.message,
       type: payload.type,
@@ -51,12 +52,9 @@ export async function createNotification(payload: NotificationPayload) {
     })
     if (error) console.error('Error inserting notification:', error)
     else await sendWebPush(payload.recipient_id, payload.title, payload.message)
-
-    const adminSupabase = createAdminClient()
     const { data: userData } = await adminSupabase.auth.admin.getUserById(payload.recipient_id)
   } else {
     // If it's a broadcast (recipient_id is null), we should find all admins
-    const adminSupabase = createAdminClient()
     
     // Find all admins
     const { data: admins } = await supabase.from('users').select('id').eq('role', 'admin')
@@ -81,7 +79,7 @@ export async function createNotification(payload: NotificationPayload) {
     if (userIdsToNotify.length > 0) {
       for (const userId of userIdsToNotify) {
         // Insert individual notification for each user
-        const { error } = await supabase.from('notifications').insert({
+        const { error } = await adminSupabase.from('notifications').insert({
           title: payload.title,
           message: payload.message,
           type: payload.type,

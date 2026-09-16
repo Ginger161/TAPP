@@ -1,25 +1,40 @@
 import { createClient } from '@/utils/supabase/server';
 import Link from 'next/link';
-import { Home, PenSquare, FileText, Truck } from 'lucide-react';
+import { Home, PenSquare, FileText } from 'lucide-react';
 import ManagerHeader from '@/components/ManagerHeader';
+import SuppliesBadge from '@/components/SuppliesBadge';
 
 export default async function ManagerLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   
   let stationName = 'Unknown Station';
+  let stationId = '';
+  let pendingCount = 0;
+
   if (user) {
     const { data: assignments } = await supabase
       .from('station_assignments')
-      .select('stations(name)')
+      .select('station_id, stations(name)')
       .eq('user_id', user.id)
       .limit(1)
       .maybeSingle();
     
-    // @ts-expect-error - Station relation type is complex
-    if (assignments?.stations?.name) {
+    if (assignments) {
+      stationId = assignments.station_id;
       // @ts-expect-error - Station relation type is complex
-      stationName = assignments.stations.name;
+      if (assignments.stations?.name) {
+        // @ts-expect-error - Station relation type is complex
+        stationName = assignments.stations.name;
+      }
+      
+      const { count } = await supabase
+        .from('supply_transactions')
+        .select('id', { count: 'exact', head: true })
+        .eq('station_id', stationId)
+        .eq('status', 'pending');
+      
+      pendingCount = count || 0;
     }
   }
 
@@ -48,7 +63,7 @@ export default async function ManagerLayout({ children }: { children: React.Reac
           <span className="text-[10px] mt-1 font-medium">Expenses</span>
         </Link>
         <Link href="/manager/supplies" className="flex flex-col items-center text-gray-500 hover:text-red-600 focus:text-red-600 active:text-red-600">
-          <Truck size={24} />
+          <SuppliesBadge initialCount={pendingCount} stationId={stationId} />
           <span className="text-[10px] mt-1 font-medium">Supplies</span>
         </Link>
       </div>
