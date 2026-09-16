@@ -112,21 +112,21 @@ export default function SupplyListClient({
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50">
-                  <th className="py-4 px-6 font-medium text-gray-500">Date</th>
-                  <th className="py-4 px-6 font-medium text-gray-500">Product</th>
-                  <th className="py-4 px-6 font-medium text-gray-500">Volume</th>
-                  <th className="py-4 px-6 font-medium text-gray-500">Supplier</th>
-                  <th className="py-4 px-6 font-medium text-gray-500">Status</th>
-                  {activeTab === 'pending' && <th className="py-4 px-6 font-medium text-gray-500 text-right">Actions</th>}
+                  <th className="py-4 px-6 font-medium text-gray-500 dark:text-slate-100">Date</th>
+                  <th className="py-4 px-6 font-medium text-gray-500 dark:text-slate-100">Product</th>
+                  <th className="py-4 px-6 font-medium text-gray-500 dark:text-slate-100">Volume</th>
+                  <th className="py-4 px-6 font-medium text-gray-500 dark:text-slate-100">Supplier</th>
+                  <th className="py-4 px-6 font-medium text-gray-500 dark:text-slate-100">Status</th>
+                  {activeTab === 'pending' && <th className="py-4 px-6 font-medium text-gray-500 dark:text-slate-100 text-right">Actions</th>}
                 </tr>
               </thead>
               <tbody className="divide-y dark:divide-gray-800">
                 {transactions.map((tx) => (
                   <tr key={tx.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                    <td className="py-4 px-6">{tx.date}</td>
-                    <td className="py-4 px-6 font-medium">{tx.products?.name}</td>
-                    <td className="py-4 px-6">{tx.quantity.toLocaleString()} L</td>
-                    <td className="py-4 px-6 text-gray-500">{tx.supplier}</td>
+                    <td className="py-4 px-6 dark:text-slate-100">{tx.date}</td>
+                    <td className="py-4 px-6 font-medium dark:text-slate-100">{tx.products?.name}</td>
+                    <td className="py-4 px-6 dark:text-slate-100">{tx.quantity.toLocaleString()} L</td>
+                    <td className="py-4 px-6 text-gray-500 dark:text-slate-300">{tx.supplier}</td>
                     <td className="py-4 px-6">
                       {tx.status === 'pending' ? (
                         <span className="bg-yellow-100 text-yellow-800 text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">Pending</span>
