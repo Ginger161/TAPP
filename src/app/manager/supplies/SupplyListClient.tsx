@@ -54,6 +54,14 @@ export default function SupplyListClient({
       toast.error(result.error)
     } else {
       toast.success('Supply accepted successfully!')
+      if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+        navigator.serviceWorker.ready.then(reg => {
+          reg.showNotification('Supply Activated', {
+            body: `${selectedTx.quantity.toLocaleString()}L of ${selectedTx.products?.name} has been successfully logged into inventory.`,
+            icon: '/icon.png'
+          })
+        })
+      }
     }
   }
 

@@ -101,6 +101,8 @@ export default function NotificationManager() {
     setIsSending(false)
   }
 
+  if (isSubscribed) return null
+
   return (
     <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 shadow-sm mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div className="flex items-center gap-4 text-tycoon-charcoal dark:text-gray-100">
