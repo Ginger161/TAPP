@@ -192,12 +192,14 @@ export default function StationAssignmentsDndClient({
 
     setIsSubmitting(false)
 
-    if (result.success) {
+    if (result && 'success' in result && result.success) {
       toast.success('Manager reassigned successfully!')
       setIsModalOpen(false)
       setPendingAction(null)
+    } else if (result && 'error' in result) {
+      toast.error(result.error as string || 'Failed to authenticate')
     } else {
-      toast.error(result.error || 'Failed to authenticate')
+      toast.error('Failed to authenticate')
     }
   }
 

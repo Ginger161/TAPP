@@ -95,8 +95,8 @@ export default function AdminStationDashboard() {
     const res = await catchNetworkError(adminEditTransaction(editingItem.type, editingItem.id, newVal, editingItem.amount, data.stationName));
     setIsSubmitting(false);
 
-    if (res && res.error) {
-      toast.error(res.error);
+    if (res && 'error' in res) {
+      toast.error(res.error as string);
     } else {
       toast.success('Transaction updated successfully');
       setEditingItem(null);
