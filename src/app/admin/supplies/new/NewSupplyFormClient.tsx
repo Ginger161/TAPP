@@ -1,0 +1,83 @@
+'use client'
+
+import { useState } from 'react'
+import { createSupply } from './actions'
+import toast from 'react-hot-toast'
+import { useRouter } from 'next/navigation'
+import { catchNetworkError } from '@/utils/network'
+
+export default function NewSupplyFormClient({ 
+  stations, 
+  products 
+}: { 
+  stations: { id: string, name: string }[] | null,
+  products: { id: string, name: string }[] | null
+}) {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const router = useRouter()
+
+  async function handleSubmit(formData: FormData) {
+    setIsSubmitting(true)
+    const result = await catchNetworkError(createSupply(formData))
+    setIsSubmitting(false)
+
+    if (result && result.error) {
+      toast.error(result.error)
+    } else {
+      toast.success('Supply initiated successfully!')
+      router.push('/dashboard')
+    }
+  }
+
+  return (
+    <form action={handleSubmit} className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium mb-1.5" htmlFor="stationId">Station</label>
+          <select required id="stationId" name="stationId" className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">Select Station...</option>
+            {stations?.map(s => (
+              <option key={s.id} value={s.id}>{s.name}</option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1.5" htmlFor="productId">Product</label>
+          <select required id="productId" name="productId" className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">Select Product...</option>
+            {products?.map(p => (
+              <option key={p.id} value={p.id}>{p.name}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium mb-1.5" htmlFor="quantity">Quantity (Liters)</label>
+          <input required id="quantity" name="quantity" type="number" step="0.01" min="0" className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1.5" htmlFor="costPrice">Total Cost Price (₦)</label>
+          <input required id="costPrice" name="costPrice" type="number" step="0.01" min="0" className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1.5" htmlFor="supplier">Supplier</label>
+        <input required id="supplier" name="supplier" type="text" placeholder="e.g., NNPC" className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1.5" htmlFor="date">Date</label>
+        <input id="date" name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+
+      <button disabled={isSubmitting} type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition-colors mt-6 disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm">
+        {isSubmitting ? 'Submitting...' : 'Submit Supply'}
+      </button>
+    </form>
+  )
+}
