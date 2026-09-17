@@ -15,7 +15,7 @@ export type ManagerData = {
     name: string;
     stock: number;
     daysRemaining: number;
-    status: 'Red' | 'Yellow' | 'Green';
+    status: 'Red' | 'Normal' | 'Green';
   }[];
   pendingAlerts: {
     id: string;
@@ -209,25 +209,18 @@ export default function AdminStationDashboardClient({
                 key={prod.id} 
                 className={`p-4 rounded-xl shadow-md border-l-4 bg-white flex justify-between items-center ${
                   prod.status === 'Red' ? 'border-red-500' : 
-                  prod.status === 'Yellow' ? 'border-yellow-500' : 'border-green-500'
+                  prod.status === 'Green' ? 'border-green-500' : 'border-transparent'
                 }`}
               >
                 <div className="flex items-center">
                   <div className={`p-3 rounded-full mr-4 ${
                     prod.status === 'Red' ? 'bg-red-50 text-red-500' : 
-                    prod.status === 'Yellow' ? 'bg-yellow-50 text-yellow-500' : 'bg-green-50 text-green-500'
+                    prod.status === 'Green' ? 'bg-green-50 text-green-500' : 'bg-gray-50 text-gray-400'
                   }`}>
                     <Fuel size={24} />
                   </div>
                   <div>
                     <h3 className="font-bold text-gray-800 text-lg">{prod.name}</h3>
-                    <p className="text-sm mt-1 text-gray-500 flex items-center">
-                      {prod.status === 'Red' ? '🔴 Depleted' : 
-                       prod.status === 'Yellow' ? '🟡 Low Stock' : '🟢 Healthy'}
-                      <span className="ml-2 text-xs opacity-75">
-                        ({prod.stock <= 0 ? '0' : prod.daysRemaining === Infinity ? '∞' : prod.daysRemaining.toFixed(1)} Days Left)
-                      </span>
-                    </p>
                   </div>
                 </div>
                 <div className="text-right">

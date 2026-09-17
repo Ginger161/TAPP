@@ -10,13 +10,13 @@ export type MapStation = {
   name: string;
   latitude: number;
   longitude: number;
-  urgency: 'Green' | 'Yellow' | 'Red' | 'Unknown';
+  urgency: 'Green' | 'Normal' | 'Red' | 'Unknown';
   products?: {
     id: string;
     name: string;
     stock: number;
     daysRemaining: number;
-    status: 'Green' | 'Yellow' | 'Red' | 'Unknown';
+    status: 'Green' | 'Normal' | 'Red' | 'Unknown';
   }[];
   pendingExpensesCount: number;
   managerName: string | null;
@@ -120,7 +120,7 @@ export async function getAdminDashboardData() {
   const mapStations: MapStation[] = [];
 
   stations?.forEach(station => {
-    let highestUrgency: 'Unknown' | 'Green' | 'Yellow' | 'Red' = 'Green';
+    let highestUrgency: 'Unknown' | 'Green' | 'Normal' | 'Red' = 'Green';
     const stationProducts: any[] = [];
 
     products?.forEach(product => {
@@ -134,9 +134,9 @@ export async function getAdminDashboardData() {
       const MAX_CAPACITY = 45000;
       const capacityPercent = (stock / MAX_CAPACITY) * 100;
       
-      let status: 'Green' | 'Yellow' | 'Red' = 'Green';
+      let status: 'Green' | 'Normal' | 'Red' = 'Green';
       if (capacityPercent < 10) status = 'Red';
-      else if (capacityPercent <= 30) status = 'Yellow';
+      else if (capacityPercent <= 50) status = 'Normal';
       else status = 'Green';
 
       stationProducts.push({
@@ -148,7 +148,7 @@ export async function getAdminDashboardData() {
       });
 
       if (status === 'Red') highestUrgency = 'Red';
-      else if (status === 'Yellow' && highestUrgency !== 'Red') highestUrgency = 'Yellow';
+      else if (status === 'Normal' && highestUrgency !== 'Red') highestUrgency = 'Normal';
     });
 
     const assignment = assignments?.find(a => a.station_id === station.id);
@@ -167,9 +167,9 @@ export async function getAdminDashboardData() {
     });
   });
 
-  // Sort stations by urgency: Red > Yellow > Green
+  // Sort stations by urgency: Red > Normal > Green
   mapStations.sort((a, b) => {
-    const val = { 'Red': 3, 'Yellow': 2, 'Green': 1, 'Unknown': 0 };
+    const val = { 'Red': 3, 'Normal': 2, 'Green': 1, 'Unknown': 0 };
     return val[b.urgency] - val[a.urgency];
   });
 

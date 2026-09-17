@@ -201,7 +201,7 @@ export default function ViewerDashboardClient({ initialData }: { initialData: Da
                       <div className="flex items-center gap-2">
                         <div className={`w-2.5 h-2.5 rounded-full border border-gray-200 ${
                           prod.status === 'Red' ? 'bg-red-500' :
-                          prod.status === 'Yellow' ? 'bg-transparent' : 'bg-green-500'
+                          prod.status === 'Normal' ? 'bg-transparent' : 'bg-green-500'
                         }`} />
                         <span className="text-gray-600 font-medium">{prod.name}</span>
                       </div>

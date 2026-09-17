@@ -10,10 +10,10 @@ export default function UrgencyBadge({ status }: { status: string }) {
     bgColor = 'bg-alert-red';
     textColor = 'text-white';
     displayStatus = '🔴 Depleted';
-  } else if (status === 'Yellow') {
-    bgColor = 'bg-yellow-400';
-    textColor = 'text-yellow-900';
-    displayStatus = '🟡 Low Stock';
+  } else if (status === 'Normal') {
+    bgColor = 'bg-gray-100';
+    textColor = 'text-gray-800';
+    displayStatus = 'Normal';
   } else if (status === 'Green') {
     bgColor = 'bg-green-500';
     textColor = 'text-white';
