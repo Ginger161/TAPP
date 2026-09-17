@@ -99,7 +99,7 @@ export default async function AdminUsersPage() {
               <Shield className="w-5 h-5 text-tycoon-navy" />
               Active Accounts
             </h2>
-            <div className="overflow-x-auto">
+            <div className="w-full overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead>
                   <tr className="border-b dark:border-gray-800">

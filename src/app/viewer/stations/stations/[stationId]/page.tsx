@@ -135,7 +135,7 @@ export default function AdminStationDashboard() {
       )}
 
       {/* Main Content Area */}
-      <div className="p-4 space-y-6 flex-1">
+      <div className="px-4 sm:px-6 py-4 space-y-6 flex-1">
         
         {/* Status Hero */}
         <section>

@@ -193,7 +193,7 @@ export default function AdminStationDashboardClient({
       )}
 
       {/* Main Content Area */}
-      <div className="p-4 space-y-6 flex-1">
+      <div className="px-4 sm:px-6 py-4 space-y-6 flex-1">
         
         {/* Status Hero */}
         <section>
@@ -331,29 +331,29 @@ export default function AdminStationDashboardClient({
                 <TrendingUp className="text-gray-400" size={16} />
                 <h3 className="text-xs font-semibold text-gray-500 uppercase">Revenue</h3>
               </div>
-              <p className="font-bold text-lg text-tycoon-navy">₦{data.financialOverview.revenue.toLocaleString()}</p>
+              <p className="font-bold text-lg text-tycoon-navy truncate" title={`₦${data.financialOverview.revenue.toLocaleString()}`}>₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(data.financialOverview.revenue)}</p>
             </div>
             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <div className="flex items-center gap-2 mb-2">
                 <Package className="text-gray-400" size={16} />
                 <h3 className="text-xs font-semibold text-gray-500 uppercase">COGS</h3>
               </div>
-              <p className="font-bold text-lg text-tycoon-navy">₦{data.financialOverview.cogs.toLocaleString()}</p>
+              <p className="font-bold text-lg text-tycoon-navy truncate" title={`₦${data.financialOverview.cogs.toLocaleString()}`}>₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(data.financialOverview.cogs)}</p>
             </div>
             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <div className="flex items-center gap-2 mb-2">
                 <Wallet className="text-gray-400" size={16} />
                 <h3 className="text-xs font-semibold text-gray-500 uppercase">Expenses</h3>
               </div>
-              <p className="font-bold text-lg text-tycoon-navy">₦{data.financialOverview.approvedExpenses.toLocaleString()}</p>
+              <p className="font-bold text-lg text-tycoon-navy truncate" title={`₦${data.financialOverview.approvedExpenses.toLocaleString()}`}>₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(data.financialOverview.approvedExpenses)}</p>
             </div>
             <div className={`p-4 rounded-xl shadow-sm border flex flex-col justify-between ${data.financialOverview.netProfit >= 0 ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'}`}>
               <div className="flex items-center gap-2 mb-2">
                 <DollarSign className={data.financialOverview.netProfit >= 0 ? 'text-emerald-500' : 'text-red-500'} size={16} />
                 <h3 className={`text-xs font-bold uppercase ${data.financialOverview.netProfit >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>Net Profit</h3>
               </div>
-              <p className={`font-bold text-lg ${data.financialOverview.netProfit >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>
-                {data.financialOverview.netProfit >= 0 ? '' : '-'}₦{Math.abs(data.financialOverview.netProfit).toLocaleString()}
+              <p className={`font-bold text-lg truncate ${data.financialOverview.netProfit >= 0 ? 'text-emerald-700' : 'text-red-700'}`} title={`₦${Math.abs(data.financialOverview.netProfit).toLocaleString()}`}>
+                {data.financialOverview.netProfit >= 0 ? '' : '-'}₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(Math.abs(data.financialOverview.netProfit))}
               </p>
             </div>
           </div>

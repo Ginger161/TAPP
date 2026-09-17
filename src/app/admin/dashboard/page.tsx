@@ -134,21 +134,21 @@ export default function AdminDashboard() {
         <div className="flex flex-wrap items-center gap-8 text-sm">
           <div className="flex flex-col">
             <span className="text-gray-500 uppercase tracking-wider text-xs font-semibold">Today&apos;s Volume</span>
-            <span className="font-bold text-lg text-tycoon-navy">{data.kpi.volume.toLocaleString()} L</span>
+            <span className="font-bold text-lg text-tycoon-navy truncate" title={`${data.kpi.volume.toLocaleString()} L`}>{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(data.kpi.volume)} L</span>
           </div>
           <div className="flex flex-col">
             <span className="text-gray-500 uppercase tracking-wider text-xs font-semibold">Today&apos;s Revenue</span>
-            <span className="font-bold text-lg text-tycoon-navy">₦{data.kpi.revenue.toLocaleString()}</span>
+            <span className="font-bold text-lg text-tycoon-navy truncate" title={`₦${data.kpi.revenue.toLocaleString()}`}>₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(data.kpi.revenue)}</span>
           </div>
           <div className="flex flex-col">
             <span className="text-gray-500 uppercase tracking-wider text-xs font-semibold">Pending Supplies</span>
-            <span className="font-bold text-lg text-tycoon-red">{data.kpi.pendingVolume.toLocaleString()} L</span>
+            <span className="font-bold text-lg text-tycoon-red truncate" title={`${data.kpi.pendingVolume.toLocaleString()} L`}>{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(data.kpi.pendingVolume)} L</span>
           </div>
         </div>
       </div>
 
       {/* Main Content Area (Full Screen Grid) */}
-      <div className="flex-1 overflow-y-auto p-4 md:p-8">
+      <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 md:p-8">
         {/* Push Notification Manager */}
         <NotificationManager />
 

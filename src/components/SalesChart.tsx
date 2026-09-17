@@ -12,7 +12,7 @@ export default function SalesChart({ data }: { data: SalesData[] }) {
   return (
     <div className="w-full h-64">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+        <BarChart data={data} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
           <XAxis 
             dataKey="date" 
@@ -41,6 +41,7 @@ export default function SalesChart({ data }: { data: SalesData[] }) {
             tick={{ fontSize: 12, fill: '#6b7280' }} 
             axisLine={false} 
             tickLine={false} 
+            tickFormatter={(value: number) => Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(value)}
           />
           <Tooltip 
             cursor={{ fill: '#f3f4f6' }}

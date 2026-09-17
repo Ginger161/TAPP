@@ -173,7 +173,7 @@ export default function SupplyListClient({
         </div>
       ) : (
         <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden">
-          <div className="overflow-x-auto">
+          <div className="w-full overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50">

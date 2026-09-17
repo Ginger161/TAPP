@@ -23,7 +23,7 @@ export default async function ManagerEODPage() {
   const { data: products } = await supabase.from('products').select('id, name')
 
   return (
-    <div className="p-4 md:p-8">
+    <div className="px-4 sm:px-6 py-4 md:p-8">
       <div className="max-w-2xl mx-auto mb-8">
         <h1 className="text-2xl font-bold text-tycoon-charcoal flex items-center gap-3">
           <FileEdit className="w-6 h-6 text-red-600" />
