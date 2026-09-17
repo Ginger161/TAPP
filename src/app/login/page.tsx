@@ -23,10 +23,10 @@ export default async function LoginPage({
               <Image 
                 src="/logo.png" 
                 alt="Tycoon Oil and Gas Logo" 
-                width={180} 
-                height={180} 
+                width={360} 
+                height={360} 
                 priority
-                className="object-contain drop-shadow-md"
+                className="object-contain drop-shadow-md w-64 h-auto"
               />
             </div>
             
