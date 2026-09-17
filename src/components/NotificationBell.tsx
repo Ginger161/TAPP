@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { Bell, CheckCircle2 } from 'lucide-react'
-import { getRecentNotifications, markNotificationAsRead } from '@/app/actions/notificationActions'
-import { usePathname, useRouter } from 'next/navigation'
+import { getRecentNotifications, markMultipleNotificationsAsRead } from '@/app/actions/notificationActions'
+import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/utils/supabase/client'
+import { useInView } from 'react-intersection-observer'
 
 export type Notification = {
   id: string
@@ -16,12 +17,58 @@ export type Notification = {
   created_at: string
 }
 
+const NotificationItem = ({ 
+  notification, 
+  onMarkAsRead 
+}: { 
+  notification: Notification, 
+  onMarkAsRead: (id: string) => void 
+}) => {
+  const { ref, inView } = useInView({
+    triggerOnce: true,
+    threshold: 0.5,
+  })
+
+  useEffect(() => {
+    if (inView && !notification.is_read) {
+      onMarkAsRead(notification.id)
+    }
+  }, [inView, notification.is_read, onMarkAsRead, notification.id])
+
+  return (
+    <li ref={ref} className={`p-4 transition-colors group ${notification.is_read ? 'bg-white hover:bg-gray-50' : 'bg-slate-50 hover:bg-slate-100'}`}>
+      <div className="flex gap-3 items-start">
+        <div className={`mt-1 flex-shrink-0 w-2 h-2 rounded-full ${notification.type === 'supply' ? 'bg-blue-500' : 'bg-red-500'} ${notification.is_read ? 'opacity-30' : 'opacity-100'}`} />
+        <div className="flex-1 min-w-0 cursor-pointer" onClick={() => { if (!notification.is_read) onMarkAsRead(notification.id) }}>
+          <p className={`text-sm mb-1 ${notification.is_read ? 'text-slate-600' : 'font-medium text-gray-900'}`}>{notification.title}</p>
+          <p className={`text-sm line-clamp-2 ${notification.is_read ? 'text-slate-500' : 'text-gray-700'}`}>{notification.message}</p>
+          <p className="text-xs text-gray-400 mt-2">
+            {new Date(notification.created_at).toLocaleString()}
+          </p>
+        </div>
+        {!notification.is_read && (
+          <button 
+            onClick={() => onMarkAsRead(notification.id)}
+            className="text-gray-400 hover:text-emerald-500 opacity-0 group-hover:opacity-100 transition-all p-1"
+            title="Mark as read"
+          >
+            <CheckCircle2 size={18} />
+          </button>
+        )}
+      </div>
+    </li>
+  )
+}
+
 export default function NotificationBell() {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [unreadCount, setUnreadCount] = useState(0)
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const pathname = usePathname()
+  
+  const pendingReads = useRef<Set<string>>(new Set())
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     const fetchNotifications = () => {
@@ -55,11 +102,23 @@ export default function NotificationBell() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  const handleMarkAsRead = async (id: string) => {
+  const handleMarkAsRead = useCallback((id: string) => {
     setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n))
     setUnreadCount(prev => Math.max(0, prev - 1))
-    await markNotificationAsRead(id, pathname || '/dashboard')
-  }
+
+    pendingReads.current.add(id)
+
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+
+    timeoutRef.current = setTimeout(async () => {
+      const idsToMark = Array.from(pendingReads.current)
+      pendingReads.current.clear()
+
+      if (idsToMark.length > 0) {
+        await markMultipleNotificationsAsRead(idsToMark, pathname || '/dashboard')
+      }
+    }, 1000)
+  }, [pathname])
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -95,27 +154,11 @@ export default function NotificationBell() {
             ) : (
               <ul className="divide-y divide-gray-100 dark:divide-gray-800">
                 {notifications.map(notification => (
-                  <li key={notification.id} className={`p-4 transition-colors group ${notification.is_read ? 'bg-white hover:bg-gray-50' : 'bg-slate-50 hover:bg-slate-100'}`}>
-                    <div className="flex gap-3 items-start">
-                      <div className={`mt-1 flex-shrink-0 w-2 h-2 rounded-full ${notification.type === 'supply' ? 'bg-blue-500' : 'bg-red-500'} ${notification.is_read ? 'opacity-30' : 'opacity-100'}`} />
-                      <div className="flex-1 min-w-0 cursor-pointer" onClick={() => { if (!notification.is_read) handleMarkAsRead(notification.id) }}>
-                        <p className={`text-sm mb-1 ${notification.is_read ? 'text-slate-600' : 'font-medium text-gray-900'}`}>{notification.title}</p>
-                        <p className={`text-sm line-clamp-2 ${notification.is_read ? 'text-slate-500' : 'text-gray-700'}`}>{notification.message}</p>
-                        <p className="text-xs text-gray-400 mt-2">
-                          {new Date(notification.created_at).toLocaleString()}
-                        </p>
-                      </div>
-                      {!notification.is_read && (
-                        <button 
-                          onClick={() => handleMarkAsRead(notification.id)}
-                          className="text-gray-400 hover:text-emerald-500 opacity-0 group-hover:opacity-100 transition-all p-1"
-                          title="Mark as read"
-                        >
-                          <CheckCircle2 size={18} />
-                        </button>
-                      )}
-                    </div>
-                  </li>
+                  <NotificationItem 
+                    key={notification.id} 
+                    notification={notification} 
+                    onMarkAsRead={handleMarkAsRead} 
+                  />
                 ))}
               </ul>
             )}

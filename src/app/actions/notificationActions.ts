@@ -44,6 +44,26 @@ export async function markNotificationAsRead(id: string, path: string) {
   return { success: true }
 }
 
+export async function markMultipleNotificationsAsRead(ids: string[], path: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { success: false }
+
+  const { error } = await supabase
+    .from('notifications')
+    .update({ is_read: true })
+    .in('id', ids)
+    .eq('recipient_id', user.id)
+
+  if (error) {
+    console.error('Error marking notifications as read:', error)
+    return { success: false }
+  }
+
+  revalidatePath(path)
+  return { success: true }
+}
+
 export async function getPaginatedNotifications(page: number = 1, limit: number = 20) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
