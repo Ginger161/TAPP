@@ -279,7 +279,7 @@ export default function AdminStationDashboardClient({
                   <h3 className="text-xs font-semibold text-gray-500 uppercase mb-3">Itemized Expenses</h3>
                   {data.yesterdaysSummary.expenses.length === 0 ? (
                     <div className="p-4 bg-gray-50 border border-gray-100 rounded-lg text-sm text-gray-500 text-center">
-                      No expenses logged yesterday.
+                      No expense records found.
                     </div>
                   ) : (
                     <div className="space-y-2">
@@ -382,7 +382,7 @@ export default function AdminStationDashboardClient({
               <div className="overflow-x-auto">
                 <div className="divide-y divide-gray-100 max-h-[500px] overflow-y-auto min-w-[400px]">
                   {data.sales.length === 0 ? (
-                  <div className="p-4 text-center text-sm text-gray-500">No recent sales logged.</div>
+                  <div className="p-4 text-center text-sm text-gray-500">No recent sales transactions recorded.</div>
                 ) : (
                   data.sales.map(sale => (
                     <div key={sale.id} className="p-4 flex justify-between items-center hover:bg-gray-50 transition-colors">
@@ -425,7 +425,7 @@ export default function AdminStationDashboardClient({
               <div className="overflow-x-auto">
                 <div className="divide-y divide-gray-100 max-h-[500px] overflow-y-auto min-w-[500px]">
                   {data.expenses.length === 0 ? (
-                  <div className="p-4 text-center text-sm text-gray-500">No recent expenses logged.</div>
+                  <div className="p-4 text-center text-sm text-gray-500">No recent expense records found.</div>
                 ) : (
                   data.expenses.map(exp => (
                     <div key={exp.id} className="p-4 flex justify-between items-center hover:bg-gray-50 transition-colors">

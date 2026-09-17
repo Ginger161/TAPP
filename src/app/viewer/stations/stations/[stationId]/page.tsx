@@ -183,7 +183,7 @@ export default function AdminStationDashboard() {
               </div>
               <div className="divide-y divide-gray-100">
                 {data.sales.length === 0 ? (
-                  <div className="p-4 text-center text-sm text-gray-500">No sales logged today.</div>
+                  <div className="p-4 text-center text-sm text-gray-500">No sales transactions recorded.</div>
                 ) : (
                   data.sales.map(sale => (
                     <div key={sale.id} className="p-4 flex justify-between items-center hover:bg-gray-50 transition-colors">
@@ -224,7 +224,7 @@ export default function AdminStationDashboard() {
               </div>
               <div className="divide-y divide-gray-100">
                 {data.expenses.length === 0 ? (
-                  <div className="p-4 text-center text-sm text-gray-500">No expenses logged today.</div>
+                  <div className="p-4 text-center text-sm text-gray-500">No expense records found.</div>
                 ) : (
                   data.expenses.map(exp => (
                     <div key={exp.id} className="p-4 flex justify-between items-center hover:bg-gray-50 transition-colors">

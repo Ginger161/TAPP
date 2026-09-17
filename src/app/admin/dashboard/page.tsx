@@ -473,7 +473,8 @@ export default function AdminDashboard() {
                 const { resetTestData } = await import('../actions/devActions');
                 const res = await resetTestData();
                 if (res.success) {
-                  alert('Test data reset successfully! Dashboard has been refreshed.');
+                  alert('System environment reset successfully. Dashboard refreshed.');
+                  window.location.reload();
                 } else {
                   alert('Error: ' + res.error);
                 }
@@ -481,12 +482,12 @@ export default function AdminDashboard() {
                 alert('Reset failed: ' + err.message);
               } finally {
                 btn.disabled = false;
-                btn.innerText = 'Reset Test Data';
+                btn.innerText = 'Reset Environment';
               }
             }}
             className="px-6 py-2 bg-red-100 hover:bg-red-200 text-red-700 font-bold rounded-lg border border-red-300 transition-colors shadow-sm"
           >
-            Reset Test Data
+            Reset Environment
           </button>
         </div>
       )}

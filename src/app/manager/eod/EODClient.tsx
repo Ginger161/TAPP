@@ -58,7 +58,7 @@ export default function EODClient({ products }: { products: { id: string, name: 
     }))
   )
 
-  // Section C state
+  // Expenses state
   const [expenses, setExpenses] = useState<ExpenseItem[]>(
     EXPENSE_CATEGORIES.map(cat => ({ type: cat, amount: '', description: '' }))
   )
@@ -194,10 +194,10 @@ export default function EODClient({ products }: { products: { id: string, name: 
           </div>
         </div>
 
-        {/* Section A & B Combined per Product */}
-        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 md:p-8 space-y-8">
-          <div>
-            <h2 className="text-xl font-bold text-tycoon-charcoal dark:text-white">Section A & B: Sales and Tank Dips</h2>
+        {/* Sales and Tank Dips Combined per Product */}
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-6">
+          <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100 dark:border-gray-700">
+            <h2 className="text-xl font-bold text-tycoon-charcoal dark:text-white">Sales and Tank Dips</h2>
             <p className="text-sm text-gray-500 mt-1">Record pump meter readings, volumes sold, and closing physical tank dips.</p>
           </div>
           
@@ -312,10 +312,10 @@ export default function EODClient({ products }: { products: { id: string, name: 
           </div>
         </div>
 
-        {/* Section C: Daily Expenses */}
-        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 md:p-8 space-y-6">
-          <div>
-            <h2 className="text-xl font-bold text-tycoon-charcoal dark:text-white">Section C: Daily Expenses</h2>
+        {/* Daily Expenses */}
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-6">
+          <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-100 dark:border-gray-700">
+            <h2 className="text-xl font-bold text-tycoon-charcoal dark:text-white">Daily Expenses</h2>
             <p className="text-sm text-gray-500 mt-1">Enter amounts for any expenses incurred today. Leave blank if none.</p>
           </div>
 

@@ -33,7 +33,7 @@ export default async function ManagerEODPage() {
           Submit your daily sales, physical tank dips, and expenses in one consolidated report.
         </p>
       </div>
-      <Suspense fallback={<div className="text-center p-4">Loading form...</div>}>
+      <Suspense fallback={<div className="text-center p-8 text-gray-500">Loading...</div>}>
         <EODClient products={products || []} />
       </Suspense>
     </div>
