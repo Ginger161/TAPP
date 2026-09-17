@@ -220,21 +220,12 @@ export async function getAdminStationDashboardData(stationId: string, timeframe:
     original_value: sale.original_value
   }));
 
-  const { data: pendingExpenses } = await supabase
+  const { data: expenses } = await supabase
     .from('expenses')
     .select('id, expense_type, amount, description, is_edited, edited_by, original_value, status, created_at')
     .eq('station_id', stationId)
-    .eq('status', 'pending');
-
-  const { data: recentExpenses } = await supabase
-    .from('expenses')
-    .select('id, expense_type, amount, description, is_edited, edited_by, original_value, status, created_at')
-    .eq('station_id', stationId)
-    .neq('status', 'pending')
     .order('created_at', { ascending: false })
     .limit(50);
-
-  const expenses = [...(pendingExpenses || []), ...(recentExpenses || [])].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
   // --- YESTERDAY'S SUMMARY ---
   const yesterdayDate = new Date();
@@ -415,78 +406,4 @@ export async function adminAcceptSupply(
   return { success: true };
 }
 
-export async function verifyExpense(
-  expenseId: string,
-  status: 'approved' | 'rejected',
-  amount: number,
-  reason: string,
-  stationName: string
-) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) throw new Error("Not authenticated");
-
-  const { data: roleData } = await supabase
-    .from('users')
-    .select('role')
-    .eq('id', user.id)
-    .single();
-
-  if (roleData?.role !== 'admin') throw new Error("Unauthorized");
-
-  const { error } = await supabase
-    .from('expenses')
-    .update({ status })
-    .eq('id', expenseId);
-
-  if (error) {
-    console.error('Error verifying expense:', error);
-    return { error: error.message };
-  }
-
-  // Capitalize first letter of status for the log
-  const statusFormatted = status.charAt(0).toUpperCase() + status.slice(1);
-  const actionDescription = `${statusFormatted} expense of ${amount} for ${reason} at ${stationName} was made by ${user.email} (admin).`;
-  
-  await supabase.from('audit_log').insert({
-    table_name: 'expenses',
-    record_id: expenseId,
-    action: actionDescription,
-    user_id: user.id,
-    details: { status, amount, reason }
-  });
-
-  // Get the station_id for this expense to find the manager
-  const { data: expenseData } = await supabase
-    .from('expenses')
-    .select('station_id')
-    .eq('id', expenseId)
-    .single();
-
-  if (expenseData?.station_id) {
-    const { data: assignmentData } = await supabase
-      .from('station_assignments')
-      .select('user_id, users!inner(role)')
-      .eq('station_id', expenseData.station_id)
-      .eq('users.role', 'manager')
-      .limit(1)
-      .maybeSingle();
-
-    if (assignmentData?.user_id) {
-      const statusFormattedForNotif = statusFormatted; // "Approved" or "Rejected"
-      await createNotification({
-        title: `Expense ${statusFormattedForNotif}`,
-        message: `Your expense of ₦${amount.toLocaleString()} for ${reason} was ${statusFormattedForNotif} by the Admin.`,
-        type: 'expense',
-        recipient_id: assignmentData.user_id,
-        station_id: expenseData.station_id
-      });
-    }
-  }
-
-  revalidatePath(`/admin/stations/[stationId]`, 'page');
-  revalidatePath('/manager/dashboard');
-
-  return { success: true };
-}

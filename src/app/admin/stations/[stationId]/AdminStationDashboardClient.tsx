@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
-import { getAdminStationDashboardData, adminEditTransaction, adminAcceptSupply, verifyExpense } from './actions';
+import { getAdminStationDashboardData, adminEditTransaction, adminAcceptSupply } from './actions';
 import UrgencyBadge from '@/components/UrgencyBadge';
 import SalesChart, { SalesData } from '@/components/SalesChart';
 import { Truck, Edit2, X, Check, HelpCircle, Fuel, TrendingUp, DollarSign, Wallet, Package } from 'lucide-react';
@@ -68,7 +68,7 @@ export default function AdminStationDashboardClient({
   
   // Correction Modal State
   const [editingItem, setEditingItem] = useState<{ id: string, type: 'sale'|'expense', name: string, amount: number } | null>(null);
-  const [verifyingId, setVerifyingId] = useState<string | null>(null);
+
   const [editValue, setEditValue] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -132,19 +132,7 @@ export default function AdminStationDashboardClient({
     }
   };
 
-  const handleVerifyExpense = async (id: string, status: 'approved' | 'rejected', amount: number, reason: string) => {
-    if (!data || 'error' in data) return;
-    setVerifyingId(id);
-    const res = await catchNetworkError(verifyExpense(id, status, amount, reason, data.stationName));
-    setVerifyingId(null);
 
-    if (res && res.error) {
-      toast.error(res.error);
-    } else {
-      toast.success(`Expense ${status}`);
-      loadData();
-    }
-  };
 
   if (!data) return null;
   if ('error' in data) return <div className="p-8 text-alert-red font-bold text-center mt-10">{data.error}</div>;

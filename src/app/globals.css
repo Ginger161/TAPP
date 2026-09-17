@@ -47,3 +47,9 @@ input, select, textarea, button {
 .overflow-x-auto th, .overflow-x-auto td {
   white-space: nowrap;
 }
+
+/* Recharts Focus / Tap Highlight Resets */
+.recharts-wrapper, .recharts-surface {
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent;
+}

@@ -10,8 +10,8 @@ export type SalesData = {
 
 export default function SalesChart({ data }: { data: SalesData[] }) {
   return (
-    <div className="w-full h-64">
-      <ResponsiveContainer width="100%" height="100%">
+    <div className="w-full h-64 outline-none focus:outline-none" style={{ WebkitTapHighlightColor: 'transparent' }}>
+      <ResponsiveContainer width="100%" height="100%" className="outline-none focus:outline-none">
         <BarChart data={data} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
           <XAxis 

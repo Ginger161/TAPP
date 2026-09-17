@@ -6,10 +6,11 @@ export const metadata = {
   title: 'Station Dashboard - TAPP',
 };
 
-export default function ViewerStationPage({ params }: { params: { stationId: string } }) {
+export default async function ViewerStationPage({ params }: { params: Promise<{ stationId: string }> }) {
+  const resolvedParams = await params;
   return (
     <Suspense fallback={<ViewerStationLoading />}>
-      <ViewerStationDashboardLoader stationId={params.stationId} />
+      <ViewerStationDashboardLoader stationId={resolvedParams.stationId} />
     </Suspense>
   );
 }

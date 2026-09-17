@@ -18,8 +18,16 @@ export type MapStation = {
     daysRemaining: number;
     status: 'Green' | 'Normal' | 'Red' | 'Unknown';
   }[];
-  pendingExpensesCount: number;
   managerName: string | null;
+};
+
+export type RecentLog = {
+  id: string;
+  type: 'sale' | 'expense';
+  stationName: string;
+  detail: string;
+  amount: string;
+  timestamp: string;
 };
 
 export type Anomaly = {
@@ -42,6 +50,10 @@ export async function getAdminDashboardData() {
   const dateString = sevenDaysAgo.toISOString().split('T')[0];
 
   // 2. Fetch Data Concurrently
+  const fortyEightHoursAgo = new Date();
+  fortyEightHoursAgo.setHours(fortyEightHoursAgo.getHours() - 48);
+  const fortyEightHoursAgoStr = fortyEightHoursAgo.toISOString();
+
   const [
     { data: { user } },
     { data: salesToday },
@@ -51,9 +63,10 @@ export async function getAdminDashboardData() {
     { data: products },
     { data: sales7Days },
     { data: configData },
-    { data: allPendingExpenses },
     { data: assignments },
-    { data: unresolvedAnomalies }
+    { data: unresolvedAnomalies },
+    { data: recentSalesData },
+    { data: recentExpensesData }
   ] = await Promise.all([
     supabase.auth.getUser(),
     supabase.from('sales_transactions').select('quantity_sold, selling_price').eq('date', today),
@@ -63,9 +76,10 @@ export async function getAdminDashboardData() {
     supabase.from('products').select('*'),
     supabase.from('sales_transactions').select('station_id, product_id, quantity_sold').gte('date', dateString),
     supabase.from('urgency_config').select('*').limit(1).single(),
-    supabase.from('expenses').select('station_id').eq('status', 'pending'),
     supabase.from('station_assignments').select('station_id, user_id'),
-    supabase.from('inventory_reconciliations').select('id, theoretical_volume, actual_dip_volume, variance, created_at, stations(name), products(name)').eq('is_flagged', true).eq('admin_resolved', false)
+    supabase.from('inventory_reconciliations').select('id, theoretical_volume, actual_dip_volume, variance, created_at, stations(name), products(name)').eq('is_flagged', true).eq('admin_resolved', false),
+    supabase.from('sales_transactions').select('id, quantity_sold, selling_price, created_at, products(name), stations(name)').gte('created_at', fortyEightHoursAgoStr).order('created_at', { ascending: false }).limit(50),
+    supabase.from('expenses').select('id, expense_type, amount, created_at, stations(name)').gte('created_at', fortyEightHoursAgoStr).order('created_at', { ascending: false }).limit(50)
   ]);
 
   let isViewer = false;
@@ -162,7 +176,6 @@ export async function getAdminDashboardData() {
       longitude: station.longitude || 0,
       urgency: highestUrgency,
       products: stationProducts,
-      pendingExpensesCount: allPendingExpenses?.filter(e => e.station_id === station.id).length || 0,
       managerName
     });
   });
@@ -183,6 +196,31 @@ export async function getAdminDashboardData() {
     date: a.created_at.split('T')[0]
   }));
 
+  const recentLogs: RecentLog[] = [];
+  recentSalesData?.forEach((sale: any) => {
+    recentLogs.push({
+      id: sale.id,
+      type: 'sale',
+      stationName: sale.stations?.name || 'Unknown',
+      detail: sale.products?.name || 'Fuel',
+      amount: `${Number(sale.quantity_sold).toLocaleString()} L`,
+      timestamp: sale.created_at
+    });
+  });
+
+  recentExpensesData?.forEach((exp: any) => {
+    recentLogs.push({
+      id: exp.id,
+      type: 'expense',
+      stationName: exp.stations?.name || 'Unknown',
+      detail: exp.expense_type,
+      amount: `₦${Number(exp.amount).toLocaleString()}`,
+      timestamp: exp.created_at
+    });
+  });
+
+  recentLogs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
   return {
     kpi: {
       volume: totalVolumeSoldToday,
@@ -192,7 +230,8 @@ export async function getAdminDashboardData() {
     mapStations,
     isViewer,
     anomalies,
-    pendingSuppliesList
+    pendingSuppliesList,
+    recentLogs
   };
 }
 

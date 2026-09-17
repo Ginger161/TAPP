@@ -146,7 +146,11 @@ export default function AnalyticsClient({
                         </div>
                       )}
                       <div className="text-xs text-gray-400">
-                        {new Date(log.timestamp).toLocaleString()}
+                        {new Intl.DateTimeFormat('en-US', {
+                          dateStyle: 'medium',
+                          timeStyle: 'short',
+                          timeZone: 'Africa/Lagos'
+                        }).format(new Date(log.timestamp))}
                       </div>
                     </div>
                   </div>
