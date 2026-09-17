@@ -196,9 +196,9 @@ export default function EODClient({ products }: { products: { id: string, name: 
 
         {/* Sales and Tank Dips Combined per Product */}
         <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-6">
-          <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100 dark:border-gray-700">
-            <h2 className="text-xl font-bold text-tycoon-charcoal dark:text-white">Sales and Tank Dips</h2>
-            <p className="text-sm text-gray-500 mt-1">Record pump meter readings, volumes sold, and closing physical tank dips.</p>
+          <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-3 mb-6 pb-4 border-b border-gray-100 dark:border-gray-700">
+            <h2 className="text-xl font-bold text-tycoon-charcoal dark:text-white md:whitespace-nowrap">Sales and Tank Dips</h2>
+            <p className="text-sm text-gray-500">Record pump meter readings, volumes sold, and closing physical tank dips.</p>
           </div>
           
           <div className="space-y-8">
@@ -314,9 +314,9 @@ export default function EODClient({ products }: { products: { id: string, name: 
 
         {/* Daily Expenses */}
         <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-6">
-          <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-100 dark:border-gray-700">
-            <h2 className="text-xl font-bold text-tycoon-charcoal dark:text-white">Daily Expenses</h2>
-            <p className="text-sm text-gray-500 mt-1">Enter amounts for any expenses incurred today. Leave blank if none.</p>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4 pb-4 border-b border-gray-100 dark:border-gray-700">
+            <h2 className="text-xl font-bold text-tycoon-charcoal dark:text-white md:whitespace-nowrap">Daily Expenses</h2>
+            <p className="text-sm text-gray-500">Enter amounts for any expenses incurred today. Leave blank if none.</p>
           </div>
 
           <div className="space-y-4">
