@@ -163,7 +163,10 @@ export default function ViewerDashboardClient({ initialData }: { initialData: Da
         )}
 
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-tycoon-charcoal">Station Overview</h2>
+          <h2 className="text-2xl font-bold text-tycoon-charcoal flex items-center">
+            <span className="w-1.5 h-6 bg-red-600 rounded mr-2 inline-block"></span>
+            Station Overview
+          </h2>
           {data.canSupply && (
             <button 
               onClick={() => setIsSupplyModalOpen(true)} 

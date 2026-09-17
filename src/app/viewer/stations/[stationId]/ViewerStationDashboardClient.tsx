@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { getViewerStationDashboardData } from './actions';
 import UrgencyBadge from '@/components/UrgencyBadge';
 import SalesChart, { SalesData } from '@/components/SalesChart';
-import { Truck, HelpCircle } from 'lucide-react';
+import { Truck, HelpCircle, Fuel } from 'lucide-react';
 
 export type ManagerData = {
   stationName: string;
@@ -86,25 +86,43 @@ export default function ViewerStationDashboardClient({
         {/* Status Hero */}
         <section>
           <div className="flex justify-between items-center mb-3">
-            <h2 className="text-lg font-bold text-tycoon-charcoal">Current Stock - {data.stationName}</h2>
+            <h2 className="text-lg font-bold text-tycoon-charcoal flex items-center">
+              <span className="w-1 h-5 bg-red-600 rounded mr-2 inline-block"></span>
+              Current Stock - {data.stationName}
+            </h2>
           </div>
-          <div className="grid gap-4">
+          <div className="grid gap-4 md:grid-cols-2">
             {data.productStatus.map(prod => (
               <div 
                 key={prod.id} 
-                className={`p-4 rounded-lg shadow-sm border-l-4 bg-white flex justify-between items-center ${
-                  prod.status === 'Red' ? 'border-alert-red' : 
-                  prod.status === 'Yellow' ? 'border-transparent' : 'border-green-500'
+                className={`p-4 rounded-xl shadow-md border-l-4 bg-white flex justify-between items-center ${
+                  prod.status === 'Red' ? 'border-red-500' : 
+                  prod.status === 'Yellow' ? 'border-yellow-500' : 'border-green-500'
                 }`}
               >
-                <div>
-                  <h3 className="font-bold text-gray-800">{prod.name}</h3>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Est. {prod.daysRemaining === Infinity ? '∞' : prod.daysRemaining.toFixed(1)} Days Left
-                  </p>
+                <div className="flex items-center">
+                  <div className={`p-3 rounded-full mr-4 ${
+                    prod.status === 'Red' ? 'bg-red-50 text-red-500' : 
+                    prod.status === 'Yellow' ? 'bg-yellow-50 text-yellow-500' : 'bg-green-50 text-green-500'
+                  }`}>
+                    <Fuel size={24} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-800 text-lg">{prod.name}</h3>
+                    <p className="text-sm mt-1 text-gray-500 flex items-center">
+                      <span className={`w-2 h-2 rounded-full mr-1.5 ${
+                        prod.status === 'Red' ? 'bg-red-500' : 
+                        prod.status === 'Yellow' ? 'bg-yellow-500' : 'bg-green-500'
+                      }`}></span>
+                      {prod.stock < 0 ? 'Stock Deficit' : prod.stock === 0 ? 'Depleted' : `Est. ${prod.daysRemaining === Infinity ? '∞' : prod.daysRemaining.toFixed(1)} Days Left`}
+                    </p>
+                  </div>
                 </div>
                 <div className="text-right">
-                  <div className="font-bold text-xl">{prod.stock.toLocaleString()} L</div>
+                  <div className={`font-bold text-2xl ${prod.stock < 0 ? 'text-red-600' : 'text-tycoon-navy'}`}>
+                    {prod.stock < 0 ? `-${Math.abs(prod.stock).toLocaleString()}` : `${prod.stock.toLocaleString()}`}
+                    <span className="text-sm text-gray-500 ml-1">L</span>
+                  </div>
                 </div>
               </div>
             ))}
@@ -113,7 +131,12 @@ export default function ViewerStationDashboardClient({
 
         {/* Today's Ledger */}
         <section>
-          <h2 className="text-lg font-bold mb-3 text-tycoon-charcoal">Activity Ledger</h2>
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="text-lg font-bold text-tycoon-charcoal flex items-center">
+              <span className="w-1 h-5 bg-red-600 rounded mr-2 inline-block"></span>
+              Activity Ledger
+            </h2>
+          </div>
           
           <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 mb-6">
             <h3 className="text-xs font-semibold text-gray-500 uppercase mb-4">7-Day Sales Trend</h3>

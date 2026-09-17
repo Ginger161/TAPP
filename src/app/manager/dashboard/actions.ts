@@ -131,6 +131,9 @@ export async function getManagerDashboardData() {
       productName: (ps.products as any)?.name || 'Unknown'
     })),
     salesTrend,
-    netProfit
+    netProfit,
+    revenue,
+    cogs,
+    approvedExpenses
   };
 }

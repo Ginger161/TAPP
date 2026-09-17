@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import UrgencyBadge from '@/components/UrgencyBadge';
 import SalesChart, { SalesData } from '@/components/SalesChart';
-import { Truck } from 'lucide-react';
+import { Truck, Fuel, TrendingUp, DollarSign, Wallet, Package } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import { useEffect } from 'react';
@@ -25,6 +25,9 @@ export type ManagerData = {
   }[];
   salesTrend: SalesData[];
   netProfit: number;
+  revenue: number;
+  cogs: number;
+  approvedExpenses: number;
 };
 
 export default function ManagerDashboardClient({ initialData }: { initialData: ManagerData }) {
@@ -70,26 +73,42 @@ export default function ManagerDashboardClient({ initialData }: { initialData: M
         {/* Status Hero */}
         <section>
           <div className="flex justify-between items-center mb-3">
-            <h2 className="text-lg font-bold text-tycoon-charcoal">Current Stock</h2>
+            <h2 className="text-lg font-bold text-tycoon-charcoal flex items-center">
+              <span className="w-1 h-5 bg-red-600 rounded mr-2 inline-block"></span>
+              Current Stock
+            </h2>
           </div>
-          <div className="grid gap-4">
+          <div className="grid gap-4 md:grid-cols-2">
             {initialData.productStatus.map(prod => (
               <div 
                 key={prod.id} 
-                className={`p-4 rounded-lg shadow-sm border-l-4 bg-white flex justify-between items-center ${
-                  prod.status === 'Red' ? 'border-alert-red' : 
-                  prod.status === 'Yellow' ? 'border-transparent' : 'border-green-500'
+                className={`p-4 rounded-xl shadow-md border-l-4 bg-white flex justify-between items-center ${
+                  prod.status === 'Red' ? 'border-red-500' : 
+                  prod.status === 'Yellow' ? 'border-yellow-500' : 'border-green-500'
                 }`}
               >
-                <div>
-                  <h3 className="font-bold text-gray-800">{prod.name}</h3>
-                  <p className={`text-sm mt-1 ${prod.stock <= 0 ? 'text-alert-red font-semibold' : 'text-gray-500'}`}>
-                    {prod.stock < 0 ? 'Stock Deficit' : prod.stock === 0 ? 'Depleted' : `Est. ${prod.daysRemaining === Infinity ? '∞' : prod.daysRemaining.toFixed(1)} Days Left`}
-                  </p>
+                <div className="flex items-center">
+                  <div className={`p-3 rounded-full mr-4 ${
+                    prod.status === 'Red' ? 'bg-red-50 text-red-500' : 
+                    prod.status === 'Yellow' ? 'bg-yellow-50 text-yellow-500' : 'bg-green-50 text-green-500'
+                  }`}>
+                    <Fuel size={24} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-800 text-lg">{prod.name}</h3>
+                    <p className="text-sm mt-1 text-gray-500 flex items-center">
+                      <span className={`w-2 h-2 rounded-full mr-1.5 ${
+                        prod.status === 'Red' ? 'bg-red-500' : 
+                        prod.status === 'Yellow' ? 'bg-yellow-500' : 'bg-green-500'
+                      }`}></span>
+                      {prod.stock < 0 ? 'Stock Deficit' : prod.stock === 0 ? 'Depleted' : `Est. ${prod.daysRemaining === Infinity ? '∞' : prod.daysRemaining.toFixed(1)} Days Left`}
+                    </p>
+                  </div>
                 </div>
                 <div className="text-right">
-                  <div className={`font-bold text-xl ${prod.stock < 0 ? 'text-red-600' : ''}`}>
-                    {prod.stock < 0 ? `-${Math.abs(prod.stock).toLocaleString()} L Deficit` : `${prod.stock.toLocaleString()} L`}
+                  <div className={`font-bold text-2xl ${prod.stock < 0 ? 'text-red-600' : 'text-tycoon-navy'}`}>
+                    {prod.stock < 0 ? `-${Math.abs(prod.stock).toLocaleString()}` : `${prod.stock.toLocaleString()}`}
+                    <span className="text-sm text-gray-500 ml-1">L</span>
                   </div>
                 </div>
               </div>
@@ -99,18 +118,50 @@ export default function ManagerDashboardClient({ initialData }: { initialData: M
 
         {/* Dashboard Analytics */}
         <section>
-          <h2 className="text-lg font-bold mb-3 text-tycoon-charcoal">Activity &amp; Performance</h2>
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="text-lg font-bold text-tycoon-charcoal flex items-center">
+              <span className="w-1 h-5 bg-red-600 rounded mr-2 inline-block"></span>
+              Activity &amp; Performance
+            </h2>
+          </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-            <div className="lg:col-span-2 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+            <div className="lg:col-span-2 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
               <h3 className="text-xs font-semibold text-gray-500 uppercase mb-4">7-Day Sales Trend</h3>
               <SalesChart data={initialData.salesTrend} />
             </div>
-            <div className={`p-6 rounded-lg shadow-sm border flex flex-col justify-center items-center text-center ${initialData.netProfit >= 0 ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'}`}>
-              <h3 className={`text-sm font-bold uppercase mb-2 ${initialData.netProfit >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>Current Month PnL</h3>
-              <p className={`font-bold text-3xl ${initialData.netProfit >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>
-                {initialData.netProfit >= 0 ? '' : '-'}₦{Math.abs(initialData.netProfit).toLocaleString()}
-              </p>
+            
+            <div className="lg:col-span-1 grid grid-cols-2 gap-4">
+              <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                <div className="flex items-center gap-2 mb-2">
+                  <TrendingUp className="text-gray-400" size={16} />
+                  <h3 className="text-xs font-semibold text-gray-500 uppercase">Revenue</h3>
+                </div>
+                <p className="font-bold text-lg text-tycoon-navy">₦{initialData.revenue.toLocaleString()}</p>
+              </div>
+              <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                <div className="flex items-center gap-2 mb-2">
+                  <Package className="text-gray-400" size={16} />
+                  <h3 className="text-xs font-semibold text-gray-500 uppercase">COGS</h3>
+                </div>
+                <p className="font-bold text-lg text-tycoon-navy">₦{initialData.cogs.toLocaleString()}</p>
+              </div>
+              <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                <div className="flex items-center gap-2 mb-2">
+                  <Wallet className="text-gray-400" size={16} />
+                  <h3 className="text-xs font-semibold text-gray-500 uppercase">Expenses</h3>
+                </div>
+                <p className="font-bold text-lg text-tycoon-navy">₦{initialData.approvedExpenses.toLocaleString()}</p>
+              </div>
+              <div className={`p-4 rounded-xl shadow-sm border flex flex-col justify-between ${initialData.netProfit >= 0 ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'}`}>
+                <div className="flex items-center gap-2 mb-2">
+                  <DollarSign className={initialData.netProfit >= 0 ? 'text-emerald-500' : 'text-red-500'} size={16} />
+                  <h3 className={`text-xs font-bold uppercase ${initialData.netProfit >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>Net Profit</h3>
+                </div>
+                <p className={`font-bold text-lg ${initialData.netProfit >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>
+                  {initialData.netProfit >= 0 ? '' : '-'}₦{Math.abs(initialData.netProfit).toLocaleString()}
+                </p>
+              </div>
             </div>
           </div>
         </section>
