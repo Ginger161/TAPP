@@ -47,6 +47,12 @@ export type ManagerData = {
     approvedExpenses: number;
     netProfit: number;
   };
+  yesterdaysSummary?: {
+    revenue: number;
+    expenses: { id: string; type: string; amount: number }[];
+    totalExpenses: number;
+    expectedRemittance: number;
+  };
 };
 
 export default function AdminStationDashboardClient({
@@ -200,7 +206,7 @@ export default function AdminStationDashboardClient({
                 key={prod.id} 
                 className={`p-4 rounded-lg shadow-sm border-l-4 bg-white flex justify-between items-center ${
                   prod.status === 'Red' ? 'border-alert-red' : 
-                  prod.status === 'Yellow' ? 'border-yellow-400' : 'border-green-500'
+                  prod.status === 'Yellow' ? 'border-transparent' : 'border-green-500'
                 }`}
               >
                 <div>
@@ -213,12 +219,67 @@ export default function AdminStationDashboardClient({
                   <div className={`font-bold text-xl ${prod.stock < 0 ? 'text-red-600' : ''}`}>
                     {prod.stock < 0 ? `-${Math.abs(prod.stock).toLocaleString()} L Deficit` : `${prod.stock.toLocaleString()} L`}
                   </div>
-                  <div className="mt-1"><UrgencyBadge status={prod.status} /></div>
                 </div>
               </div>
             ))}
           </div>
         </section>
+
+        {/* Yesterday's EOD Summary */}
+        {data.yesterdaysSummary && (
+          <section>
+            <h2 className="text-lg font-bold text-tycoon-charcoal mb-4">Yesterday's EOD Summary</h2>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="p-5 flex flex-col md:flex-row justify-between gap-6">
+                
+                {/* Revenue & Remittance */}
+                <div className="flex-1 space-y-4">
+                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                    <h3 className="text-xs font-semibold text-gray-500 uppercase">Total Sales Revenue (Yesterday)</h3>
+                    <p className="font-bold text-2xl text-tycoon-navy mt-1">
+                      ₦{data.yesterdaysSummary.revenue.toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="bg-emerald-50 p-4 rounded-lg border border-emerald-200">
+                    <h3 className="text-xs font-bold text-emerald-700 uppercase flex items-center gap-2">
+                      Expected Cash Remittance
+                    </h3>
+                    <p className="font-bold text-3xl text-emerald-700 mt-1">
+                      ₦{data.yesterdaysSummary.expectedRemittance.toLocaleString()}
+                    </p>
+                    <p className="text-xs text-emerald-600 mt-1">
+                      (Total Sales Revenue - Total Expenses)
+                    </p>
+                  </div>
+                </div>
+
+                {/* Itemized Expenses */}
+                <div className="flex-1">
+                  <h3 className="text-xs font-semibold text-gray-500 uppercase mb-3">Itemized Expenses</h3>
+                  {data.yesterdaysSummary.expenses.length === 0 ? (
+                    <div className="p-4 bg-gray-50 border border-gray-100 rounded-lg text-sm text-gray-500 text-center">
+                      No expenses logged yesterday.
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      {data.yesterdaysSummary.expenses.map(exp => (
+                        <div key={exp.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100">
+                          <span className="font-medium text-sm text-gray-800">{exp.type}</span>
+                          <span className="font-bold text-sm text-tycoon-charcoal">₦{exp.amount.toLocaleString()}</span>
+                        </div>
+                      ))}
+                      <div className="flex justify-between items-center p-3 mt-2 border-t border-gray-200">
+                        <span className="font-bold text-sm text-gray-600">Total Expenses</span>
+                        <span className="font-bold text-lg text-red-600">₦{data.yesterdaysSummary.totalExpenses.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Financial Overview */}
         <section>
@@ -318,7 +379,7 @@ export default function AdminStationDashboardClient({
             {/* Today's Expenses Entries */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
               <div className="p-3 bg-gray-50 border-b border-gray-100 flex justify-between items-center">
-                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Pending &amp; Recent Expenses</h3>
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Recent Expenses</h3>
               </div>
               <div className="overflow-x-auto">
                 <div className="divide-y divide-gray-100 max-h-[500px] overflow-y-auto min-w-[500px]">
@@ -330,9 +391,7 @@ export default function AdminStationDashboardClient({
                       <div>
                         <div className="flex items-center gap-2">
                           <span className="font-medium text-sm text-gray-800">{exp.expense_type}</span>
-                          {exp.status === 'pending' && <span className="bg-yellow-100 text-yellow-800 text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">Pending</span>}
-                          {exp.status === 'approved' && <span className="bg-green-100 text-green-800 text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">Approved</span>}
-                          {exp.status === 'rejected' && <span className="bg-red-100 text-red-800 text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">Rejected</span>}
+
                         </div>
                         <span className="text-xs text-gray-500 truncate max-w-[150px] md:max-w-[200px] block mt-0.5">{exp.description || 'No description'}</span>
                         {exp.is_edited && (
@@ -347,24 +406,7 @@ export default function AdminStationDashboardClient({
                       <div className="flex items-center gap-4">
                         <span className="font-bold text-sm text-tycoon-charcoal">₦{Number(exp.amount).toLocaleString()}</span>
                         
-                        {exp.status === 'pending' && (
-                          <div className="flex items-center gap-1 mr-2">
-                            <button
-                              onClick={() => handleVerifyExpense(exp.id, 'approved', exp.amount, exp.expense_type)}
-                              disabled={verifyingId === exp.id}
-                              className="text-xs font-semibold bg-emerald-50 text-emerald-600 px-2 py-1 rounded hover:bg-emerald-100 disabled:opacity-50"
-                            >
-                              Approve
-                            </button>
-                            <button
-                              onClick={() => handleVerifyExpense(exp.id, 'rejected', exp.amount, exp.expense_type)}
-                              disabled={verifyingId === exp.id}
-                              className="text-xs font-semibold bg-red-50 text-red-600 px-2 py-1 rounded hover:bg-red-100 disabled:opacity-50"
-                            >
-                              Reject
-                            </button>
-                          </div>
-                        )}
+
 
                         <button 
                           onClick={() => {

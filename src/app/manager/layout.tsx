@@ -54,13 +54,9 @@ export default async function ManagerLayout({ children }: { children: React.Reac
           <Home size={24} />
           <span className="text-[10px] mt-1 font-medium">Home</span>
         </Link>
-        <Link href="/manager/submit?tab=sales" className="flex flex-col items-center text-gray-500 hover:text-red-600 focus:text-red-600 active:text-red-600">
-          <PenSquare size={24} />
-          <span className="text-[10px] mt-1 font-medium">Log Sales</span>
-        </Link>
-        <Link href="/manager/submit?tab=expenses" className="flex flex-col items-center text-gray-500 hover:text-red-600 focus:text-red-600 active:text-red-600">
+        <Link href="/manager/eod" className="flex flex-col items-center text-gray-500 hover:text-red-600 focus:text-red-600 active:text-red-600">
           <FileText size={24} />
-          <span className="text-[10px] mt-1 font-medium">Expenses</span>
+          <span className="text-[10px] mt-1 font-medium">EOD Log</span>
         </Link>
         <Link href="/manager/supplies" className="flex flex-col items-center text-gray-500 hover:text-red-600 focus:text-red-600 active:text-red-600">
           <SuppliesBadge initialCount={pendingCount} stationId={stationId} />

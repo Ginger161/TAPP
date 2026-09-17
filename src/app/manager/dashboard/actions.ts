@@ -29,7 +29,9 @@ export async function getManagerDashboardData() {
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
   const minDateStr = sevenDaysAgo.toISOString().split('T')[0];
-  const todayStr = new Date().toISOString().split('T')[0];
+  
+  const now = new Date();
+  const firstDayOfMonthStr = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
 
   const [
     { data: station },
@@ -38,8 +40,10 @@ export async function getManagerDashboardData() {
     { data: products },
     { data: allStock },
     { data: allSales30Days },
-    { data: salesData },
-    { data: expenses }
+    { data: trendSalesData },
+    { data: monthSales },
+    { data: monthSupplies },
+    { data: monthExpenses }
   ] = await Promise.all([
     supabase.from('stations').select('name').eq('id', stationId).single(),
     supabase.from('urgency_config').select('*').order('created_at', { ascending: false }).limit(1).single(),
@@ -47,8 +51,10 @@ export async function getManagerDashboardData() {
     supabase.from('products').select('*'),
     supabase.from('stock_ledger').select('product_id, quantity').eq('station_id', stationId),
     supabase.from('sales_transactions').select('product_id, quantity_sold').eq('station_id', stationId).gte('date', thirtyDaysStr),
-    supabase.from('sales_transactions').select('date, quantity_sold, id, products(name), is_edited, edited_by, original_value').eq('station_id', stationId).gte('date', minDateStr),
-    supabase.from('expenses').select('id, expense_type, amount, description, is_edited, edited_by, original_value, status').eq('station_id', stationId).eq('date', todayStr)
+    supabase.from('sales_transactions').select('date, quantity_sold').eq('station_id', stationId).gte('date', minDateStr),
+    supabase.from('sales_transactions').select('selling_price').eq('station_id', stationId).gte('date', firstDayOfMonthStr),
+    supabase.from('supply_transactions').select('cost_price').eq('station_id', stationId).eq('status', 'accepted').gte('date', firstDayOfMonthStr),
+    supabase.from('expenses').select('amount').eq('station_id', stationId).eq('status', 'approved').gte('date', firstDayOfMonthStr)
   ]);
 
   const thresholds = urgencyConfig || {
@@ -98,21 +104,9 @@ export async function getManagerDashboardData() {
     salesTrendMap[d.toISOString().split('T')[0]] = 0;
   }
 
-  const todaySales: any[] = [];
-
-  salesData?.forEach(sale => {
+  trendSalesData?.forEach(sale => {
     if (salesTrendMap[sale.date] !== undefined) {
       salesTrendMap[sale.date] += Number(sale.quantity_sold);
-    }
-    if (sale.date === todayStr) {
-      todaySales.push({
-        id: sale.id,
-        quantity_sold: sale.quantity_sold,
-        product_name: (sale.products as any)?.name,
-        is_edited: sale.is_edited,
-        edited_by: sale.edited_by,
-        original_value: sale.original_value
-      });
     }
   });
 
@@ -120,6 +114,13 @@ export async function getManagerDashboardData() {
     date,
     volume: salesTrendMap[date]
   }));
+
+  // Calculate Current Month PnL
+  const revenue = (monthSales || []).reduce((sum, s) => sum + Number(s.selling_price || 0), 0);
+  const cogs = (monthSupplies || []).reduce((sum, s) => sum + Number(s.cost_price || 0), 0);
+  const approvedExpenses = (monthExpenses || []).reduce((sum, e) => sum + Number(e.amount || 0), 0);
+  
+  const netProfit = revenue - cogs - approvedExpenses;
 
   return {
     stationName: station?.name || 'Assigned Station',
@@ -130,42 +131,6 @@ export async function getManagerDashboardData() {
       productName: (ps.products as any)?.name || 'Unknown'
     })),
     salesTrend,
-    sales: todaySales,
-    expenses: expenses || []
+    netProfit
   };
 }
-
-export async function correctTransaction(type: 'sale' | 'expense', id: string, newValue: number, oldValue: number) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (!user) throw new Error("Not authenticated");
-
-  // 1. Log the correction
-  const tableName = type === 'sale' ? 'sales_transactions' : 'expenses';
-  const { error: logError } = await supabase.from('corrections').insert({
-    table_name: tableName,
-    record_id: id,
-    original_value: { value: oldValue },
-    new_value: { value: newValue },
-    corrected_by_id: user.id
-  });
-
-  if (logError) throw new Error("Failed to log correction");
-
-  // 2. Update the original record
-  if (type === 'sale') {
-    const { error } = await supabase.from('sales_transactions').update({ quantity_sold: newValue }).eq('id', id);
-    if (error) throw new Error("Failed to update sales");
-  } else {
-    const { error } = await supabase.from('expenses').update({ amount: newValue }).eq('id', id);
-    if (error) throw new Error("Failed to update expense");
-  }
-
-  revalidatePath('/manager/dashboard');
-  revalidatePath('/admin/analytics');
-  
-  return { success: true };
-}
-
-

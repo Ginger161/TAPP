@@ -232,6 +232,39 @@ export async function getAdminStationDashboardData(stationId: string, timeframe:
 
   const expenses = [...(pendingExpenses || []), ...(recentExpenses || [])].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
+  // --- YESTERDAY'S SUMMARY ---
+  const yesterdayDate = new Date();
+  yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+  const yesterdayStr = yesterdayDate.toISOString().split('T')[0];
+
+  const { data: yesterdaySales } = await supabase
+    .from('sales_transactions')
+    .select('selling_price')
+    .eq('station_id', stationId)
+    .eq('date', yesterdayStr);
+
+  const { data: yesterdayExpensesData } = await supabase
+    .from('expenses')
+    .select('id, expense_type, amount')
+    .eq('station_id', stationId)
+    .eq('date', yesterdayStr)
+    .eq('status', 'approved');
+
+  const yRevenue = (yesterdaySales || []).reduce((sum, s) => sum + Number(s.selling_price || 0), 0);
+  const yExpensesList = (yesterdayExpensesData || []).map(e => ({
+    id: e.id,
+    type: e.expense_type,
+    amount: Number(e.amount)
+  }));
+  const yTotalExpenses = yExpensesList.reduce((sum, e) => sum + e.amount, 0);
+
+  const yesterdaysSummary = {
+    revenue: yRevenue,
+    expenses: yExpensesList,
+    totalExpenses: yTotalExpenses,
+    expectedRemittance: yRevenue - yTotalExpenses
+  };
+
   return {
     stationName: station?.name || 'Unknown Station',
     productStatus,
@@ -243,7 +276,8 @@ export async function getAdminStationDashboardData(stationId: string, timeframe:
     salesTrend,
     sales: formattedSales,
     expenses: expenses || [],
-    financialOverview: { revenue, cogs, approvedExpenses, netProfit }
+    financialOverview: { revenue, cogs, approvedExpenses, netProfit },
+    yesterdaysSummary
   };
 }
 

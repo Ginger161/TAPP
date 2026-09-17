@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { acceptSupply, rejectSupply } from './actions'
-import { CheckCircle, XCircle, Clock, PackageCheck } from 'lucide-react'
+import { acceptSupply, rejectSupply, submitStockTransfer } from './actions'
+import { CheckCircle, XCircle, Clock, PackageCheck, ArrowRightLeft } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { catchNetworkError } from '@/utils/network'
 
@@ -18,10 +18,12 @@ type SupplyTransaction = {
 
 export default function SupplyListClient({ 
   pendingTransactions,
-  acceptedTransactions
+  acceptedTransactions,
+  products
 }: { 
   pendingTransactions: SupplyTransaction[]
   acceptedTransactions: SupplyTransaction[]
+  products: { id: string, name: string }[]
 }) {
   const [activeTab, setActiveTab] = useState<'pending' | 'received'>('pending')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -30,6 +32,16 @@ export default function SupplyListClient({
   // Modal state
   const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false)
   const [selectedTx, setSelectedTx] = useState<SupplyTransaction | null>(null)
+
+  // Transfer Out Modal State
+  const [isTransferModalOpen, setIsTransferModalOpen] = useState(false)
+  const [transferData, setTransferData] = useState({
+    productId: products.length > 0 ? products[0].id : '',
+    volume: '',
+    destination: '',
+    managerInCharge: '',
+    comment: ''
+  })
 
   const handleOpenAcceptModal = (tx: SupplyTransaction) => {
     setSelectedTx(tx)
@@ -79,32 +91,77 @@ export default function SupplyListClient({
     }
   }
 
+  const handleTransferSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+
+    const volumeNum = parseFloat(transferData.volume)
+    if (isNaN(volumeNum) || volumeNum <= 0) {
+      toast.error('Please enter a valid volume greater than 0.')
+      setIsSubmitting(false)
+      return
+    }
+
+    const result = await catchNetworkError(submitStockTransfer(
+      transferData.productId,
+      volumeNum,
+      transferData.destination,
+      transferData.managerInCharge,
+      transferData.comment
+    ))
+
+    setIsSubmitting(false)
+
+    if (result && result.error) {
+      toast.error(result.error)
+    } else {
+      toast.success('Stock transfer logged successfully.')
+      setIsTransferModalOpen(false)
+      setTransferData({
+        productId: products.length > 0 ? products[0].id : '',
+        volume: '',
+        destination: '',
+        managerInCharge: '',
+        comment: ''
+      })
+    }
+  }
+
   const transactions = activeTab === 'pending' ? pendingTransactions : acceptedTransactions
 
   return (
     <>
-      <div className="flex space-x-1 border-b border-gray-200 dark:border-gray-800 mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div className="flex space-x-1 border-b border-gray-200 dark:border-gray-800">
+          <button
+            onClick={() => setActiveTab('pending')}
+            className={`flex items-center gap-2 py-3 px-4 font-medium text-sm transition-colors border-b-2 ${
+              activeTab === 'pending' 
+                ? 'border-tycoon-navy text-tycoon-navy' 
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <Clock className="w-4 h-4" />
+            Pending Deliveries ({pendingTransactions.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('received')}
+            className={`flex items-center gap-2 py-3 px-4 font-medium text-sm transition-colors border-b-2 ${
+              activeTab === 'received' 
+                ? 'border-tycoon-navy text-tycoon-navy' 
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <PackageCheck className="w-4 h-4" />
+            Received History
+          </button>
+        </div>
         <button
-          onClick={() => setActiveTab('pending')}
-          className={`flex items-center gap-2 py-3 px-4 font-medium text-sm transition-colors border-b-2 ${
-            activeTab === 'pending' 
-              ? 'border-tycoon-navy text-tycoon-navy' 
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-          }`}
+          onClick={() => setIsTransferModalOpen(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-tycoon-navy hover:bg-tycoon-navy/90 text-white rounded-lg font-medium transition-colors text-sm"
         >
-          <Clock className="w-4 h-4" />
-          Pending Deliveries ({pendingTransactions.length})
-        </button>
-        <button
-          onClick={() => setActiveTab('received')}
-          className={`flex items-center gap-2 py-3 px-4 font-medium text-sm transition-colors border-b-2 ${
-            activeTab === 'received' 
-              ? 'border-tycoon-navy text-tycoon-navy' 
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-          }`}
-        >
-          <PackageCheck className="w-4 h-4" />
-          Received History
+          <ArrowRightLeft className="w-4 h-4" />
+          Transfer Out Stock
         </button>
       </div>
 
@@ -210,6 +267,131 @@ export default function SupplyListClient({
           </div>
         </div>
       )}
+
+      <TransferOutModal 
+        isOpen={isTransferModalOpen}
+        onClose={() => setIsTransferModalOpen(false)}
+        products={products}
+        transferData={transferData}
+        setTransferData={setTransferData}
+        onSubmit={handleTransferSubmit}
+        isSubmitting={isSubmitting}
+      />
+
     </>
+  )
+}
+
+function TransferOutModal({
+  isOpen,
+  onClose,
+  products,
+  transferData,
+  setTransferData,
+  onSubmit,
+  isSubmitting
+}: {
+  isOpen: boolean
+  onClose: () => void
+  products: { id: string, name: string }[]
+  transferData: any
+  setTransferData: (data: any) => void
+  onSubmit: (e: React.FormEvent) => void
+  isSubmitting: boolean
+}) {
+  if (!isOpen) return null
+
+  return (
+    <div className="fixed inset-0 z-[3000] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+      <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800 w-full max-w-md overflow-hidden">
+        <div className="p-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-800/50">
+          <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+            <ArrowRightLeft className="w-5 h-5 text-tycoon-navy" />
+            Transfer Out Stock
+          </h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+            <XCircle className="w-5 h-5" />
+          </button>
+        </div>
+        
+        <form onSubmit={onSubmit} className="p-6 space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Product</label>
+            <select
+              required
+              value={transferData.productId}
+              onChange={(e) => setTransferData({...transferData, productId: e.target.value})}
+              className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-tycoon-navy"
+            >
+              {products.map(p => (
+                <option key={p.id} value={p.id}>{p.name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Volume (Liters)</label>
+            <input
+              type="number"
+              required
+              min="0.1"
+              step="any"
+              value={transferData.volume}
+              onChange={(e) => setTransferData({...transferData, volume: e.target.value})}
+              className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-tycoon-navy"
+              placeholder="e.g. 5000"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Destination Station</label>
+            <input
+              type="text"
+              required
+              value={transferData.destination}
+              onChange={(e) => setTransferData({...transferData, destination: e.target.value})}
+              className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-tycoon-navy"
+              placeholder="e.g. Main Branch"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Manager in Charge</label>
+            <input
+              type="text"
+              required
+              value={transferData.managerInCharge}
+              onChange={(e) => setTransferData({...transferData, managerInCharge: e.target.value})}
+              className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-tycoon-navy"
+              placeholder="Name of Manager"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Comments (Optional)</label>
+            <input
+              type="text"
+              value={transferData.comment}
+              onChange={(e) => setTransferData({...transferData, comment: e.target.value})}
+              className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-tycoon-navy"
+              placeholder="Any additional details"
+            />
+          </div>
+
+          <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-800 mt-6">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="px-6 py-2 bg-tycoon-navy hover:bg-tycoon-navy/90 text-white font-medium rounded-xl transition-all disabled:opacity-50"
+            >
+              {isSubmitting ? 'Submitting...' : 'Log Transfer'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   )
 }

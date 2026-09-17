@@ -94,7 +94,7 @@ export default function ViewerStationDashboardClient({
                 key={prod.id} 
                 className={`p-4 rounded-lg shadow-sm border-l-4 bg-white flex justify-between items-center ${
                   prod.status === 'Red' ? 'border-alert-red' : 
-                  prod.status === 'Yellow' ? 'border-yellow-400' : 'border-green-500'
+                  prod.status === 'Yellow' ? 'border-transparent' : 'border-green-500'
                 }`}
               >
                 <div>
@@ -105,7 +105,6 @@ export default function ViewerStationDashboardClient({
                 </div>
                 <div className="text-right">
                   <div className="font-bold text-xl">{prod.stock.toLocaleString()} L</div>
-                  <div className="mt-1"><UrgencyBadge status={prod.status} /></div>
                 </div>
               </div>
             ))}

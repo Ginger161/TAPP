@@ -346,3 +346,29 @@ CREATE POLICY "pnl_snapshots_select" ON pnl_snapshots FOR SELECT TO authenticate
     is_admin() OR is_viewer() OR (is_manager() AND station_id IN (SELECT current_user_assigned_stations()))
 );
 CREATE POLICY "pnl_snapshots_all_admin" ON pnl_snapshots FOR ALL TO authenticated USING (is_admin());
+
+-- Phase 2: EOD Consolidation
+
+-- 1. Add meter readings to sales_transactions
+ALTER TABLE sales_transactions ADD COLUMN IF NOT EXISTS start_meter numeric;
+ALTER TABLE sales_transactions ADD COLUMN IF NOT EXISTS close_meter numeric;
+
+-- 2. Create daily_dips table
+CREATE TABLE IF NOT EXISTS daily_dips (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  station_id uuid REFERENCES stations(id) ON DELETE CASCADE,
+  product_id uuid REFERENCES products(id) ON DELETE CASCADE,
+  dip_volume numeric NOT NULL,
+  date date NOT NULL,
+  submitted_by_id uuid REFERENCES users(id) ON DELETE SET NULL,
+  created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- RLS policies for daily_dips
+ALTER TABLE daily_dips ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Enable read access for all users" ON daily_dips
+  FOR SELECT USING (true);
+
+CREATE POLICY "Enable insert for authenticated users only" ON daily_dips
+  FOR INSERT WITH CHECK (auth.uid() = submitted_by_id);

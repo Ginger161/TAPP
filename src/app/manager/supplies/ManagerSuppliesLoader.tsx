@@ -65,6 +65,9 @@ export default async function ManagerSuppliesLoader() {
     }
   }
 
+  const { data: productsData } = await supabase.from('products').select('id, name')
+  const products = productsData || []
+
   return (
     <div className="p-4 md:p-8">
       <div className="max-w-5xl mx-auto space-y-8">
@@ -81,6 +84,7 @@ export default async function ManagerSuppliesLoader() {
         <SupplyListClient 
           pendingTransactions={pendingTransactions} 
           acceptedTransactions={acceptedTransactions} 
+          products={products}
         />
       </div>
     </div>

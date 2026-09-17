@@ -1,10 +1,10 @@
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
-import SubmitClient from './SubmitClient'
+import EODClient from './EODClient'
 import { FileEdit } from 'lucide-react'
 import { Suspense } from 'react'
 
-export default async function ManagerSubmitPage() {
+export default async function ManagerEODPage() {
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
@@ -27,14 +27,14 @@ export default async function ManagerSubmitPage() {
       <div className="max-w-2xl mx-auto mb-8">
         <h1 className="text-2xl font-bold text-tycoon-charcoal flex items-center gap-3">
           <FileEdit className="w-6 h-6 text-red-600" />
-          Submit Daily Records
+          End of Day (EOD) Log
         </h1>
         <p className="text-gray-500 text-sm mt-1">
-          Enter your daily sales and any station expenses.
+          Submit your daily sales, physical tank dips, and expenses in one consolidated report.
         </p>
       </div>
       <Suspense fallback={<div className="text-center p-4">Loading form...</div>}>
-        <SubmitClient products={products || []} />
+        <EODClient products={products || []} />
       </Suspense>
     </div>
   )

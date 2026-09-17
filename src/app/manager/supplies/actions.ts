@@ -117,3 +117,34 @@ export async function rejectSupply(transactionId: string) {
   revalidatePath('/admin', 'layout')
   return { success: true }
 }
+
+export async function submitStockTransfer(
+  productId: string,
+  volume: number,
+  destination: string,
+  managerInCharge: string,
+  comment: string
+) {
+  const supabase = await createClient()
+  const { stationId } = await getManagerContext(supabase)
+
+  const { error } = await supabase.from('stock_transfers').insert({
+    source_station_id: stationId,
+    product_id: productId,
+    volume,
+    destination,
+    manager_in_charge: managerInCharge,
+    comment
+  })
+
+  if (error) {
+    console.error('Error logging stock transfer:', error)
+    return { error: error.message }
+  }
+
+  // Revalidate to update stock values
+  revalidatePath('/manager', 'layout')
+  revalidatePath('/admin', 'layout')
+
+  return { success: true }
+}
