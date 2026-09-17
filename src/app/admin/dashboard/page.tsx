@@ -341,6 +341,15 @@ export default function AdminDashboard() {
                     </div>
                   </div>
 
+                  {!data.isViewer && (
+                    <button 
+                      onClick={() => setIsSupplyModalOpen(true)} 
+                      className="w-full bg-tycoon-red hover:bg-red-800 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-sm active:scale-95"
+                    >
+                      Initiate Supply
+                    </button>
+                  )}
+
                   <div>
                     <div className="flex justify-between items-center mb-3">
                       <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Sales Trend</h4>
