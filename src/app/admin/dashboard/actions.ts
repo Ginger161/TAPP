@@ -64,9 +64,7 @@ export async function getAdminDashboardData() {
     { data: sales7Days },
     { data: configData },
     { data: assignments },
-    { data: unresolvedAnomalies },
-    { data: recentSalesData },
-    { data: recentExpensesData }
+    { data: unresolvedAnomalies }
   ] = await Promise.all([
     supabase.auth.getUser(),
     supabase.from('sales_transactions').select('quantity_sold, selling_price').eq('date', today),
@@ -77,9 +75,7 @@ export async function getAdminDashboardData() {
     supabase.from('sales_transactions').select('station_id, product_id, quantity_sold').gte('date', dateString),
     supabase.from('urgency_config').select('*').limit(1).single(),
     supabase.from('station_assignments').select('station_id, user_id'),
-    supabase.from('inventory_reconciliations').select('id, theoretical_volume, actual_dip_volume, variance, created_at, stations(name), products(name)').eq('is_flagged', true).eq('admin_resolved', false),
-    supabase.from('sales_transactions').select('id, quantity_sold, selling_price, created_at, products(name), stations(name)').gte('created_at', fortyEightHoursAgoStr).order('created_at', { ascending: false }).limit(50),
-    supabase.from('expenses').select('id, expense_type, amount, created_at, stations(name)').gte('created_at', fortyEightHoursAgoStr).order('created_at', { ascending: false }).limit(50)
+    supabase.from('inventory_reconciliations').select('id, theoretical_volume, actual_dip_volume, variance, created_at, stations(name), products(name)').eq('is_flagged', true).eq('admin_resolved', false)
   ]);
 
   let isViewer = false;
@@ -196,31 +192,6 @@ export async function getAdminDashboardData() {
     date: a.created_at.split('T')[0]
   }));
 
-  const recentLogs: RecentLog[] = [];
-  recentSalesData?.forEach((sale: any) => {
-    recentLogs.push({
-      id: sale.id,
-      type: 'sale',
-      stationName: sale.stations?.name || 'Unknown',
-      detail: sale.products?.name || 'Fuel',
-      amount: `${Number(sale.quantity_sold).toLocaleString()} L`,
-      timestamp: sale.created_at
-    });
-  });
-
-  recentExpensesData?.forEach((exp: any) => {
-    recentLogs.push({
-      id: exp.id,
-      type: 'expense',
-      stationName: exp.stations?.name || 'Unknown',
-      detail: exp.expense_type,
-      amount: `₦${Number(exp.amount).toLocaleString()}`,
-      timestamp: exp.created_at
-    });
-  });
-
-  recentLogs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-
   return {
     kpi: {
       volume: totalVolumeSoldToday,
@@ -230,8 +201,7 @@ export async function getAdminDashboardData() {
     mapStations,
     isViewer,
     anomalies,
-    pendingSuppliesList,
-    recentLogs
+    pendingSuppliesList
   };
 }
 
@@ -243,10 +213,16 @@ export async function getStationDeepDive(stationId: string) {
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
   const dateString = sevenDaysAgo.toISOString().split('T')[0];
 
+  const fortyEightHoursAgo = new Date();
+  fortyEightHoursAgo.setHours(fortyEightHoursAgo.getHours() - 48);
+  const fortyEightHoursAgoStr = fortyEightHoursAgo.toISOString();
+
   const [
     { data: sales7Days },
     { data: stockData },
-    { data: products }
+    { data: products },
+    { data: recentSalesData },
+    { data: recentExpensesData }
   ] = await Promise.all([
     supabase
       .from('sales_transactions')
@@ -258,7 +234,9 @@ export async function getStationDeepDive(stationId: string) {
       .from('stock_ledger')
       .select('product_id, quantity')
       .eq('station_id', stationId),
-    supabase.from('products').select('id, name')
+    supabase.from('products').select('id, name'),
+    supabase.from('sales_transactions').select('id, quantity_sold, selling_price, created_at, products(name), stations(name)').eq('station_id', stationId).gte('created_at', fortyEightHoursAgoStr).order('created_at', { ascending: false }).limit(50),
+    supabase.from('expenses').select('id, expense_type, amount, created_at, stations(name)').eq('station_id', stationId).gte('created_at', fortyEightHoursAgoStr).order('created_at', { ascending: false }).limit(50)
   ]);
 
   const salesTrendMap: Record<string, number> = {};
@@ -285,7 +263,32 @@ export async function getStationDeepDive(stationId: string) {
     quantity: stockData?.find(s => s.product_id === p.id)?.quantity || 0
   })) || [];
 
-  return { salesTrend, stockList };
+  const recentLogs: RecentLog[] = [];
+  recentSalesData?.forEach((sale: any) => {
+    recentLogs.push({
+      id: sale.id,
+      type: 'sale',
+      stationName: sale.stations?.name || 'Unknown',
+      detail: sale.products?.name || 'Fuel',
+      amount: `${Number(sale.quantity_sold).toLocaleString()} L`,
+      timestamp: sale.created_at
+    });
+  });
+
+  recentExpensesData?.forEach((exp: any) => {
+    recentLogs.push({
+      id: exp.id,
+      type: 'expense',
+      stationName: exp.stations?.name || 'Unknown',
+      detail: exp.expense_type,
+      amount: `₦${Number(exp.amount).toLocaleString()}`,
+      timestamp: exp.created_at
+    });
+  });
+
+  recentLogs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
+  return { salesTrend, stockList, recentLogs };
 }
 
 export type Timeframe = '7D' | '30D' | '6M' | '1Y';
