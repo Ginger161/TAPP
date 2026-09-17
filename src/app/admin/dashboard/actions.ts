@@ -4,6 +4,7 @@ import { createClient } from '@/utils/supabase/server';
 import { determineUrgency } from '@/utils/urgency';
 import { createNotification } from '@/utils/notifications';
 import { revalidatePath } from 'next/cache';
+import { createAdminClient } from '@/utils/supabase/admin';
 export type MapStation = {
   id: string;
   name: string;
@@ -63,7 +64,7 @@ export async function getAdminDashboardData() {
     supabase.from('sales_transactions').select('station_id, product_id, quantity_sold').gte('date', dateString),
     supabase.from('urgency_config').select('*').limit(1).single(),
     supabase.from('expenses').select('station_id').eq('status', 'pending'),
-    supabase.from('station_assignments').select('station_id, users(email)'),
+    supabase.from('station_assignments').select('station_id, user_id'),
     supabase.from('inventory_reconciliations').select('id, theoretical_volume, actual_dip_volume, variance, created_at, stations(name), products(name)').eq('is_flagged', true).eq('admin_resolved', false)
   ]);
 
@@ -71,6 +72,15 @@ export async function getAdminDashboardData() {
   if (user) {
     const { data: userRecord } = await supabase.from('users').select('role').eq('id', user.id).single();
     isViewer = userRecord?.role === 'viewer';
+  }
+
+  const adminClient = createAdminClient();
+  const { data: authData } = await adminClient.auth.admin.listUsers();
+  const emailMap: Record<string, string> = {};
+  if (authData?.users) {
+    authData.users.forEach(u => {
+      emailMap[u.id] = u.email || '';
+    });
   }
 
   // 3. Process KPIs
@@ -121,9 +131,12 @@ export async function getAdminDashboardData() {
 
       const daysRemaining = stock <= 0 ? 0 : (avgDailySales > 0 ? stock / avgDailySales : Infinity);
       
+      const MAX_CAPACITY = 45000;
+      const capacityPercent = (stock / MAX_CAPACITY) * 100;
+      
       let status: 'Green' | 'Yellow' | 'Red' = 'Green';
-      if (stock <= 5000) status = 'Red';
-      else if (stock <= 15000) status = 'Yellow';
+      if (capacityPercent < 10) status = 'Red';
+      else if (capacityPercent <= 30) status = 'Yellow';
       else status = 'Green';
 
       stationProducts.push({
@@ -139,8 +152,7 @@ export async function getAdminDashboardData() {
     });
 
     const assignment = assignments?.find(a => a.station_id === station.id);
-    // @ts-expect-error join mapping
-    const managerEmail = assignment?.users?.email || null;
+    const managerEmail = assignment ? emailMap[assignment.user_id] : null;
     const managerName = managerEmail ? managerEmail.split('@')[0] : null;
 
     mapStations.push({

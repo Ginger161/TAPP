@@ -117,9 +117,12 @@ export async function getViewerDashboardData() {
 
       const daysRemaining = stock === 0 ? 0 : (avgDailySales > 0 ? stock / avgDailySales : Infinity);
       
+      const MAX_CAPACITY = 45000;
+      const capacityPercent = (stock / MAX_CAPACITY) * 100;
+
       let status: 'Green' | 'Yellow' | 'Red' = 'Green';
-      if (stock <= 5000) status = 'Red';
-      else if (stock <= 15000) status = 'Yellow';
+      if (capacityPercent < 10) status = 'Red';
+      else if (capacityPercent <= 30) status = 'Yellow';
       else status = 'Green';
 
       stationProducts.push({

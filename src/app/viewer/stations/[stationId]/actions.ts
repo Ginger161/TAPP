@@ -84,9 +84,13 @@ export async function getViewerStationDashboardData(stationId: string) {
       daysRemaining = stock / averageDailySales;
     }
 
+    const MAX_CAPACITY = 45000;
+    const capacityPercent = (stock / MAX_CAPACITY) * 100;
+
     let status: 'Red' | 'Yellow' | 'Green' = 'Green';
-    if (daysRemaining <= thresholds.red_threshold) status = 'Red';
-    else if (daysRemaining <= thresholds.yellow_threshold) status = 'Yellow';
+    if (capacityPercent < 10) status = 'Red';
+    else if (capacityPercent <= 30) status = 'Yellow';
+    else status = 'Green';
 
     productStatus.push({
       id: product.id,

@@ -97,11 +97,11 @@ export default function ManagerDashboardClient({ initialData }: { initialData: M
                   <div>
                     <h3 className="font-bold text-gray-800 text-lg">{prod.name}</h3>
                     <p className="text-sm mt-1 text-gray-500 flex items-center">
-                      <span className={`w-2 h-2 rounded-full mr-1.5 ${
-                        prod.status === 'Red' ? 'bg-red-500' : 
-                        prod.status === 'Yellow' ? 'bg-yellow-500' : 'bg-green-500'
-                      }`}></span>
-                      {prod.stock < 0 ? 'Stock Deficit' : prod.stock === 0 ? 'Depleted' : `Est. ${prod.daysRemaining === Infinity ? '∞' : prod.daysRemaining.toFixed(1)} Days Left`}
+                      {prod.status === 'Red' ? '🔴 Depleted' : 
+                       prod.status === 'Yellow' ? '🟡 Low Stock' : '🟢 Healthy'}
+                      <span className="ml-2 text-xs opacity-75">
+                        ({prod.stock <= 0 ? '0' : prod.daysRemaining === Infinity ? '∞' : prod.daysRemaining.toFixed(1)} Days Left)
+                      </span>
                     </p>
                   </div>
                 </div>
