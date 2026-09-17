@@ -6,6 +6,7 @@ import { LogOut, BarChart3, LayoutDashboard } from 'lucide-react';
 import { logout } from '@/app/login/actions';
 import Image from 'next/image';
 import NotificationBell from './NotificationBell';
+import DynamicBackButton from './DynamicBackButton';
 
 export default function ViewerHeader() {
   const pathname = usePathname();
@@ -13,10 +14,13 @@ export default function ViewerHeader() {
   return (
     <div className="bg-white text-slate-900 p-4 shadow-md sticky top-0 z-[60] flex justify-between items-center shrink-0">
       <div className="flex items-center gap-6">
-        <Link href="/viewer/dashboard" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-          <Image src="/logo.png" alt="Tycoon Logo" width={300} height={80} className="h-20 w-auto object-contain drop-shadow-md" priority />
-          <span className="bg-slate-200 text-slate-700 text-xs px-2 py-0.5 rounded-full ml-1 align-middle">Viewer</span>
-        </Link>
+        <div className="flex items-center">
+          <DynamicBackButton />
+          <Link href="/viewer/dashboard" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <Image src="/logo.png" alt="Tycoon Logo" width={300} height={80} className="h-20 w-auto object-contain drop-shadow-md" priority />
+            <span className="bg-slate-200 text-slate-700 text-xs px-2 py-0.5 rounded-full ml-1 align-middle">Viewer</span>
+          </Link>
+        </div>
         
         <nav className="hidden md:flex items-center gap-4 ml-6 border-l border-gray-600 pl-6">
           <Link 

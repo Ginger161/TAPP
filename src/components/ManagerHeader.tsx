@@ -7,19 +7,15 @@ import { logout } from '@/app/login/actions';
 import Image from 'next/image';
 
 import NotificationBell from './NotificationBell';
+import DynamicBackButton from './DynamicBackButton';
 
 export default function ManagerHeader({ stationName }: { stationName: string }) {
   const pathname = usePathname();
-  const isRoot = pathname === '/manager/dashboard';
 
   return (
     <div className="bg-white text-slate-900 p-4 shadow-md sticky top-0 z-50 flex justify-between items-center">
       <div className="flex items-center gap-3">
-        {!isRoot && (
-          <Link href="/manager/dashboard" className="text-slate-500 hover:text-slate-900 p-1 -ml-1">
-            <ChevronLeft size={24} />
-          </Link>
-        )}
+        <DynamicBackButton />
         <div className="flex items-center gap-3">
           <Image src="/logo.png" alt="Tycoon Logo" width={300} height={80} className="h-20 w-auto object-contain drop-shadow-md" priority />
           <div>
