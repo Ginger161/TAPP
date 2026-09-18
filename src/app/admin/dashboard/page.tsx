@@ -28,6 +28,7 @@ type DashboardData = {
     detail: string;
     amount: string;
     timestamp: string;
+    capturedDate?: string;
   }[];
 };
 
@@ -41,6 +42,7 @@ type DeepDiveData = {
     detail: string;
     amount: string;
     timestamp: string;
+    capturedDate?: string;
   }[];
 };
 
@@ -397,7 +399,7 @@ export default function AdminDashboard() {
                                 </div>
                                 <div className="flex flex-col min-w-0">
                                   <span className="font-bold text-gray-900 truncate">{log.type === 'sale' ? `Sold: ${log.detail}` : `Expense: ${log.detail}`}</span>
-                                  <span className="text-xs text-gray-500 truncate">{new Intl.DateTimeFormat('en-US', { timeStyle: 'short', dateStyle: 'medium', timeZone: 'Africa/Lagos' }).format(new Date(log.timestamp))}</span>
+                                  <span className="text-xs text-gray-500 truncate">Captured: {log.capturedDate ? new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeZone: 'Africa/Lagos' }).format(new Date(log.capturedDate)) : 'N/A'} | Posted: {new Intl.DateTimeFormat('en-US', { timeStyle: 'short', dateStyle: 'medium', timeZone: 'Africa/Lagos' }).format(new Date(log.timestamp))}</span>
                                 </div>
                               </div>
                               <div className="flex flex-col items-end shrink-0">

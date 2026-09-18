@@ -28,6 +28,7 @@ export type RecentLog = {
   detail: string;
   amount: string;
   timestamp: string;
+  capturedDate?: string;
 };
 
 export type Anomaly = {
@@ -235,8 +236,8 @@ export async function getStationDeepDive(stationId: string) {
       .select('product_id, quantity')
       .eq('station_id', stationId),
     supabase.from('products').select('id, name'),
-    supabase.from('sales_transactions').select('id, quantity_sold, selling_price, created_at, products(name), stations(name)').eq('station_id', stationId).gte('created_at', fortyEightHoursAgoStr).order('created_at', { ascending: false }).limit(50),
-    supabase.from('expenses').select('id, expense_type, amount, created_at, stations(name)').eq('station_id', stationId).gte('created_at', fortyEightHoursAgoStr).order('created_at', { ascending: false }).limit(50)
+    supabase.from('sales_transactions').select('id, quantity_sold, selling_price, created_at, date, products(name), stations(name)').eq('station_id', stationId).gte('created_at', fortyEightHoursAgoStr).order('created_at', { ascending: false }).limit(50),
+    supabase.from('expenses').select('id, expense_type, amount, created_at, date, stations(name)').eq('station_id', stationId).gte('created_at', fortyEightHoursAgoStr).order('created_at', { ascending: false }).limit(50)
   ]);
 
   const salesTrendMap: Record<string, number> = {};
@@ -271,7 +272,8 @@ export async function getStationDeepDive(stationId: string) {
       stationName: sale.stations?.name || 'Unknown',
       detail: sale.products?.name || 'Fuel',
       amount: `${Number(sale.quantity_sold).toLocaleString()} L`,
-      timestamp: sale.created_at
+      timestamp: sale.created_at,
+      capturedDate: sale.date
     });
   });
 
@@ -282,7 +284,8 @@ export async function getStationDeepDive(stationId: string) {
       stationName: exp.stations?.name || 'Unknown',
       detail: exp.expense_type,
       amount: `₦${Number(exp.amount).toLocaleString()}`,
-      timestamp: exp.created_at
+      timestamp: exp.created_at,
+      capturedDate: exp.date
     });
   });
 

@@ -30,6 +30,8 @@ export type ManagerData = {
     is_edited?: boolean;
     edited_by?: string;
     original_value?: number;
+    date: string;
+    created_at: string;
   }[];
   expenses: {
     id: string;
@@ -40,6 +42,8 @@ export type ManagerData = {
     edited_by?: string;
     original_value?: number;
     status?: 'pending' | 'approved' | 'rejected';
+    date: string;
+    created_at: string;
   }[];
   financialOverview: {
     revenue: number;
@@ -369,7 +373,7 @@ export default function AdminStationDashboardClient({
                     <div key={sale.id} className="p-4 flex justify-between items-center hover:bg-gray-50 transition-colors">
                       <div>
                         <span className="font-medium text-sm text-gray-800 block">{sale.product_name}</span>
-                        <span className="text-xs text-gray-500 block">Logged Entry</span>
+                        <span className="text-xs text-gray-500 block">Captured: {sale.date ? new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeZone: 'Africa/Lagos' }).format(new Date(sale.date)) : 'N/A'} | Posted: {sale.created_at ? new Intl.DateTimeFormat('en-US', { timeStyle: 'short', dateStyle: 'medium', timeZone: 'Africa/Lagos' }).format(new Date(sale.created_at)) : 'N/A'}</span>
                         {sale.is_edited && (
                           <div className="flex items-center gap-1 mt-0.5">
                             <span className="text-xs text-slate-500">Edited by {sale.edited_by} (admin)</span>
@@ -416,6 +420,7 @@ export default function AdminStationDashboardClient({
 
                         </div>
                         <span className="text-xs text-gray-500 truncate max-w-[150px] md:max-w-[200px] block mt-0.5">{exp.description || 'No description'}</span>
+                        <span className="text-xs text-gray-500 block mt-0.5">Captured: {exp.date ? new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeZone: 'Africa/Lagos' }).format(new Date(exp.date)) : 'N/A'} | Posted: {exp.created_at ? new Intl.DateTimeFormat('en-US', { timeStyle: 'short', dateStyle: 'medium', timeZone: 'Africa/Lagos' }).format(new Date(exp.created_at)) : 'N/A'}</span>
                         {exp.is_edited && (
                           <div className="flex items-center gap-1 mt-0.5">
                             <span className="text-xs text-slate-500">Edited by {exp.edited_by} (admin)</span>

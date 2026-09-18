@@ -217,12 +217,14 @@ export async function getAdminStationDashboardData(stationId: string, timeframe:
     product_name: (sale.products as any)?.name,
     is_edited: sale.is_edited,
     edited_by: sale.edited_by,
-    original_value: sale.original_value
+    original_value: sale.original_value,
+    date: sale.date,
+    created_at: sale.created_at
   }));
 
   const { data: expenses } = await supabase
     .from('expenses')
-    .select('id, expense_type, amount, description, is_edited, edited_by, original_value, status, created_at')
+    .select('id, expense_type, amount, description, is_edited, edited_by, original_value, status, created_at, date')
     .eq('station_id', stationId)
     .order('created_at', { ascending: false })
     .limit(50);
