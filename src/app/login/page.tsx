@@ -9,7 +9,7 @@ export default async function LoginPage({
   const error = (await searchParams).error
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-500 to-red-800 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-500 via-red-600 to-red-900 p-4">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-white/10 blur-[100px] mix-blend-multiply" />
@@ -17,7 +17,7 @@ export default async function LoginPage({
       </div>
 
       <div className="w-full max-w-md relative z-10">
-        <div className="bg-white/20 backdrop-blur-lg border border-white/30 shadow-2xl rounded-2xl overflow-hidden">
+        <div className="bg-white/70 backdrop-blur-xl border border-white/50 shadow-2xl rounded-2xl overflow-hidden">
           <div className="p-8">
             <div className="flex justify-center mb-3">
               <Image 
@@ -33,7 +33,7 @@ export default async function LoginPage({
             <h1 className="text-2xl font-semibold text-center text-gray-900 mb-1">
               Tycoon Operations
             </h1>
-            <p className="text-center text-gray-700 mb-4 text-sm font-medium">
+            <p className="text-center text-gray-900 mb-4 text-sm font-medium">
               Sign in to TAPP to manage your station
             </p>
 
@@ -48,7 +48,7 @@ export default async function LoginPage({
                   type="email"
                   placeholder="name@tycoongroup.com"
                   required
-                  className="w-full px-4 py-2.5 rounded-xl border border-white/50 bg-white/40 text-gray-900 placeholder-gray-700 focus:bg-white/60 focus:ring-2 focus:ring-tycoon-red/20 focus:border-tycoon-red transition-colors outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl border border-white/60 bg-white/50 text-gray-900 placeholder-gray-500 focus:bg-white/80 focus:ring-2 focus:ring-tycoon-red/20 focus:border-tycoon-red transition-colors outline-none"
                 />
               </div>
 
@@ -62,7 +62,7 @@ export default async function LoginPage({
                   type="password"
                   required
                   placeholder="••••••••"
-                  className="w-full px-4 py-2.5 rounded-xl border border-white/50 bg-white/40 text-gray-900 placeholder-gray-700 focus:bg-white/60 focus:ring-2 focus:ring-tycoon-red/20 focus:border-tycoon-red transition-colors outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl border border-white/60 bg-white/50 text-gray-900 placeholder-gray-500 focus:bg-white/80 focus:ring-2 focus:ring-tycoon-red/20 focus:border-tycoon-red transition-colors outline-none"
                 />
               </div>
 
@@ -83,8 +83,8 @@ export default async function LoginPage({
               </button>
             </form>
           </div>
-          <div className="px-8 py-4 bg-white/30 border-t border-white/20 flex justify-center backdrop-blur-md">
-             <span className="text-xs text-gray-800 font-bold">Internal System • Tycoon Oil & Gas</span>
+          <div className="px-8 py-4 bg-white/40 border-t border-white/30 flex justify-center backdrop-blur-md">
+             <span className="text-xs text-gray-900 font-bold">Internal System • Tycoon Oil & Gas</span>
           </div>
         </div>
       </div>
