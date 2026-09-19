@@ -70,6 +70,17 @@ export default function ManagerDashboardClient({ initialData }: { initialData: M
       {/* Main Content Area */}
       <div className="px-4 sm:px-6 py-4 space-y-6 flex-1">
         
+        {/* Daily Operations Quick Actions */}
+        <section className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex justify-between items-center">
+          <div>
+            <h2 className="text-lg font-bold text-tycoon-charcoal">Daily Operations</h2>
+            <p className="text-sm text-gray-500">Submit your End of Day reports</p>
+          </div>
+          <Link href="/manager/dashboard/eod" className="bg-tycoon-navy text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-900 transition-colors shadow-sm">
+            Start EOD Submission
+          </Link>
+        </section>
+
         {/* Status Hero */}
         <section>
           <div className="flex justify-between items-center mb-3">

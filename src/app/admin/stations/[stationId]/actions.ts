@@ -262,6 +262,33 @@ export async function getAdminStationDashboardData(stationId: string, timeframe:
     expectedRemittance: yRevenue - yTotalExpenses
   };
 
+  const recentLogs: any[] = [];
+  ledgerSales?.forEach((sale: any) => {
+    recentLogs.push({
+      id: sale.id,
+      type: 'sale',
+      stationName: station?.name || 'Unknown',
+      detail: sale.products?.name || 'Fuel',
+      amount: `${Number(sale.quantity_sold).toLocaleString()} L @ ₦${Number(sale.selling_price).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}/L`,
+      timestamp: sale.created_at,
+      capturedDate: sale.date
+    });
+  });
+
+  expenses?.forEach((exp: any) => {
+    recentLogs.push({
+      id: exp.id,
+      type: 'expense',
+      stationName: station?.name || 'Unknown',
+      detail: exp.expense_type,
+      amount: `₦${Number(exp.amount).toLocaleString()}`,
+      timestamp: exp.created_at,
+      capturedDate: exp.date
+    });
+  });
+
+  recentLogs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
   return {
     stationName: station?.name || 'Unknown Station',
     productStatus,
@@ -273,6 +300,7 @@ export async function getAdminStationDashboardData(stationId: string, timeframe:
     salesTrend,
     sales: formattedSales,
     expenses: expenses || [],
+    recentLogs,
     financialOverview: { revenue, cogs, approvedExpenses, netProfit },
     yesterdaysSummary
   };

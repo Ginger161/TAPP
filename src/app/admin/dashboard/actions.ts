@@ -271,7 +271,7 @@ export async function getStationDeepDive(stationId: string) {
       type: 'sale',
       stationName: sale.stations?.name || 'Unknown',
       detail: sale.products?.name || 'Fuel',
-      amount: `${Number(sale.quantity_sold).toLocaleString()} L`,
+      amount: `${Number(sale.quantity_sold).toLocaleString()} L @ ₦${Number(sale.selling_price).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}/L`,
       timestamp: sale.created_at,
       capturedDate: sale.date
     });

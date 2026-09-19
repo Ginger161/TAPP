@@ -41,9 +41,13 @@ export default function SalesChart({ data }: { data: SalesData[] }) {
             tick={{ fontSize: 12, fill: '#6b7280' }} 
             axisLine={false} 
             tickLine={false} 
-            tickFormatter={(value: number) => Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(value)}
+            tickFormatter={(value: number) => {
+              const formatted = Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(value);
+              return `${formatted} L`;
+            }}
           />
           <Tooltip 
+            formatter={(value: number) => [`${value.toLocaleString()} L`, 'Volume']}
             cursor={{ fill: '#f3f4f6' }}
             contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
           />
