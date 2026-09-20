@@ -281,7 +281,7 @@ export async function submitDailyEOD(payload: EODSubmissionPayload) {
         date: payload.date,
         quantity_sold: sale.total_volume,
         selling_price: sale.average_price, // Store the weighted average price here
-        total_amount: revenue,
+        total_amount: sale.total_volume * sale.average_price,
         submitted_by_id: user.id,
         price_tiers: sale.price_tiers, // JSONB column from Phase 1
       }))
