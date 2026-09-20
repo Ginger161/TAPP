@@ -45,6 +45,8 @@ export type LegacyEODPayload = {
     amount: number;
     description: string;
   }[];
+  pos: number;
+  cash: number;
 };
 
 export async function submitLegacyEOD(payload: LegacyEODPayload) {
@@ -110,7 +112,7 @@ export async function submitLegacyEOD(payload: LegacyEODPayload) {
   // 2. Process Expenses
   let totalExpenses = 0;
   for (const expense of payload.expenses) {
-    if (expense.amount > 0) {
+    if (expense.amount >= 0) {
       const { error } = await supabase.from('expenses').insert({
         station_id: stationId,
         expense_type: expense.type,
@@ -131,15 +133,17 @@ export async function submitLegacyEOD(payload: LegacyEODPayload) {
   }
 
   // 3. Insert Daily Remittance
+  const balanceDue = totalGrossRevenue - totalExpenses - payload.pos - payload.cash;
+  
   const { error: remittanceError } = await supabase.from('daily_remittance').insert({
     station_id: stationId,
     date,
     manager_id: userId,
     gross_revenue: totalGrossRevenue,
     total_expenses: totalExpenses,
-    pos_to_account: 0,
-    cash_to_bank: 0,
-    balance_due: 0 // Cash fields skipped as requested
+    pos_to_account: payload.pos,
+    cash_to_bank: payload.cash,
+    balance_due: balanceDue
   });
 
   if (remittanceError) {

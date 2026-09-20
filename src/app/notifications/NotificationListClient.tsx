@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { CheckCircle2, Bell } from 'lucide-react'
+import { formatDateTimeToDDMMYYYY } from '@/utils/dateFormatter'
 import { markAllAsRead, markNotificationAsRead } from '@/app/actions/notificationActions'
 import { useRouter, usePathname } from 'next/navigation'
 
@@ -73,7 +74,7 @@ export default function NotificationListClient({
                   {notification.message}
                 </p>
                 <p className="text-xs text-gray-400 mt-2 font-medium">
-                  {new Date(notification.created_at).toLocaleString()}
+                  {formatDateTimeToDDMMYYYY(notification.created_at)}
                 </p>
               </div>
               {!notification.is_read && (

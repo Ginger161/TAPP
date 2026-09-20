@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar } from 'recharts';
+import { formatDateToDDMMYYYY } from '@/utils/dateFormatter';
 
 export type SalesData = {
   date: string;
@@ -24,15 +25,18 @@ export default function SalesChart({ data }: { data: SalesData[] }) {
               if (value.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/)) {
                 // e.g. 2026-09-13 14:00 -> 14:00
                 const date = new Date(value.replace(' ', 'T'));
-                return date.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true });
+                let hours = date.getHours();
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12;
+                return `${hours} ${ampm}`;
               }
               if (value.match(/^\d{4}-\d{2}-\d{2}$/)) {
-                const date = new Date(value);
-                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                return formatDateToDDMMYYYY(value).substring(0, 5); // DD/MM
               }
               if (value.match(/^\d{4}-\d{2}$/)) {
-                const date = new Date(value + '-01');
-                return date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+                const parts = value.split('-');
+                return `${parts[1]}/${parts[0]}`; // MM/YYYY
               }
               return value;
             }}

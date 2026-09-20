@@ -5,6 +5,9 @@ import { createSupply } from './actions'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import { catchNetworkError } from '@/utils/network'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+import { parseISOToDate, getLocalWATDateString } from '@/utils/dateFormatter'
 
 export default function NewSupplyFormClient({ 
   stations, 
@@ -14,6 +17,7 @@ export default function NewSupplyFormClient({
   products: { id: string, name: string }[] | null
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [supplyDate, setSupplyDate] = useState(getLocalWATDateString())
   const router = useRouter()
 
   async function handleSubmit(formData: FormData) {
@@ -71,8 +75,24 @@ export default function NewSupplyFormClient({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1.5" htmlFor="date">Date</label>
-        <input id="date" name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-blue-500" />
+        <label className="block text-sm font-medium mb-1.5" htmlFor="datePicker">Date</label>
+        <DatePicker
+          id="datePicker"
+          selected={parseISOToDate(supplyDate)}
+          onChange={(date: Date | null) => {
+            if (date) {
+              const year = date.getFullYear();
+              const month = String(date.getMonth() + 1).padStart(2, '0');
+              const day = String(date.getDate()).padStart(2, '0');
+              setSupplyDate(`${year}-${month}-${day}`);
+            }
+          }}
+          dateFormat="dd/MM/yyyy"
+          className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-blue-500"
+          maxDate={new Date()}
+          required
+        />
+        <input type="hidden" name="date" value={supplyDate} />
       </div>
 
       <button disabled={isSubmitting} type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition-colors mt-6 disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm">

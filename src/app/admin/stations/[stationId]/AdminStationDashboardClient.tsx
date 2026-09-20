@@ -5,6 +5,7 @@ import { getAdminStationDashboardData, adminEditTransaction, adminAcceptSupply }
 import UrgencyBadge from '@/components/UrgencyBadge';
 import SalesChart, { SalesData } from '@/components/SalesChart';
 import { Truck, Edit2, X, Check, HelpCircle, Fuel, TrendingUp, DollarSign, Wallet, Package } from 'lucide-react';
+import { formatDateTimeToDDMMYYYY, formatDateToDDMMYYYY } from '@/utils/dateFormatter';
 import toast from 'react-hot-toast';
 import { catchNetworkError } from '@/utils/network';
 
@@ -214,7 +215,7 @@ export default function AdminStationDashboardClient({
                       </div>
                       <div className="flex flex-col min-w-0">
                         <span className="font-bold text-gray-900 truncate">{log.type === 'sale' ? `Sold: ${log.detail}` : `Expense: ${log.detail}`}</span>
-                        <span className="text-xs text-gray-500 truncate">Captured: {log.capturedDate ? new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeZone: 'Africa/Lagos' }).format(new Date(log.capturedDate)) : 'N/A'} | Posted: {new Intl.DateTimeFormat('en-US', { timeStyle: 'short', dateStyle: 'medium', timeZone: 'Africa/Lagos' }).format(new Date(log.timestamp))}</span>
+                        <span className="text-xs text-gray-500 truncate">Captured: {log.capturedDate ? formatDateToDDMMYYYY(log.capturedDate) : 'N/A'} | Posted: {formatDateTimeToDDMMYYYY(log.timestamp)}</span>
                       </div>
                     </div>
                     <div className="flex flex-col items-end shrink-0">
@@ -415,7 +416,7 @@ export default function AdminStationDashboardClient({
                     <div key={sale.id} className="p-4 flex justify-between items-center hover:bg-gray-50 transition-colors">
                       <div>
                         <span className="font-medium text-sm text-gray-800 block">{sale.product_name}</span>
-                        <span className="text-xs text-gray-500 block">Captured: {sale.date ? new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeZone: 'Africa/Lagos' }).format(new Date(sale.date)) : 'N/A'} | Posted: {sale.created_at ? new Intl.DateTimeFormat('en-US', { timeStyle: 'short', dateStyle: 'medium', timeZone: 'Africa/Lagos' }).format(new Date(sale.created_at)) : 'N/A'}</span>
+                        <span className="text-xs text-gray-500 block">Captured: {sale.date ? formatDateToDDMMYYYY(sale.date) : 'N/A'} | Posted: {sale.created_at ? formatDateTimeToDDMMYYYY(sale.created_at) : 'N/A'}</span>
                         {sale.is_edited && (
                           <div className="flex items-center gap-1 mt-0.5">
                             <span className="text-xs text-slate-500">Edited by {sale.edited_by} (admin)</span>
@@ -462,7 +463,7 @@ export default function AdminStationDashboardClient({
 
                         </div>
                         <span className="text-xs text-gray-500 truncate max-w-[150px] md:max-w-[200px] block mt-0.5">{exp.description || 'No description'}</span>
-                        <span className="text-xs text-gray-500 block mt-0.5">Captured: {exp.date ? new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeZone: 'Africa/Lagos' }).format(new Date(exp.date)) : 'N/A'} | Posted: {exp.created_at ? new Intl.DateTimeFormat('en-US', { timeStyle: 'short', dateStyle: 'medium', timeZone: 'Africa/Lagos' }).format(new Date(exp.created_at)) : 'N/A'}</span>
+                        <span className="text-xs text-gray-500 block mt-0.5">Captured: {exp.date ? formatDateToDDMMYYYY(exp.date) : 'N/A'} | Posted: {exp.created_at ? formatDateTimeToDDMMYYYY(exp.created_at) : 'N/A'}</span>
                         {exp.is_edited && (
                           <div className="flex items-center gap-1 mt-0.5">
                             <span className="text-xs text-slate-500">Edited by {exp.edited_by} (admin)</span>

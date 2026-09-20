@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { MultiYearSalesData, getMultiYearSalesData, getFinancialMetrics, exportFinancialReport, FinancialMetrics, DateRange } from './actions';
 import { getAuditLogFeed, AuditLogEntry } from './auditActions';
+import { formatDateTimeToDDMMYYYY } from '@/utils/dateFormatter';
 import { Download } from 'lucide-react';
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line } from 'recharts';
 
@@ -145,12 +146,8 @@ export default function AnalyticsClient({
                           {log.amount}
                         </div>
                       )}
-                      <div className="text-xs text-gray-400">
-                        {new Intl.DateTimeFormat('en-US', {
-                          dateStyle: 'medium',
-                          timeStyle: 'short',
-                          timeZone: 'Africa/Lagos'
-                        }).format(new Date(log.timestamp))}
+                      <div className="text-xs text-gray-500 mt-1">
+                        {formatDateTimeToDDMMYYYY(log.timestamp)}
                       </div>
                     </div>
                   </div>

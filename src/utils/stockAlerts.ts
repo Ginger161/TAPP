@@ -1,5 +1,6 @@
 import { createAdminClient } from './supabase/admin'
 import { createNotification } from './notifications'
+import { formatDateTimeToDDMMYYYY } from './dateFormatter'
 
 export async function evaluateStockAndAlert(stationId: string, productId: string) {
   try {
@@ -83,7 +84,7 @@ export async function evaluateStockAndAlert(stationId: string, productId: string
     if (!shouldAlert) return;
 
     // 8. Dispatch In-App Notification
-    const timeStr = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+    const timeStr = formatDateTimeToDDMMYYYY(new Date());
     let messageText = '';
     let alertTitle = '';
 

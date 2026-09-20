@@ -6,6 +6,9 @@ import { submitLegacyEOD } from './actions';
 import toast from 'react-hot-toast';
 import { Plus, Trash2, Calendar, FileText, Droplet, Wallet, TrendingUp } from 'lucide-react';
 import { catchNetworkError } from '@/utils/network';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { parseISOToDate } from '@/utils/dateFormatter';
 
 export type Product = {
   id: string;
@@ -70,6 +73,9 @@ export default function EODClient({ products }: { products: Product[] }) {
     }))
   );
 
+  const [posAmount, setPosAmount] = useState('');
+  const [cashAmount, setCashAmount] = useState('');
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleBatchChange = (productId: string, batchIndex: number, field: keyof Batch, value: string) => {
@@ -121,6 +127,15 @@ export default function EODClient({ products }: { products: Product[] }) {
     e.preventDefault();
     setIsSubmitting(true);
 
+    for (const p of products) {
+      const pData = productData[p.id];
+      if (!pData.dipVolume || pData.dipVolume.trim() === '') {
+        toast.error(`Please enter the Closing Volume (Tank Dip) for ${p.name}.`);
+        setIsSubmitting(false);
+        return;
+      }
+    }
+
     const payloadProducts = products.map(p => {
       const pData = productData[p.id];
       const validBatches = pData.batches
@@ -134,29 +149,26 @@ export default function EODClient({ products }: { products: Product[] }) {
 
       return {
         productId: p.id,
-        dipVolume: pData.dipVolume ? Number(pData.dipVolume) : undefined,
+        dipVolume: Number(pData.dipVolume) || 0,
         batches: validBatches
       };
-    }).filter(p => p.batches.length > 0 || (p.dipVolume !== undefined && p.dipVolume >= 0));
+    });
 
-    const payloadExpenses = expenses
-      .filter(exp => exp.amount && Number(exp.amount) > 0)
-      .map(exp => ({
-        type: exp.type,
-        amount: Number(exp.amount),
-        description: exp.description
-      }));
+    const payloadExpenses = expenses.map(exp => ({
+      type: exp.type,
+      amount: Number(exp.amount) || 0,
+      description: exp.description
+    }));
 
-    if (payloadProducts.length === 0 && payloadExpenses.length === 0) {
-      toast.error('Please enter at least one sale, dip, or expense.');
-      setIsSubmitting(false);
-      return;
-    }
+    // No longer throwing error for completely empty payload because Tank Dips are mandatory, 
+    // so payloadProducts will always exist and have dipVolumes.
 
     const payload = {
       date: reportDate,
       products: payloadProducts,
-      expenses: payloadExpenses
+      expenses: payloadExpenses,
+      pos: Number(posAmount) || 0,
+      cash: Number(cashAmount) || 0
     };
 
     const result = await catchNetworkError(submitLegacyEOD(payload));
@@ -169,6 +181,19 @@ export default function EODClient({ products }: { products: Product[] }) {
       toast.error(result.error);
     }
   };
+
+  // Compute running totals for UI
+  const totalSales = products.reduce((acc, p) => {
+    const pData = productData[p.id];
+    const pTotal = pData.batches.reduce((bAcc, b) => {
+      const vol = Number(b.volume) || 0;
+      const price = Number(b.pricePerLiter) || 0;
+      return bAcc + (vol * price);
+    }, 0);
+    return acc + pTotal;
+  }, 0);
+
+  const totalExpenses = expenses.reduce((acc, exp) => acc + (Number(exp.amount) || 0), 0);
 
   return (
     <form onSubmit={handleSubmit} className="max-w-3xl mx-auto space-y-8 pb-16">
@@ -184,12 +209,19 @@ export default function EODClient({ products }: { products: Product[] }) {
             <p className="text-xs text-gray-500">Select the date for this EOD report</p>
           </div>
         </div>
-        <input 
-          type="date"
-          value={reportDate}
-          onChange={(e) => setReportDate(e.target.value)}
-          className="px-4 py-3 border border-gray-300 rounded-xl font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-tycoon-navy"
-          max={getLocalWATDateString()}
+        <DatePicker
+          selected={parseISOToDate(reportDate)}
+          onChange={(date: Date | null) => {
+            if (date) {
+              const year = date.getFullYear();
+              const month = String(date.getMonth() + 1).padStart(2, '0');
+              const day = String(date.getDate()).padStart(2, '0');
+              setReportDate(`${year}-${month}-${day}`);
+            }
+          }}
+          dateFormat="dd/MM/yyyy"
+          className="px-4 py-3 border border-gray-300 rounded-xl font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-tycoon-navy w-full text-center"
+          maxDate={new Date()}
           required
         />
       </div>
@@ -294,6 +326,7 @@ export default function EODClient({ products }: { products: Product[] }) {
                       onChange={(e) => handleDipChange(product.id, e.target.value)}
                       className="w-full px-4 py-3 border border-gray-300 rounded-xl font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-tycoon-navy bg-gray-50"
                       placeholder="Total liters in tank"
+                      required
                     />
                   </div>
                 </div>
@@ -339,6 +372,64 @@ export default function EODClient({ products }: { products: Product[] }) {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Daily Remittance & Summary */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-blue-50 p-4 border-b border-blue-100 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Wallet className="text-tycoon-navy" size={24} />
+            <h3 className="font-bold text-lg text-tycoon-charcoal">Daily Remittance</h3>
+          </div>
+        </div>
+        <div className="p-4 sm:p-6 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 uppercase mb-2">POS to Account (₦)</label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-bold">₦</span>
+                <input 
+                  type="number"
+                  step="0.01"
+                  value={posAmount}
+                  onChange={(e) => setPosAmount(e.target.value)}
+                  className="w-full pl-8 pr-3 py-3 border border-gray-300 rounded-xl font-bold focus:outline-none focus:ring-2 focus:ring-tycoon-navy"
+                  placeholder="0.00"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 uppercase mb-2">Cash to Bank (₦)</label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-bold">₦</span>
+                <input 
+                  type="number"
+                  step="0.01"
+                  value={cashAmount}
+                  onChange={(e) => setCashAmount(e.target.value)}
+                  className="w-full pl-8 pr-3 py-3 border border-gray-300 rounded-xl font-bold focus:outline-none focus:ring-2 focus:ring-tycoon-navy"
+                  placeholder="0.00"
+                />
+              </div>
+            </div>
+          </div>
+          
+          {/* Running Totals Summary */}
+          <div className="mt-6 p-5 bg-gray-50 rounded-xl border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="text-center md:text-left">
+              <span className="text-sm font-semibold text-gray-500 uppercase tracking-wider block">Total Sales</span>
+              <span className="text-xl font-black text-emerald-600">
+                ₦{totalSales.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </span>
+            </div>
+            <div className="text-center md:text-left">
+              <span className="text-sm font-semibold text-gray-500 uppercase tracking-wider block">Total Expenses</span>
+              <span className="text-xl font-black text-red-600">
+                ₦{totalExpenses.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 

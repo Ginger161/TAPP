@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { formatDateTimeToDDMMYYYY } from '@/utils/dateFormatter';
 import { GlobalFinancialLog } from './actions';
 import { AuditLogEntry } from '../analytics/auditActions';
 
@@ -92,7 +93,7 @@ export default function GlobalAnalyticsClient({
                 {filteredFinancialLogs.map(log => (
                   <tr key={log.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="p-4 text-gray-500 whitespace-nowrap">
-                      {new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Africa/Lagos' }).format(new Date(log.timestamp))}
+                      {formatDateTimeToDDMMYYYY(log.timestamp)}
                     </td>
                     <td className="p-4 font-bold text-tycoon-navy whitespace-nowrap">{log.stationName}</td>
                     <td className="p-4">
@@ -144,7 +145,7 @@ export default function GlobalAnalyticsClient({
                       </span>
                     )}
                     <div className="text-xs text-gray-400 mt-1">
-                      {new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Africa/Lagos' }).format(new Date(log.timestamp))}
+                      {formatDateTimeToDDMMYYYY(log.timestamp)}
                     </div>
                   </div>
                 </div>

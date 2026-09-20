@@ -6,6 +6,7 @@ import { getRecentNotifications, markMultipleNotificationsAsRead } from '@/app/a
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/utils/supabase/client'
+import { formatDateTimeToDDMMYYYY } from '@/utils/dateFormatter'
 import { useInView } from 'react-intersection-observer'
 
 export type Notification = {
@@ -43,7 +44,7 @@ const NotificationItem = ({
           <p className={`text-sm mb-1 ${notification.is_read ? 'text-slate-600' : 'font-medium text-gray-900'}`}>{notification.title}</p>
           <p className={`text-sm line-clamp-2 ${notification.is_read ? 'text-slate-500' : 'text-gray-700'}`}>{notification.message}</p>
           <p className="text-xs text-gray-400 mt-2">
-            {new Date(notification.created_at).toLocaleString()}
+            {formatDateTimeToDDMMYYYY(notification.created_at)}
           </p>
         </div>
         {!notification.is_read && (
