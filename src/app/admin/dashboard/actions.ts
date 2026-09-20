@@ -27,6 +27,7 @@ export type RecentLog = {
   stationName: string;
   detail: string;
   amount: string;
+  subtitle?: string;
   timestamp: string;
   capturedDate?: string;
 };
@@ -266,12 +267,22 @@ export async function getStationDeepDive(stationId: string) {
 
   const recentLogs: RecentLog[] = [];
   recentSalesData?.forEach((sale: any) => {
+    const volume = Number(sale.quantity_sold);
+    const price = Number(sale.selling_price);
+    const isValidNumber = !isNaN(volume) && !isNaN(price) && volume > 0 && price > 0;
+    
+    const totalSum = isValidNumber ? volume * price : 0;
+    const formattedTotal = totalSum > 0 ? `₦${totalSum.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}` : 'N/A';
+    
+    const subtitle = isValidNumber ? `${volume.toLocaleString()} L • ₦${price.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}/L` : 'N/A';
+
     recentLogs.push({
       id: sale.id,
       type: 'sale',
       stationName: sale.stations?.name || 'Unknown',
       detail: sale.products?.name || 'Fuel',
-      amount: `${Number(sale.quantity_sold).toLocaleString()} L @ ₦${Number(sale.selling_price).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}/L`,
+      amount: formattedTotal,
+      subtitle: subtitle,
       timestamp: sale.created_at,
       capturedDate: sale.date
     });

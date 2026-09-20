@@ -64,6 +64,7 @@ export type ManagerData = {
     stationName: string;
     detail: string;
     amount: string;
+    subtitle?: string;
     timestamp: string;
     capturedDate?: string;
   }[];
@@ -215,7 +216,10 @@ export default function AdminStationDashboardClient({
                       </div>
                       <div className="flex flex-col min-w-0">
                         <span className="font-bold text-gray-900 truncate">{log.type === 'sale' ? `Sold: ${log.detail}` : `Expense: ${log.detail}`}</span>
-                        <span className="text-xs text-gray-500 truncate">Captured: {log.capturedDate ? formatDateToDDMMYYYY(log.capturedDate) : 'N/A'} | Posted: {formatDateTimeToDDMMYYYY(log.timestamp)}</span>
+                        {log.type === 'sale' && log.subtitle && (
+                          <span className="text-sm text-gray-500 truncate mt-0.5">{log.subtitle}</span>
+                        )}
+                        <span className="text-xs text-gray-400 truncate mt-0.5">Captured: {log.capturedDate ? formatDateToDDMMYYYY(log.capturedDate) : 'N/A'} | Posted: {formatDateTimeToDDMMYYYY(log.timestamp)}</span>
                       </div>
                     </div>
                     <div className="flex flex-col items-end shrink-0">

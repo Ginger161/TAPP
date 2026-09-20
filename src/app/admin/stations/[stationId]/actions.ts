@@ -206,7 +206,7 @@ export async function getAdminStationDashboardData(stationId: string, timeframe:
   // Ledger items
   const { data: ledgerSales } = await supabase
     .from('sales_transactions')
-    .select('date, quantity_sold, id, products(name), is_edited, edited_by, original_value, created_at')
+    .select('date, quantity_sold, id, products(name), is_edited, edited_by, original_value, created_at, selling_price')
     .eq('station_id', stationId)
     .order('created_at', { ascending: false })
     .limit(50);
@@ -264,12 +264,22 @@ export async function getAdminStationDashboardData(stationId: string, timeframe:
 
   const recentLogs: any[] = [];
   ledgerSales?.forEach((sale: any) => {
+    const volume = Number(sale.quantity_sold);
+    const price = Number(sale.selling_price);
+    const isValidNumber = !isNaN(volume) && !isNaN(price) && volume > 0 && price > 0;
+    
+    const totalSum = isValidNumber ? volume * price : 0;
+    const formattedTotal = totalSum > 0 ? `₦${totalSum.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}` : 'N/A';
+    
+    const subtitle = isValidNumber ? `${volume.toLocaleString()} L • ₦${price.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}/L` : 'N/A';
+
     recentLogs.push({
       id: sale.id,
       type: 'sale',
       stationName: station?.name || 'Unknown',
       detail: sale.products?.name || 'Fuel',
-      amount: `${Number(sale.quantity_sold).toLocaleString()} L @ ₦${Number(sale.selling_price).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}/L`,
+      amount: formattedTotal,
+      subtitle: subtitle,
       timestamp: sale.created_at,
       capturedDate: sale.date
     });

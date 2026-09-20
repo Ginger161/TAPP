@@ -27,6 +27,7 @@ type DashboardData = {
     stationName: string;
     detail: string;
     amount: string;
+    subtitle?: string;
     timestamp: string;
     capturedDate?: string;
   }[];
@@ -41,6 +42,7 @@ type DeepDiveData = {
     stationName: string;
     detail: string;
     amount: string;
+    subtitle?: string;
     timestamp: string;
     capturedDate?: string;
   }[];
