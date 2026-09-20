@@ -76,7 +76,8 @@ export async function submitLegacyEOD(payload: LegacyEODPayload) {
         start_meter: batch.startMeter ?? null,
         close_meter: batch.closeMeter ?? null,
         quantity_sold: batch.volume,
-        selling_price: revenue, // Total Revenue per legacy schema
+        selling_price: batch.pricePerLiter, // Strictly Unit Price
+        total_amount: revenue, // Total Revenue
         submitted_by_id: userId
       });
 

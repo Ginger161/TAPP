@@ -20,7 +20,7 @@ export async function getGlobalFinancialLogs(limit = 200): Promise<GlobalFinanci
   const [salesRes, expensesRes] = await Promise.all([
     supabase
       .from('sales_transactions')
-      .select('id, quantity_sold, selling_price, created_at, is_edited, edited_by, original_value, products(name), stations(name)')
+      .select('id, quantity_sold, selling_price, total_amount, created_at, is_edited, edited_by, original_value, products(name), stations(name)')
       .order('created_at', { ascending: false })
       .limit(limit),
     supabase
@@ -38,7 +38,7 @@ export async function getGlobalFinancialLogs(limit = 200): Promise<GlobalFinanci
       type: 'sale',
       stationName: sale.stations?.name || 'Unknown',
       detail: sale.products?.name || 'Fuel',
-      amount: Number(sale.selling_price || 0),
+      amount: Number(sale.total_amount || 0),
       is_edited: sale.is_edited,
       edited_by: sale.edited_by,
       original_value: sale.original_value,

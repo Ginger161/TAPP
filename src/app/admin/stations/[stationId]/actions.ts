@@ -125,7 +125,7 @@ export async function getAdminStationDashboardData(stationId: string, timeframe:
 
   let salesQuery = supabase
     .from('sales_transactions')
-    .select('date, quantity_sold, id, products(name), is_edited, edited_by, original_value, created_at, selling_price')
+    .select('date, quantity_sold, id, products(name), is_edited, edited_by, original_value, created_at, selling_price, total_amount')
     .eq('station_id', stationId);
 
   if (timeframe === '24H') salesQuery = salesQuery.gte('created_at', startTimestampStr);
@@ -179,7 +179,7 @@ export async function getAdminStationDashboardData(stationId: string, timeframe:
     volume: salesTrendMap[date]
   }));
 
-  const revenue = (salesData || []).reduce((sum, s) => sum + Number(s.selling_price || 0), 0);
+  const revenue = (salesData || []).reduce((sum, s) => sum + Number(s.total_amount || 0), 0);
 
   let suppliesQuery = supabase
     .from('supply_transactions')
@@ -206,7 +206,7 @@ export async function getAdminStationDashboardData(stationId: string, timeframe:
   // Ledger items
   const { data: ledgerSales } = await supabase
     .from('sales_transactions')
-    .select('date, quantity_sold, id, products(name), is_edited, edited_by, original_value, created_at, selling_price')
+    .select('date, quantity_sold, id, products(name), is_edited, edited_by, original_value, created_at, selling_price, total_amount')
     .eq('station_id', stationId)
     .order('created_at', { ascending: false })
     .limit(50);
@@ -236,7 +236,7 @@ export async function getAdminStationDashboardData(stationId: string, timeframe:
 
   const { data: yesterdaySales } = await supabase
     .from('sales_transactions')
-    .select('selling_price')
+    .select('total_amount')
     .eq('station_id', stationId)
     .eq('date', yesterdayStr);
 
@@ -247,7 +247,7 @@ export async function getAdminStationDashboardData(stationId: string, timeframe:
     .eq('date', yesterdayStr)
     .eq('status', 'approved');
 
-  const yRevenue = (yesterdaySales || []).reduce((sum, s) => sum + Number(s.selling_price || 0), 0);
+  const yRevenue = (yesterdaySales || []).reduce((sum, s) => sum + Number(s.total_amount || 0), 0);
   const yExpensesList = (yesterdayExpensesData || []).map(e => ({
     id: e.id,
     type: e.expense_type,

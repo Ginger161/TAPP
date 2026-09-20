@@ -138,7 +138,7 @@ export async function getFinancialMetrics(range: DateRange, stationId?: string):
   const minDate = getMinDateForRange(range);
 
   // Build queries
-  let salesQuery = supabase.from('sales_transactions').select('selling_price, product_id, products(name)').gte('date', minDate);
+  let salesQuery = supabase.from('sales_transactions').select('total_amount, product_id, products(name)').gte('date', minDate);
   let expenseQuery = supabase.from('expenses').select('amount').gte('date', minDate);
   let supplyQuery = supabase.from('supply_transactions').select('cost_price, product_id, products(name)').eq('status', 'accepted').gte('date', minDate);
 
@@ -156,10 +156,10 @@ export async function getFinancialMetrics(range: DateRange, stationId?: string):
   const productMap: Record<string, { name: string, revenue: number, cogs: number }> = {};
 
   salesRes.data?.forEach((s: any) => {
-    grossRevenue += Number(s.selling_price);
+    grossRevenue += Number(s.total_amount);
     const pid = s.product_id;
     if (!productMap[pid]) productMap[pid] = { name: s.products?.name || 'Unknown', revenue: 0, cogs: 0 };
-    productMap[pid].revenue += Number(s.selling_price);
+    productMap[pid].revenue += Number(s.total_amount);
   });
 
   expRes.data?.forEach((e: any) => {
@@ -196,7 +196,7 @@ export async function exportFinancialReport(range: DateRange, stationId?: string
   const minDate = getMinDateForRange(range);
 
   // Fetch ledgers
-  let salesQuery = supabase.from('sales_transactions').select('date, selling_price, quantity_sold, stations(name), products(name)').gte('date', minDate);
+  let salesQuery = supabase.from('sales_transactions').select('date, selling_price, total_amount, quantity_sold, stations(name), products(name)').gte('date', minDate);
   let expenseQuery = supabase.from('expenses').select('date, amount, expense_type, description, stations(name)').gte('date', minDate);
   let supplyQuery = supabase.from('supply_transactions').select('date, cost_price, quantity, actual_volume_received, stations(name), products(name)').eq('status', 'accepted').gte('date', minDate);
 
@@ -211,7 +211,7 @@ export async function exportFinancialReport(range: DateRange, stationId?: string
   let csvContent = 'Date,Station,Type,Product/Category,Volume,Amount(NGN),Notes\n';
 
   salesRes.data?.forEach((s: any) => {
-    csvContent += `"${s.date}","${s.stations?.name || ''}","Sale","${s.products?.name || ''}",${s.quantity_sold},${s.selling_price},""\n`;
+    csvContent += `"${s.date}","${s.stations?.name || ''}","Sale","${s.products?.name || ''}",${s.quantity_sold},${s.selling_price},${s.total_amount}\n`;
   });
 
   supRes.data?.forEach((s: any) => {

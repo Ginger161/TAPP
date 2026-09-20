@@ -288,17 +288,22 @@ export default function EODClient({ products }: { products: Product[] }) {
                             />
                           </div>
                           <div>
-                            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Price (₦/L) *</label>
+                            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Selling Price (₦/L) *</label>
                             <input 
                               type="number"
                               step="0.01"
                               value={batch.pricePerLiter}
                               onChange={(e) => handleBatchChange(product.id, idx, 'pricePerLiter', e.target.value)}
                               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-bold focus:outline-none focus:ring-1 focus:ring-tycoon-navy"
-                              placeholder="Price"
+                              placeholder="e.g., 1450"
                             />
                           </div>
                         </div>
+                        {batch.volume && batch.pricePerLiter && !isNaN(Number(batch.volume)) && !isNaN(Number(batch.pricePerLiter)) && (
+                          <div className="mt-3 flex justify-end text-sm font-bold text-tycoon-navy bg-blue-50/50 p-2 rounded-lg border border-blue-100">
+                            Total: ₦{(Number(batch.volume) * Number(batch.pricePerLiter)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>

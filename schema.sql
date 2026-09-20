@@ -68,6 +68,7 @@ CREATE TABLE sales_transactions (
     date DATE NOT NULL DEFAULT CURRENT_DATE,
     quantity_sold NUMERIC NOT NULL CHECK (quantity_sold > 0),
     selling_price NUMERIC NOT NULL CHECK (selling_price >= 0),
+    total_amount NUMERIC NOT NULL DEFAULT 0,
     submitted_by_id UUID NOT NULL REFERENCES users(id),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

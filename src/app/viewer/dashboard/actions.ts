@@ -51,7 +51,7 @@ export async function getViewerDashboardData() {
     { data: unresolvedAnomalies }
   ] = await Promise.all([
     supabase.auth.getUser(),
-    supabase.from('sales_transactions').select('quantity_sold, selling_price').eq('date', today),
+    supabase.from('sales_transactions').select('quantity_sold, total_amount').eq('date', today),
     supabase.from('supply_transactions').select('id, quantity, cost_price, date, stations(name), products(name)').eq('status', 'pending'),
     supabase.from('stations').select('*'),
     supabase.from('stock_ledger').select('*'),
@@ -75,7 +75,7 @@ export async function getViewerDashboardData() {
   if (salesToday) {
     salesToday.forEach(sale => {
       totalVolumeSoldToday += Number(sale.quantity_sold);
-      totalRevenueToday += Number(sale.selling_price);
+      totalRevenueToday += Number(sale.total_amount);
     });
   }
 

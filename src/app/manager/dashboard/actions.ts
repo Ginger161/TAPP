@@ -52,7 +52,7 @@ export async function getManagerDashboardData() {
     supabase.from('stock_ledger').select('product_id, quantity').eq('station_id', stationId),
     supabase.from('sales_transactions').select('product_id, quantity_sold').eq('station_id', stationId).gte('date', thirtyDaysStr),
     supabase.from('sales_transactions').select('date, quantity_sold').eq('station_id', stationId).gte('date', minDateStr),
-    supabase.from('sales_transactions').select('selling_price').eq('station_id', stationId).gte('date', firstDayOfMonthStr),
+    supabase.from('sales_transactions').select('total_amount').eq('station_id', stationId).gte('date', firstDayOfMonthStr),
     supabase.from('supply_transactions').select('cost_price').eq('station_id', stationId).eq('status', 'accepted').gte('date', firstDayOfMonthStr),
     supabase.from('expenses').select('amount').eq('station_id', stationId).eq('status', 'approved').gte('date', firstDayOfMonthStr)
   ]);
@@ -120,7 +120,7 @@ export async function getManagerDashboardData() {
   }));
 
   // Calculate Current Month PnL
-  const revenue = (monthSales || []).reduce((sum, s) => sum + Number(s.selling_price || 0), 0);
+  const revenue = (monthSales || []).reduce((sum, s) => sum + Number(s.total_amount || 0), 0);
   const cogs = (monthSupplies || []).reduce((sum, s) => sum + Number(s.cost_price || 0), 0);
   const approvedExpenses = (monthExpenses || []).reduce((sum, e) => sum + Number(e.amount || 0), 0);
   
@@ -281,6 +281,7 @@ export async function submitDailyEOD(payload: EODSubmissionPayload) {
         date: payload.date,
         quantity_sold: sale.total_volume,
         selling_price: sale.average_price, // Store the weighted average price here
+        total_amount: revenue,
         submitted_by_id: user.id,
         price_tiers: sale.price_tiers, // JSONB column from Phase 1
       }))
