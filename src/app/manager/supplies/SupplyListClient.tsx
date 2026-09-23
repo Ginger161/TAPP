@@ -328,7 +328,7 @@ function TransferOutModal({
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Volume (Liters)</label>
             <input
-              type="number" inputMode="decimal" pattern="[0-9]*" inputMode="decimal" pattern="[0-9]*"
+              type="number" inputMode="decimal" pattern="[0-9]*"
               required
               min="0.1"
               step="any"
