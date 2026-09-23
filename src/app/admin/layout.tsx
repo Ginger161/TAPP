@@ -26,7 +26,7 @@ export default async function AdminLayout({
 
       <Link 
         href="/admin/global-analytics"
-        className="fixed bottom-6 right-6 z-50 flex items-center justify-center p-4 bg-tycoon-navy text-white rounded-full shadow-lg hover:bg-tycoon-red hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
+        className="fixed bottom-6 right-6 z-50 flex items-center justify-center p-4 bg-tycoon-red text-white rounded-full shadow-lg hover:bg-tycoon-red hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
         title="Global Analytics & Audit"
       >
         <Database className="w-6 h-6" />

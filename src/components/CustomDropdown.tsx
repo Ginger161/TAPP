@@ -85,7 +85,7 @@ export default function CustomDropdown({
         type="button"
         disabled={disabled}
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full flex items-center justify-between px-3 py-2 border rounded-lg bg-white outline-none focus:ring-2 focus:ring-tycoon-navy transition-all ${
+        className={`w-full flex items-center justify-between px-3 py-2 border rounded-lg bg-white outline-none focus:ring-2 focus:ring-tycoon-red transition-all ${
           disabled ? 'bg-gray-100 cursor-not-allowed text-gray-500' : 'cursor-pointer hover:bg-gray-50'
         }`}
       >
@@ -112,7 +112,7 @@ export default function CustomDropdown({
               type="button"
               className={`w-full text-left px-4 py-2 text-sm transition-colors ${
                 internalValue === option.value 
-                  ? 'bg-blue-50 text-tycoon-navy font-semibold' 
+                  ? 'bg-gray-50 text-tycoon-charcoal font-semibold' 
                   : 'text-gray-700 hover:bg-gray-50'
               }`}
               onClick={() => handleSelect(option.value)}

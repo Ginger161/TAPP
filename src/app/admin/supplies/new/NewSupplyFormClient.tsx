@@ -63,18 +63,18 @@ export default function NewSupplyFormClient({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium mb-1.5" htmlFor="quantity">Quantity (Liters)</label>
-          <input required id="quantity" name="quantity" type="number" step="0.01" min="0" className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-blue-500" />
+          <input required id="quantity" name="quantity" type="number" step="0.01" min="0" className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-tycoon-red" />
         </div>
 
         <div>
           <label className="block text-sm font-medium mb-1.5" htmlFor="costPrice">Total Cost Price (₦)</label>
-          <input required id="costPrice" name="costPrice" type="number" step="0.01" min="0" className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-blue-500" />
+          <input required id="costPrice" name="costPrice" type="number" step="0.01" min="0" className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-tycoon-red" />
         </div>
       </div>
 
       <div>
         <label className="block text-sm font-medium mb-1.5" htmlFor="supplier">Supplier</label>
-        <input required id="supplier" name="supplier" type="text" placeholder="e.g., NNPC" className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-blue-500" />
+        <input required id="supplier" name="supplier" type="text" placeholder="e.g., NNPC" className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-tycoon-red" />
       </div>
 
       <div>
@@ -91,14 +91,14 @@ export default function NewSupplyFormClient({
             }
           }}
           dateFormat="dd/MM/yyyy"
-          className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-tycoon-red"
           maxDate={new Date()}
           required
         />
         <input type="hidden" name="date" value={supplyDate} />
       </div>
 
-      <button disabled={isSubmitting} type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition-colors mt-6 disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm">
+      <button disabled={isSubmitting} type="submit" className="w-full bg-tycoon-red hover:bg-red-800 text-white font-medium py-3 rounded-lg transition-colors mt-6 disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm">
         {isSubmitting ? 'Submitting...' : 'Submit Supply'}
       </button>
     </form>

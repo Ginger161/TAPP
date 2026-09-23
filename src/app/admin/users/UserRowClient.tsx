@@ -23,7 +23,7 @@ export default function UserRowClient({
     return (
       <div className="flex flex-col gap-2">
         <span className={`px-2 py-1 rounded-full text-xs font-medium w-fit ${currentRole === 'admin' ? 'bg-purple-100 text-purple-700' :
-            currentRole === 'manager' ? 'bg-blue-100 text-blue-700' :
+            currentRole === 'manager' ? 'bg-gray-100 text-tycoon-red' :
               'bg-gray-100 text-gray-700'
           }`}>
           {currentRole.toUpperCase()}
@@ -70,7 +70,7 @@ export default function UserRowClient({
                 else toast.success('Supply permissions updated')
               })
             }}
-            className="rounded text-blue-500"
+            className="rounded text-tycoon-red"
           />
           Can Supply
         </label>

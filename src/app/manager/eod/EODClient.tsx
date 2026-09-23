@@ -201,7 +201,7 @@ export default function EODClient({ products }: { products: Product[] }) {
       {/* Date Picker */}
       <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-3 bg-blue-50 text-tycoon-navy rounded-xl">
+          <div className="p-3 bg-gray-50 text-tycoon-charcoal rounded-xl">
             <Calendar size={24} />
           </div>
           <div>
@@ -220,7 +220,7 @@ export default function EODClient({ products }: { products: Product[] }) {
             }
           }}
           dateFormat="dd/MM/yyyy"
-          className="px-4 py-3 border border-gray-300 rounded-xl font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-tycoon-navy w-full text-center"
+          className="px-4 py-3 border border-gray-300 rounded-xl font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-tycoon-red w-full text-center"
           maxDate={new Date()}
           required
         />
@@ -261,7 +261,7 @@ export default function EODClient({ products }: { products: Product[] }) {
                               step="0.01"
                               value={batch.startMeter}
                               onChange={(e) => handleBatchChange(product.id, idx, 'startMeter', e.target.value)}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-tycoon-navy"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-tycoon-red"
                               placeholder="0.00"
                             />
                           </div>
@@ -272,7 +272,7 @@ export default function EODClient({ products }: { products: Product[] }) {
                               step="0.01"
                               value={batch.closeMeter}
                               onChange={(e) => handleBatchChange(product.id, idx, 'closeMeter', e.target.value)}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-tycoon-navy"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-tycoon-red"
                               placeholder="0.00"
                             />
                           </div>
@@ -283,7 +283,7 @@ export default function EODClient({ products }: { products: Product[] }) {
                               step="0.01"
                               value={batch.volume}
                               onChange={(e) => handleBatchChange(product.id, idx, 'volume', e.target.value)}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-bold focus:outline-none focus:ring-1 focus:ring-tycoon-navy"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-bold focus:outline-none focus:ring-1 focus:ring-tycoon-red"
                               placeholder="Liters"
                             />
                           </div>
@@ -294,13 +294,13 @@ export default function EODClient({ products }: { products: Product[] }) {
                               step="0.01"
                               value={batch.pricePerLiter}
                               onChange={(e) => handleBatchChange(product.id, idx, 'pricePerLiter', e.target.value)}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-bold focus:outline-none focus:ring-1 focus:ring-tycoon-navy"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-bold focus:outline-none focus:ring-1 focus:ring-tycoon-red"
                               placeholder="e.g., 1450"
                             />
                           </div>
                         </div>
                         {batch.volume && batch.pricePerLiter && !isNaN(Number(batch.volume)) && !isNaN(Number(batch.pricePerLiter)) && (
-                          <div className="mt-3 flex justify-end text-sm font-bold text-tycoon-navy bg-blue-50/50 p-2 rounded-lg border border-blue-100">
+                          <div className="mt-3 flex justify-end text-sm font-bold text-tycoon-charcoal bg-gray-50/50 p-2 rounded-lg border border-gray-200">
                             Total: ₦{(Number(batch.volume) * Number(batch.pricePerLiter)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </div>
                         )}
@@ -311,7 +311,7 @@ export default function EODClient({ products }: { products: Product[] }) {
                   <button 
                     type="button" 
                     onClick={() => addBatch(product.id)}
-                    className="mt-4 flex items-center gap-2 text-sm font-bold text-tycoon-navy hover:text-blue-800 transition-colors bg-blue-50 px-4 py-2 rounded-lg"
+                    className="mt-4 flex items-center gap-2 text-sm font-bold text-tycoon-charcoal hover:text-gray-800 transition-colors bg-gray-50 px-4 py-2 rounded-lg"
                   >
                     <Plus size={16} /> Add Another Batch
                   </button>
@@ -319,7 +319,7 @@ export default function EODClient({ products }: { products: Product[] }) {
 
                 <div>
                   <h4 className="text-sm font-bold text-gray-700 uppercase tracking-wider mb-4 border-b pb-2 flex items-center gap-2">
-                    <Droplet className="text-blue-500" size={16} />
+                    <Droplet className="text-tycoon-red" size={16} />
                     Physical Tank Dip
                   </h4>
                   <div className="max-w-xs">
@@ -329,7 +329,7 @@ export default function EODClient({ products }: { products: Product[] }) {
                       step="0.01"
                       value={pData.dipVolume}
                       onChange={(e) => handleDipChange(product.id, e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-tycoon-navy bg-gray-50"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-tycoon-red bg-gray-50"
                       placeholder="Total liters in tank"
                       required
                     />
@@ -361,7 +361,7 @@ export default function EODClient({ products }: { products: Product[] }) {
                     step="0.01"
                     value={exp.amount}
                     onChange={(e) => handleExpenseChange(idx, 'amount', e.target.value)}
-                    className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg text-sm font-bold focus:outline-none focus:ring-1 focus:ring-tycoon-navy"
+                    className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg text-sm font-bold focus:outline-none focus:ring-1 focus:ring-tycoon-red"
                     placeholder="Amount"
                   />
                 </div>
@@ -371,7 +371,7 @@ export default function EODClient({ products }: { products: Product[] }) {
                   type="text"
                   value={exp.description}
                   onChange={(e) => handleExpenseChange(idx, 'description', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-tycoon-navy"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-tycoon-red"
                   placeholder="Comments (Optional)"
                 />
               </div>
@@ -382,9 +382,9 @@ export default function EODClient({ products }: { products: Product[] }) {
 
       {/* Daily Remittance & Summary */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="bg-blue-50 p-4 border-b border-blue-100 flex items-center justify-between">
+        <div className="bg-gray-50 p-4 border-b border-gray-200 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Wallet className="text-tycoon-navy" size={24} />
+            <Wallet className="text-tycoon-charcoal" size={24} />
             <h3 className="font-bold text-lg text-tycoon-charcoal">Daily Remittance</h3>
           </div>
         </div>
@@ -399,7 +399,7 @@ export default function EODClient({ products }: { products: Product[] }) {
                   step="0.01"
                   value={posAmount}
                   onChange={(e) => setPosAmount(e.target.value)}
-                  className="w-full pl-8 pr-3 py-3 border border-gray-300 rounded-xl font-bold focus:outline-none focus:ring-2 focus:ring-tycoon-navy"
+                  className="w-full pl-8 pr-3 py-3 border border-gray-300 rounded-xl font-bold focus:outline-none focus:ring-2 focus:ring-tycoon-red"
                   placeholder="0.00"
                 />
               </div>
@@ -413,7 +413,7 @@ export default function EODClient({ products }: { products: Product[] }) {
                   step="0.01"
                   value={cashAmount}
                   onChange={(e) => setCashAmount(e.target.value)}
-                  className="w-full pl-8 pr-3 py-3 border border-gray-300 rounded-xl font-bold focus:outline-none focus:ring-2 focus:ring-tycoon-navy"
+                  className="w-full pl-8 pr-3 py-3 border border-gray-300 rounded-xl font-bold focus:outline-none focus:ring-2 focus:ring-tycoon-red"
                   placeholder="0.00"
                 />
               </div>

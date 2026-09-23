@@ -262,7 +262,7 @@ export default function AdminStationDashboardClient({
             {selectedDateFilter && (
               <button
                 onClick={() => setSelectedDateFilter(null)}
-                className="text-sm font-semibold text-tycoon-navy hover:underline"
+                className="text-sm font-semibold text-tycoon-charcoal hover:underline"
               >
                 Clear Filter
               </button>
@@ -318,7 +318,7 @@ export default function AdminStationDashboardClient({
                                   setEditingItem({ id: sale.id, type: 'sale', name: sale.product_name, amount: sale.quantity_sold });
                                   setEditValue(sale.quantity_sold.toString());
                                 }}
-                                className="text-gray-400 hover:text-tycoon-navy p-1 transition-colors"
+                                className="text-gray-400 hover:text-tycoon-red p-1 transition-colors"
                               >
                                 <Edit2 size={16} />
                               </button>
@@ -361,7 +361,7 @@ export default function AdminStationDashboardClient({
                                   setEditingItem({ id: exp.id, type: 'expense', name: exp.expense_type, amount: exp.amount });
                                   setEditValue(exp.amount.toString());
                                 }}
-                                className="text-gray-400 hover:text-tycoon-navy p-1 transition-colors"
+                                className="text-gray-400 hover:text-tycoon-red p-1 transition-colors"
                               >
                                 <Edit2 size={16} />
                               </button>
@@ -397,7 +397,7 @@ export default function AdminStationDashboardClient({
                 <div className="flex-1 space-y-4">
                   <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
                     <h3 className="text-xs font-semibold text-gray-500 uppercase">Total Sales Revenue (Yesterday)</h3>
-                    <p className="font-bold text-2xl text-tycoon-navy mt-1">
+                    <p className="font-bold text-2xl text-tycoon-charcoal mt-1">
                       ₦{data.yesterdaysSummary.revenue.toLocaleString()}
                     </p>
                   </div>
@@ -433,7 +433,7 @@ export default function AdminStationDashboardClient({
                   onClick={() => setTimeframe(tf.value)}
                   className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
                     timeframe === tf.value 
-                      ? 'bg-tycoon-navy text-white shadow-sm' 
+                      ? 'bg-tycoon-red text-white shadow-sm' 
                       : 'text-gray-500 hover:text-gray-700 hover:bg-gray-200'
                   }`}
                 >
@@ -448,21 +448,21 @@ export default function AdminStationDashboardClient({
                 <TrendingUp className="text-gray-400" size={16} />
                 <h3 className="text-xs font-semibold text-gray-500 uppercase">Revenue</h3>
               </div>
-              <p className="font-bold text-lg text-tycoon-navy truncate" title={`₦${data.financialOverview.revenue.toLocaleString()}`}>₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(data.financialOverview.revenue)}</p>
+              <p className="font-bold text-lg text-tycoon-charcoal truncate" title={`₦${data.financialOverview.revenue.toLocaleString()}`}>₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(data.financialOverview.revenue)}</p>
             </div>
             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <div className="flex items-center gap-2 mb-2">
                 <Package className="text-gray-400" size={16} />
                 <h3 className="text-xs font-semibold text-gray-500 uppercase">COGS</h3>
               </div>
-              <p className="font-bold text-lg text-tycoon-navy truncate" title={`₦${data.financialOverview.cogs.toLocaleString()}`}>₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(data.financialOverview.cogs)}</p>
+              <p className="font-bold text-lg text-tycoon-charcoal truncate" title={`₦${data.financialOverview.cogs.toLocaleString()}`}>₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(data.financialOverview.cogs)}</p>
             </div>
             <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <div className="flex items-center gap-2 mb-2">
                 <Wallet className="text-gray-400" size={16} />
                 <h3 className="text-xs font-semibold text-gray-500 uppercase">Expenses</h3>
               </div>
-              <p className="font-bold text-lg text-tycoon-navy truncate" title={`₦${data.financialOverview.approvedExpenses.toLocaleString()}`}>₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(data.financialOverview.approvedExpenses)}</p>
+              <p className="font-bold text-lg text-tycoon-charcoal truncate" title={`₦${data.financialOverview.approvedExpenses.toLocaleString()}`}>₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(data.financialOverview.approvedExpenses)}</p>
             </div>
             <div className={`p-4 rounded-xl shadow-sm border flex flex-col justify-between ${data.financialOverview.netProfit >= 0 ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'}`}>
               <div className="flex items-center gap-2 mb-2">
@@ -505,7 +505,7 @@ export default function AdminStationDashboardClient({
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className={`font-bold text-2xl ${prod.stock < 0 ? 'text-red-600' : 'text-tycoon-navy'}`}>
+                  <div className={`font-bold text-2xl ${prod.stock < 0 ? 'text-red-600' : 'text-tycoon-charcoal'}`}>
                     {prod.stock < 0 ? `-${Math.abs(prod.stock).toLocaleString()}` : `${prod.stock.toLocaleString()}`}
                     <span className="text-sm text-gray-500 ml-1">L</span>
                   </div>
@@ -529,7 +529,7 @@ export default function AdminStationDashboardClient({
         <div className="fixed inset-0 z-[2000] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
             <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-              <h3 className="font-bold text-tycoon-navy">Admin Override: Edit</h3>
+              <h3 className="font-bold text-tycoon-charcoal">Admin Override: Edit</h3>
               <button onClick={() => setEditingItem(null)} className="text-gray-400 hover:text-gray-700">
                 <X size={20} />
               </button>
@@ -551,7 +551,7 @@ export default function AdminStationDashboardClient({
                   required
                   value={editValue}
                   onChange={(e) => setEditValue(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg p-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-tycoon-navy"
+                  className="w-full border border-gray-300 rounded-lg p-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-tycoon-red"
                   placeholder="Enter corrected amount..."
                 />
               </div>

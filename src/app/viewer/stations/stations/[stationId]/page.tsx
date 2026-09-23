@@ -206,7 +206,7 @@ export default function AdminStationDashboard() {
                             setEditingItem({ id: sale.id, type: 'sale', name: sale.product_name, amount: sale.quantity_sold });
                             setEditValue(sale.quantity_sold.toString());
                           }}
-                          className="text-gray-400 hover:text-tycoon-navy p-1 transition-colors"
+                          className="text-gray-400 hover:text-tycoon-red p-1 transition-colors"
                         >
                           <Edit2 size={16} />
                         </button>
@@ -247,7 +247,7 @@ export default function AdminStationDashboard() {
                             setEditingItem({ id: exp.id, type: 'expense', name: exp.expense_type, amount: exp.amount });
                             setEditValue(exp.amount.toString());
                           }}
-                          className="text-gray-400 hover:text-tycoon-navy p-1 transition-colors"
+                          className="text-gray-400 hover:text-tycoon-red p-1 transition-colors"
                         >
                           <Edit2 size={16} />
                         </button>
@@ -266,7 +266,7 @@ export default function AdminStationDashboard() {
         <div className="fixed inset-0 z-[2000] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
             <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-              <h3 className="font-bold text-tycoon-navy">Admin Override: Edit</h3>
+              <h3 className="font-bold text-tycoon-charcoal">Admin Override: Edit</h3>
               <button onClick={() => setEditingItem(null)} className="text-gray-400 hover:text-gray-700">
                 <X size={20} />
               </button>
@@ -288,7 +288,7 @@ export default function AdminStationDashboard() {
                   required
                   value={editValue}
                   onChange={(e) => setEditValue(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg p-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-tycoon-navy"
+                  className="w-full border border-gray-300 rounded-lg p-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-tycoon-red"
                   placeholder="Enter corrected amount..."
                 />
               </div>

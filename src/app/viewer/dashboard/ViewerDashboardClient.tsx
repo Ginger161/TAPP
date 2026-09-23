@@ -116,11 +116,11 @@ export default function ViewerDashboardClient({ initialData }: { initialData: Da
         <div className="flex flex-wrap items-center gap-8 text-sm">
           <div className="flex flex-col">
             <span className="text-gray-500 uppercase tracking-wider text-xs font-semibold">Today&apos;s Volume</span>
-            <span className="font-bold text-lg text-tycoon-navy truncate" title={`${data.kpi.volume.toLocaleString()} L`}>{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(data.kpi.volume)} L</span>
+            <span className="font-bold text-lg text-tycoon-charcoal truncate" title={`${data.kpi.volume.toLocaleString()} L`}>{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(data.kpi.volume)} L</span>
           </div>
           <div className="flex flex-col">
             <span className="text-gray-500 uppercase tracking-wider text-xs font-semibold">Today&apos;s Revenue</span>
-            <span className="font-bold text-lg text-tycoon-navy truncate" title={`₦${data.kpi.revenue.toLocaleString()}`}>₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(data.kpi.revenue)}</span>
+            <span className="font-bold text-lg text-tycoon-charcoal truncate" title={`₦${data.kpi.revenue.toLocaleString()}`}>₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(data.kpi.revenue)}</span>
           </div>
           <div className="flex flex-col">
             <span className="text-gray-500 uppercase tracking-wider text-xs font-semibold">Pending Supplies</span>
@@ -187,10 +187,10 @@ export default function ViewerDashboardClient({ initialData }: { initialData: Da
                   setSelectedStationId(station.id);
                 }
               }}
-              className={`p-5 rounded-xl cursor-pointer border shadow-sm transition-all hover:-translate-y-1 hover:shadow-md ${selectedStationId === station.id ? 'border-tycoon-navy bg-blue-50/50 ring-2 ring-tycoon-navy/20' : 'border-gray-200 bg-white hover:bg-gray-50'}`}
+              className={`p-5 rounded-xl cursor-pointer border shadow-sm transition-all hover:-translate-y-1 hover:shadow-md ${selectedStationId === station.id ? 'border-tycoon-red bg-gray-50/50 ring-2 ring-tycoon-red/20' : 'border-gray-200 bg-white hover:bg-gray-50'}`}
             >
               <div className="flex justify-between items-center mb-4">
-                <span className="font-bold text-lg text-tycoon-navy">{station.name}</span>
+                <span className="font-bold text-lg text-tycoon-charcoal">{station.name}</span>
                 <UrgencyBadge status={station.urgency} />
               </div>
               
@@ -237,7 +237,7 @@ export default function ViewerDashboardClient({ initialData }: { initialData: Da
           <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
             <div className="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
               <div>
-                <h3 className="font-bold text-xl text-tycoon-navy">{selectedStation.name}</h3>
+                <h3 className="font-bold text-xl text-tycoon-charcoal">{selectedStation.name}</h3>
                 <div className="mt-1"><UrgencyBadge status={selectedStation.urgency} /></div>
               </div>
               <button onClick={() => {
@@ -296,7 +296,7 @@ export default function ViewerDashboardClient({ initialData }: { initialData: Da
 
                   <div className="pt-4 border-t border-gray-100 flex flex-col gap-3">
                     <Link href={`/admin/analytics?station_id=${selectedStation.id}`}>
-                      <button className="w-full bg-white hover:bg-gray-50 text-tycoon-navy border border-gray-200 font-bold py-3 px-4 rounded-xl transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2">
+                      <button className="w-full bg-white hover:bg-gray-50 text-tycoon-charcoal border border-gray-200 font-bold py-3 px-4 rounded-xl transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2">
                         View Full Analytics
                       </button>
                     </Link>
@@ -313,7 +313,7 @@ export default function ViewerDashboardClient({ initialData }: { initialData: Da
         <div className="fixed inset-0 z-[2000] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
             <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-              <h3 className="font-bold text-tycoon-navy">Dispatch Supply</h3>
+              <h3 className="font-bold text-tycoon-charcoal">Dispatch Supply</h3>
               <button onClick={() => {
                 setIsSupplyModalOpen(false);
                 setSupplyMessage(null);

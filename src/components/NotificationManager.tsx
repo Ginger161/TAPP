@@ -130,7 +130,7 @@ export default function NotificationManager() {
         {!isSubscribed ? (
           <button
             onClick={handleSubscribe}
-            className="flex-1 sm:flex-none px-4 py-2 bg-tycoon-navy text-white rounded-lg font-medium hover:bg-opacity-90 transition-all flex items-center justify-center gap-2"
+            className="flex-1 sm:flex-none px-4 py-2 bg-tycoon-red text-white rounded-lg font-medium hover:bg-opacity-90 transition-all flex items-center justify-center gap-2"
           >
             Enable Notifications
           </button>

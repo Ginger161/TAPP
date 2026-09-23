@@ -32,7 +32,7 @@ export default function GlobalAnalyticsClient({
     <div className="flex-1 flex flex-col p-4 md:p-8 overflow-y-auto">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-tycoon-navy">Master Ledger</h1>
+          <h1 className="text-3xl font-bold text-tycoon-charcoal">Master Ledger</h1>
           <p className="text-gray-500 mt-1">Global view of all system actions and financial records.</p>
         </div>
       </div>
@@ -42,13 +42,13 @@ export default function GlobalAnalyticsClient({
         <div className="flex border-b border-gray-200 bg-gray-50">
           <button
             onClick={() => setActiveTab('financial')}
-            className={`flex-1 py-4 text-center font-bold text-sm transition-colors ${activeTab === 'financial' ? 'bg-white text-tycoon-navy border-b-2 border-tycoon-red' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'}`}
+            className={`flex-1 py-4 text-center font-bold text-sm transition-colors ${activeTab === 'financial' ? 'bg-white text-tycoon-charcoal border-b-2 border-tycoon-red' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'}`}
           >
             Global Financial Logs
           </button>
           <button
             onClick={() => setActiveTab('audit')}
-            className={`flex-1 py-4 text-center font-bold text-sm transition-colors ${activeTab === 'audit' ? 'bg-white text-tycoon-navy border-b-2 border-tycoon-red' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'}`}
+            className={`flex-1 py-4 text-center font-bold text-sm transition-colors ${activeTab === 'audit' ? 'bg-white text-tycoon-charcoal border-b-2 border-tycoon-red' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'}`}
           >
             Master Audit Trail
           </button>
@@ -59,7 +59,7 @@ export default function GlobalAnalyticsClient({
           <input
             type="text"
             placeholder="Search by station..."
-            className="px-4 py-2 border border-gray-200 rounded-lg outline-none focus:ring-1 focus:ring-tycoon-navy w-full sm:max-w-xs text-sm"
+            className="px-4 py-2 border border-gray-200 rounded-lg outline-none focus:ring-1 focus:ring-tycoon-red w-full sm:max-w-xs text-sm"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -98,7 +98,7 @@ export default function GlobalAnalyticsClient({
                     <td className="p-4 text-gray-500 whitespace-nowrap">
                       {formatDateTimeToDDMMYYYY(log.timestamp)}
                     </td>
-                    <td className="p-4 font-bold text-tycoon-navy whitespace-nowrap">{log.stationName}</td>
+                    <td className="p-4 font-bold text-tycoon-charcoal whitespace-nowrap">{log.stationName}</td>
                     <td className="p-4">
                       <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-bold ${log.type === 'sale' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                         {log.type.toUpperCase()}
@@ -131,11 +131,11 @@ export default function GlobalAnalyticsClient({
               {filteredAuditLogs.map(log => (
                 <div key={log.id} className="p-4 hover:bg-gray-50/50 transition-colors flex gap-4">
                   <div className="shrink-0 pt-1">
-                    <div className="w-2 h-2 rounded-full bg-tycoon-navy mt-1.5"></div>
+                    <div className="w-2 h-2 rounded-full bg-tycoon-red mt-1.5"></div>
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-wrap items-center gap-1.5 text-sm text-gray-800">
-                      <span className="font-bold text-tycoon-navy">{log.actor}</span>
+                      <span className="font-bold text-tycoon-charcoal">{log.actor}</span>
                       <span>{log.action_description}</span>
                       {log.amount && <span className="font-bold">({log.amount})</span>}
                       {log.product_name && <span>for {log.product_name}</span>}

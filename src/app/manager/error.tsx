@@ -26,7 +26,7 @@ export default function ManagerErrorBoundary({
         </p>
         <button
           onClick={() => reset()}
-          className="w-full flex items-center justify-center gap-2 bg-tycoon-navy hover:bg-blue-800 text-white font-bold py-3 rounded-lg shadow-sm transition-colors"
+          className="w-full flex items-center justify-center gap-2 bg-tycoon-red hover:bg-red-800 text-white font-bold py-3 rounded-lg shadow-sm transition-colors"
         >
           <RefreshCcw className="w-5 h-5" />
           Try Again

@@ -73,7 +73,7 @@ export default async function ManagerSuppliesLoader() {
       <div className="max-w-5xl mx-auto space-y-8">
         <div>
           <h1 className="text-2xl font-bold text-tycoon-charcoal flex items-center gap-3">
-            <PackageSearch className="w-6 h-6 text-tycoon-navy" />
+            <PackageSearch className="w-6 h-6 text-tycoon-charcoal" />
             Supply Log
           </h1>
           <p className="text-gray-500 text-sm mt-1">

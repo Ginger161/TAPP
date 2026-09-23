@@ -74,7 +74,7 @@ export default function AnalyticsClient({
 
   if (isLoading && !data.length) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-gray-50 text-tycoon-navy h-full">
+      <div className="flex-1 flex items-center justify-center bg-gray-50 text-tycoon-charcoal h-full">
         <p className="font-bold text-xl">Loading Analytics...</p>
       </div>
     );
@@ -87,7 +87,7 @@ export default function AnalyticsClient({
       <div className="max-w-7xl mx-auto space-y-6">
         
         <header className="mb-8">
-          <h1 className="text-3xl font-bold text-tycoon-navy mb-2">Analytics Hub</h1>
+          <h1 className="text-3xl font-bold text-tycoon-charcoal mb-2">Analytics Hub</h1>
           <p className="text-gray-500 text-lg">{stationName}</p>
         </header>
 
@@ -127,7 +127,7 @@ export default function AnalyticsClient({
                   <div key={log.id} className={`p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 ${log.is_corrected ? 'bg-red-50/30' : 'hover:bg-gray-50'}`}>
                     <div className="space-y-1">
                       <div className="flex items-center gap-3">
-                        <span className="text-sm font-semibold text-tycoon-navy">{log.actor}</span>
+                        <span className="text-sm font-semibold text-tycoon-charcoal">{log.actor}</span>
                         <span className="text-sm text-gray-500">{log.action_description}</span>
                         {log.is_corrected && (
                           <span className="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
@@ -142,7 +142,7 @@ export default function AnalyticsClient({
                     </div>
                     <div className="flex flex-col md:items-end text-sm">
                       {log.amount && (
-                        <div className="font-bold text-tycoon-navy text-lg">
+                        <div className="font-bold text-tycoon-charcoal text-lg">
                           {log.amount}
                         </div>
                       )}
@@ -169,7 +169,7 @@ export default function AnalyticsClient({
                     onClick={() => setTimeframe(tf)}
                     className={`px-3 md:px-4 py-1.5 rounded-md transition-colors ${
                       timeframe === tf 
-                        ? 'bg-white text-tycoon-navy shadow-sm border border-gray-200' 
+                        ? 'bg-white text-tycoon-charcoal shadow-sm border border-gray-200' 
                         : 'text-gray-600 hover:text-gray-900'
                     }`}
                   >
@@ -198,7 +198,7 @@ export default function AnalyticsClient({
                     setIsExporting(false);
                   }
                 }}
-                className="flex items-center gap-2 bg-tycoon-navy hover:bg-blue-900 text-white font-bold py-2 px-4 rounded-lg transition-colors shadow-sm disabled:opacity-50"
+                className="flex items-center gap-2 bg-tycoon-red hover:bg-tycoon-red text-white font-bold py-2 px-4 rounded-lg transition-colors shadow-sm disabled:opacity-50"
               >
                 <Download className="w-4 h-4" />
                 {isExporting ? 'Exporting...' : 'Export Report'}
@@ -236,7 +236,7 @@ export default function AnalyticsClient({
                     <p className="text-gray-500 italic">No sales or supplies found for this period.</p>
                   ) : financials.productBreakdown.map(prod => (
                     <div key={prod.productId} className="p-4 bg-gray-50 rounded-xl border border-gray-100">
-                      <h4 className="font-bold text-tycoon-navy mb-2">{prod.productName}</h4>
+                      <h4 className="font-bold text-tycoon-charcoal mb-2">{prod.productName}</h4>
                       <div className="flex justify-between text-sm mb-1">
                         <span className="text-gray-600">Revenue:</span>
                         <span className="font-semibold text-emerald-600">₦{prod.revenue.toLocaleString()}</span>
@@ -286,7 +286,7 @@ export default function AnalyticsClient({
                                   if (e.target.checked) setSelectedYears(prev => [...prev, yr].sort().reverse());
                                   else setSelectedYears(prev => prev.filter(y => y !== yr));
                                 }}
-                                className="rounded border-gray-300 text-tycoon-navy focus:ring-tycoon-navy"
+                                className="rounded border-gray-300 text-tycoon-charcoal focus:ring-tycoon-red"
                               />
                               <span className="text-sm font-medium text-gray-700">{yr}</span>
                             </label>

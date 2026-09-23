@@ -18,13 +18,13 @@ export default async function NotificationsPage({
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <header className="bg-tycoon-navy text-white px-6 py-4 flex justify-between items-center shadow-md shrink-0">
+      <header className="bg-tycoon-charcoal text-white px-6 py-4 flex justify-between items-center shadow-md shrink-0">
         <div className="flex items-center gap-4">
           <Link href="/dashboard" className="p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors">
             <ArrowLeft size={20} />
           </Link>
           <div className="flex items-center gap-2">
-            <Bell size={24} className="text-blue-400" />
+            <Bell size={24} className="text-gray-400" />
             <h1 className="text-xl font-bold tracking-wide">Notification Center</h1>
           </div>
         </div>

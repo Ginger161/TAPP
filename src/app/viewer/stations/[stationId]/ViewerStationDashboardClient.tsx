@@ -151,7 +151,7 @@ export default function ViewerStationDashboardClient({
             {selectedDateFilter && (
               <button
                 onClick={() => setSelectedDateFilter(null)}
-                className="text-sm font-semibold text-tycoon-navy hover:underline"
+                className="text-sm font-semibold text-tycoon-charcoal hover:underline"
               >
                 Clear Filter
               </button>
@@ -280,7 +280,7 @@ export default function ViewerStationDashboardClient({
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className={`font-bold text-2xl ${prod.stock < 0 ? 'text-red-600' : 'text-tycoon-navy'}`}>
+                  <div className={`font-bold text-2xl ${prod.stock < 0 ? 'text-red-600' : 'text-tycoon-charcoal'}`}>
                     {prod.stock < 0 ? `-${Math.abs(prod.stock).toLocaleString()}` : `${prod.stock.toLocaleString()}`}
                     <span className="text-sm text-gray-500 ml-1">L</span>
                   </div>

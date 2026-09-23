@@ -47,8 +47,8 @@ function StationZone({ station, managers }: { station: Station, managers: Manage
   return (
     <div
       ref={setNodeRef}
-      className={`p-4 rounded-xl border-2 transition-all duration-200 min-h-[120px] flex flex-col hover:shadow-md hover:border-blue-400 cursor-pointer ${
-        isOver ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-md' : 'border-dashed border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50'
+      className={`p-4 rounded-xl border-2 transition-all duration-200 min-h-[120px] flex flex-col hover:shadow-md hover:border-gray-400 cursor-pointer ${
+        isOver ? 'border-tycoon-red bg-gray-50 dark:bg-tycoon-red/20 shadow-md' : 'border-dashed border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50'
       }`}
     >
       <h3 className="font-semibold text-gray-700 dark:text-gray-300 mb-3">{station.name}</h3>
@@ -75,7 +75,7 @@ function UnassignedZone({ managers }: { managers: Manager[] }) {
     <div
       ref={setNodeRef}
       className={`p-4 rounded-xl border-2 min-h-[400px] sticky top-4 ${
-        isOver ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-md' : 'border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm'
+        isOver ? 'border-tycoon-red bg-gray-50 dark:bg-tycoon-red/20 shadow-md' : 'border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm'
       }`}
     >
       <h3 className="font-semibold text-gray-700 dark:text-gray-300 mb-4 border-b pb-2">Unassigned Managers</h3>
@@ -238,8 +238,8 @@ export default function StationAssignmentsDndClient({
 
         <DragOverlay>
           {activeManager ? (
-            <div className="p-3 bg-white dark:bg-gray-800 border border-blue-500 rounded-lg shadow-xl opacity-90 scale-105">
-              <div className="text-sm font-medium text-blue-600">{activeManager.email}</div>
+            <div className="p-3 bg-white dark:bg-gray-800 border border-tycoon-red rounded-lg shadow-xl opacity-90 scale-105">
+              <div className="text-sm font-medium text-tycoon-red">{activeManager.email}</div>
             </div>
           ) : null}
         </DragOverlay>
@@ -254,7 +254,7 @@ export default function StationAssignmentsDndClient({
             </div>
             
             <form onSubmit={handleConfirmAction} className="p-6">
-              <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-lg text-sm font-medium border border-blue-100 dark:border-blue-800/30">
+              <div className="mb-6 p-4 bg-gray-50 dark:bg-tycoon-red/20 text-tycoon-red dark:text-gray-300 rounded-lg text-sm font-medium border border-gray-200 dark:border-gray-800/30">
                 {pendingAction.description}
               </div>
 
@@ -266,7 +266,7 @@ export default function StationAssignmentsDndClient({
                     required
                     value={adminPassword}
                     onChange={(e) => setAdminPassword(e.target.value)}
-                    className="w-full px-3 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 dark:border-gray-700"
+                    className="w-full px-3 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-tycoon-red bg-white dark:bg-gray-800 dark:border-gray-700"
                     placeholder="Enter your password to confirm"
                   />
                 </div>
@@ -283,7 +283,7 @@ export default function StationAssignmentsDndClient({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-2 bg-tycoon-red hover:bg-red-800 text-white font-medium rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? 'Verifying...' : 'Confirm'}
                 </button>

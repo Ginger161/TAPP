@@ -26,12 +26,12 @@ export default function CreateUserForm({ stations }: { stations: { id: string, n
     <form id="create-user-form" action={handleSubmit} className="space-y-4">
       <div>
         <label className="block text-sm font-medium mb-1.5" htmlFor="email">Email</label>
-        <input required id="email" name="email" type="email" className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-blue-500" />
+        <input required id="email" name="email" type="email" className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-tycoon-red" />
       </div>
 
       <div>
         <label className="block text-sm font-medium mb-1.5" htmlFor="password">Temporary Password</label>
-        <input required id="password" name="password" type="password" className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-blue-500" />
+        <input required id="password" name="password" type="password" className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-tycoon-red" />
       </div>
 
       <div>
@@ -62,7 +62,7 @@ export default function CreateUserForm({ stations }: { stations: { id: string, n
       </div>
 
       <div className="flex items-center gap-2">
-        <input type="checkbox" id="canSupply" name="canSupply" className="rounded text-blue-500" />
+        <input type="checkbox" id="canSupply" name="canSupply" className="rounded text-tycoon-red" />
         <label className="text-sm font-medium" htmlFor="canSupply">Grant Supply Permission (Viewer Only)</label>
       </div>
 

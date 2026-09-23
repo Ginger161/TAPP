@@ -39,7 +39,7 @@ const NotificationItem = ({
   return (
     <li ref={ref} className={`p-4 transition-colors group ${notification.is_read ? 'bg-white hover:bg-gray-50' : 'bg-slate-50 hover:bg-slate-100'}`}>
       <div className="flex gap-3 items-start">
-        <div className={`mt-1 flex-shrink-0 w-2 h-2 rounded-full ${notification.type === 'supply' ? 'bg-blue-500' : 'bg-red-500'} ${notification.is_read ? 'opacity-30' : 'opacity-100'}`} />
+        <div className={`mt-1 flex-shrink-0 w-2 h-2 rounded-full ${notification.type === 'supply' ? 'bg-tycoon-red' : 'bg-red-500'} ${notification.is_read ? 'opacity-30' : 'opacity-100'}`} />
         <div className="flex-1 min-w-0 cursor-pointer" onClick={() => { if (!notification.is_read) onMarkAsRead(notification.id) }}>
           <p className={`text-sm mb-1 ${notification.is_read ? 'text-slate-600' : 'font-medium text-gray-900'}`}>{notification.title}</p>
           <p className={`text-sm line-clamp-2 ${notification.is_read ? 'text-slate-500' : 'text-gray-700'}`}>{notification.message}</p>
@@ -129,7 +129,7 @@ export default function NotificationBell() {
       >
         <Bell size={20} />
         {unreadCount > 0 && (
-          <span className="absolute top-1 right-1 flex items-center justify-center w-4 h-4 text-[10px] font-bold text-white bg-red-600 rounded-full border border-tycoon-navy">
+          <span className="absolute top-1 right-1 flex items-center justify-center w-4 h-4 text-[10px] font-bold text-white bg-red-600 rounded-full border border-tycoon-red">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
@@ -169,7 +169,7 @@ export default function NotificationBell() {
             <Link
               href="/notifications"
               onClick={() => setIsOpen(false)}
-              className="block w-full text-center text-sm font-semibold text-tycoon-navy hover:text-blue-700 transition-colors"
+              className="block w-full text-center text-sm font-semibold text-tycoon-charcoal hover:text-tycoon-red transition-colors"
             >
               View All Notifications
             </Link>

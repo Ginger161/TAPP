@@ -75,7 +75,7 @@ export default async function AdminUsersPage() {
       <div className="max-w-6xl mx-auto space-y-8">
         <div>
           <h1 className="text-3xl font-extrabold text-slate-800 dark:text-white flex items-center gap-3">
-            <Users className="w-8 h-8 text-blue-500" />
+            <Users className="w-8 h-8 text-tycoon-red" />
             User Management
           </h1>
           <p className="text-slate-500 dark:text-gray-400 mt-2 font-medium">Create accounts and assign station managers.</p>
@@ -96,7 +96,7 @@ export default async function AdminUsersPage() {
           {/* User List */}
           <div className={`bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 ${isSuperAdmin ? 'lg:col-span-2' : 'w-full'}`}>
             <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-2">
-              <Shield className="w-5 h-5 text-tycoon-navy" />
+              <Shield className="w-5 h-5 text-tycoon-charcoal" />
               Active Accounts
             </h2>
             <div className="w-full overflow-x-auto">
@@ -141,7 +141,7 @@ export default async function AdminUsersPage() {
         <div className="mt-8">
           <div className="flex items-center gap-4 mb-6">
             <h2 className="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
-              <Store className="w-5 h-5 text-tycoon-navy" />
+              <Store className="w-5 h-5 text-tycoon-charcoal" />
               Station Assignments
             </h2>
             {!isSuperAdmin && (

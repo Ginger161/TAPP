@@ -155,11 +155,11 @@ export default function AdminDashboard() {
         <div className="flex flex-wrap items-center gap-8 text-sm">
           <div className="flex flex-col">
             <span className="text-gray-500 uppercase tracking-wider text-xs font-semibold">Today&apos;s Volume</span>
-            <span className="font-bold text-lg text-tycoon-navy truncate" title={`${data.kpi.volume.toLocaleString()} L`}>{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(data.kpi.volume)} L</span>
+            <span className="font-bold text-lg text-tycoon-charcoal truncate" title={`${data.kpi.volume.toLocaleString()} L`}>{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(data.kpi.volume)} L</span>
           </div>
           <div className="flex flex-col">
             <span className="text-gray-500 uppercase tracking-wider text-xs font-semibold">Today&apos;s Revenue</span>
-            <span className="font-bold text-lg text-tycoon-navy truncate" title={`₦${data.kpi.revenue.toLocaleString()}`}>₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(data.kpi.revenue)}</span>
+            <span className="font-bold text-lg text-tycoon-charcoal truncate" title={`₦${data.kpi.revenue.toLocaleString()}`}>₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(data.kpi.revenue)}</span>
           </div>
           <div className="flex flex-col">
             <span className="text-gray-500 uppercase tracking-wider text-xs font-semibold">Pending Supplies</span>
@@ -226,11 +226,11 @@ export default function AdminDashboard() {
                   setSelectedStationId(station.id);
                 }
               }}
-              className={`p-5 rounded-xl cursor-pointer border shadow-sm transition-all hover:-translate-y-1 hover:shadow-md ${selectedStationId === station.id ? 'border-tycoon-navy bg-blue-50/50 ring-2 ring-tycoon-navy/20' : 'border-gray-200 bg-white hover:bg-gray-50'}`}
+              className={`p-5 rounded-xl cursor-pointer border shadow-sm transition-all hover:-translate-y-1 hover:shadow-md ${selectedStationId === station.id ? 'border-tycoon-red bg-gray-50/50 ring-2 ring-tycoon-red/20' : 'border-gray-200 bg-white hover:bg-gray-50'}`}
             >
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <span className="font-bold text-lg text-tycoon-navy block">{station.name}</span>
+                  <span className="font-bold text-lg text-tycoon-charcoal block">{station.name}</span>
                   <span className="text-sm text-gray-500 font-medium flex items-center gap-1 mt-0.5">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                     {station.managerName || 'Unassigned'}
@@ -284,7 +284,7 @@ export default function AdminDashboard() {
           <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
             <div className="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
               <div>
-                <h3 className="font-bold text-xl text-tycoon-navy">{selectedStation.name}</h3>
+                <h3 className="font-bold text-xl text-tycoon-charcoal">{selectedStation.name}</h3>
                 <div className="mt-1"><UrgencyBadge status={selectedStation.urgency} /></div>
               </div>
               <button onClick={() => {
@@ -426,7 +426,7 @@ export default function AdminDashboard() {
                   type="number"
                   value={editSupplyData.quantity}
                   onChange={e => setEditSupplyData({...editSupplyData, quantity: e.target.value})}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-tycoon-navy focus:ring-1 focus:ring-tycoon-navy outline-none transition-all text-gray-900"
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-tycoon-red focus:ring-1 focus:ring-tycoon-red outline-none transition-all text-gray-900"
                 />
               </div>
 
@@ -436,7 +436,7 @@ export default function AdminDashboard() {
                   type="number"
                   value={editSupplyData.costPrice}
                   onChange={e => setEditSupplyData({...editSupplyData, costPrice: e.target.value})}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-tycoon-navy focus:ring-1 focus:ring-tycoon-navy outline-none transition-all text-gray-900"
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-tycoon-red focus:ring-1 focus:ring-tycoon-red outline-none transition-all text-gray-900"
                 />
               </div>
 
@@ -464,7 +464,7 @@ export default function AdminDashboard() {
                   }
                   setIsSubmittingEditSupply(false);
                 }}
-                className="w-full bg-tycoon-navy hover:bg-blue-900 text-white font-bold py-3 rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
+                className="w-full bg-tycoon-red hover:bg-tycoon-red text-white font-bold py-3 rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 {isSubmittingEditSupply ? 'Updating...' : 'Update Supply'}
               </button>

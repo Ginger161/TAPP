@@ -100,7 +100,7 @@ export default function ManagerDashboardClient({ initialData }: { initialData: M
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className={`font-bold text-2xl ${prod.stock < 0 ? 'text-red-600' : 'text-tycoon-navy'}`}>
+                  <div className={`font-bold text-2xl ${prod.stock < 0 ? 'text-red-600' : 'text-tycoon-charcoal'}`}>
                     {prod.stock < 0 ? `-${Math.abs(prod.stock).toLocaleString()}` : `${prod.stock.toLocaleString()}`}
                     <span className="text-sm text-gray-500 ml-1">L</span>
                   </div>
@@ -131,21 +131,21 @@ export default function ManagerDashboardClient({ initialData }: { initialData: M
                   <TrendingUp className="text-gray-400" size={16} />
                   <h3 className="text-xs font-semibold text-gray-500 uppercase">Revenue</h3>
                 </div>
-                <p className="font-bold text-lg text-tycoon-navy truncate" title={`₦${initialData.revenue.toLocaleString()}`}>₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(initialData.revenue)}</p>
+                <p className="font-bold text-lg text-tycoon-charcoal truncate" title={`₦${initialData.revenue.toLocaleString()}`}>₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(initialData.revenue)}</p>
               </div>
               <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
                 <div className="flex items-center gap-2 mb-2">
                   <Package className="text-gray-400" size={16} />
                   <h3 className="text-xs font-semibold text-gray-500 uppercase">COGS</h3>
                 </div>
-                <p className="font-bold text-lg text-tycoon-navy truncate" title={`₦${initialData.cogs.toLocaleString()}`}>₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(initialData.cogs)}</p>
+                <p className="font-bold text-lg text-tycoon-charcoal truncate" title={`₦${initialData.cogs.toLocaleString()}`}>₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(initialData.cogs)}</p>
               </div>
               <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
                 <div className="flex items-center gap-2 mb-2">
                   <Wallet className="text-gray-400" size={16} />
                   <h3 className="text-xs font-semibold text-gray-500 uppercase">Expenses</h3>
                 </div>
-                <p className="font-bold text-lg text-tycoon-navy truncate" title={`₦${initialData.approvedExpenses.toLocaleString()}`}>₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(initialData.approvedExpenses)}</p>
+                <p className="font-bold text-lg text-tycoon-charcoal truncate" title={`₦${initialData.approvedExpenses.toLocaleString()}`}>₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(initialData.approvedExpenses)}</p>
               </div>
               <div className={`p-4 rounded-xl shadow-sm border flex flex-col justify-between ${initialData.netProfit >= 0 ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'}`}>
                 <div className="flex items-center gap-2 mb-2">

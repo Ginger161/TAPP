@@ -28,7 +28,7 @@ export default async function NewSupplyPage() {
       <div className="max-w-2xl mx-auto space-y-8">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-            <Truck className="w-8 h-8 text-blue-500" />
+            <Truck className="w-8 h-8 text-tycoon-red" />
             Initiate Supply
           </h1>
           <p className="text-gray-500 dark:text-gray-400 mt-2">
@@ -38,7 +38,7 @@ export default async function NewSupplyPage() {
 
         <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
           <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
-            <Plus className="w-5 h-5 text-blue-500" />
+            <Plus className="w-5 h-5 text-tycoon-red" />
             New Supply Record
           </h2>
           <NewSupplyFormClient stations={stations} products={products} />

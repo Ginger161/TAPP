@@ -50,7 +50,7 @@ export default function NotificationListClient({
         <button
           onClick={handleMarkAllAsRead}
           disabled={isMarkingAll || !notifications.some(n => !n.is_read)}
-          className="text-sm font-semibold text-tycoon-navy hover:text-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="text-sm font-semibold text-tycoon-charcoal hover:text-tycoon-red disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {isMarkingAll ? 'Marking...' : 'Mark All as Read'}
         </button>
@@ -65,7 +65,7 @@ export default function NotificationListClient({
         ) : (
           notifications.map(notification => (
             <div key={notification.id} className={`p-5 transition-colors group flex items-start gap-4 ${notification.is_read ? 'bg-white' : 'bg-slate-50'}`}>
-              <div className={`mt-1.5 flex-shrink-0 w-2.5 h-2.5 rounded-full ${notification.type === 'supply' ? 'bg-blue-500' : notification.type === 'expense' ? 'bg-orange-500' : 'bg-red-500'} ${notification.is_read ? 'opacity-30' : 'opacity-100'}`} />
+              <div className={`mt-1.5 flex-shrink-0 w-2.5 h-2.5 rounded-full ${notification.type === 'supply' ? 'bg-tycoon-red' : notification.type === 'expense' ? 'bg-orange-500' : 'bg-red-500'} ${notification.is_read ? 'opacity-30' : 'opacity-100'}`} />
               <div className={`flex-1 min-w-0 ${!notification.is_read ? 'cursor-pointer' : ''}`} onClick={() => { if (!notification.is_read) handleMarkAsRead(notification.id) }}>
                 <p className={`text-base mb-1 ${notification.is_read ? 'text-slate-600' : 'text-gray-900 font-medium'}`}>
                   {notification.title}

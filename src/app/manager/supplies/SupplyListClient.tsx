@@ -138,7 +138,7 @@ export default function SupplyListClient({
             onClick={() => setActiveTab('pending')}
             className={`flex items-center gap-2 py-3 px-4 font-medium text-sm transition-colors border-b-2 ${
               activeTab === 'pending' 
-                ? 'border-tycoon-navy text-tycoon-navy' 
+                ? 'border-tycoon-red text-tycoon-charcoal' 
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
             }`}
           >
@@ -149,7 +149,7 @@ export default function SupplyListClient({
             onClick={() => setActiveTab('received')}
             className={`flex items-center gap-2 py-3 px-4 font-medium text-sm transition-colors border-b-2 ${
               activeTab === 'received' 
-                ? 'border-tycoon-navy text-tycoon-navy' 
+                ? 'border-tycoon-red text-tycoon-charcoal' 
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
             }`}
           >
@@ -159,7 +159,7 @@ export default function SupplyListClient({
         </div>
         <button
           onClick={() => setIsTransferModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-tycoon-navy hover:bg-tycoon-navy/90 text-white rounded-lg font-medium transition-colors text-sm"
+          className="flex items-center gap-2 px-4 py-2 bg-tycoon-red hover:bg-red-800 text-white rounded-lg font-medium transition-colors text-sm"
         >
           <ArrowRightLeft className="w-4 h-4" />
           Transfer Out Stock
@@ -307,7 +307,7 @@ function TransferOutModal({
       <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800 w-full max-w-md overflow-hidden">
         <div className="p-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-800/50">
           <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-            <ArrowRightLeft className="w-5 h-5 text-tycoon-navy" />
+            <ArrowRightLeft className="w-5 h-5 text-tycoon-charcoal" />
             Transfer Out Stock
           </h3>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
@@ -334,7 +334,7 @@ function TransferOutModal({
               step="any"
               value={transferData.volume}
               onChange={(e) => setTransferData({...transferData, volume: e.target.value})}
-              className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-tycoon-navy"
+              className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-tycoon-red"
               placeholder="e.g. 5000"
             />
           </div>
@@ -345,7 +345,7 @@ function TransferOutModal({
               required
               value={transferData.destination}
               onChange={(e) => setTransferData({...transferData, destination: e.target.value})}
-              className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-tycoon-navy"
+              className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-tycoon-red"
               placeholder="e.g. Main Branch"
             />
           </div>
@@ -356,7 +356,7 @@ function TransferOutModal({
               required
               value={transferData.managerInCharge}
               onChange={(e) => setTransferData({...transferData, managerInCharge: e.target.value})}
-              className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-tycoon-navy"
+              className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-tycoon-red"
               placeholder="Name of Manager"
             />
           </div>
@@ -366,7 +366,7 @@ function TransferOutModal({
               type="text"
               value={transferData.comment}
               onChange={(e) => setTransferData({...transferData, comment: e.target.value})}
-              className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-tycoon-navy"
+              className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-tycoon-red"
               placeholder="Any additional details"
             />
           </div>
@@ -382,7 +382,7 @@ function TransferOutModal({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-2 bg-tycoon-navy hover:bg-tycoon-navy/90 text-white font-medium rounded-xl transition-all disabled:opacity-50"
+              className="px-6 py-2 bg-tycoon-red hover:bg-red-800 text-white font-medium rounded-xl transition-all disabled:opacity-50"
             >
               {isSubmitting ? 'Submitting...' : 'Log Transfer'}
             </button>
