@@ -63,12 +63,12 @@ export default function NewSupplyFormClient({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium mb-1.5" htmlFor="quantity">Quantity (Liters)</label>
-          <input required id="quantity" name="quantity" type="number" step="0.01" min="0" className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-tycoon-red" />
+          <input required id="quantity" name="quantity" type="number" inputMode="decimal" pattern="[0-9]*" inputMode="decimal" pattern="[0-9]*" step="0.01" min="0" className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-tycoon-red" />
         </div>
 
         <div>
           <label className="block text-sm font-medium mb-1.5" htmlFor="costPrice">Total Cost Price (₦)</label>
-          <input required id="costPrice" name="costPrice" type="number" step="0.01" min="0" className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-tycoon-red" />
+          <input required id="costPrice" name="costPrice" type="number" inputMode="decimal" pattern="[0-9]*" inputMode="decimal" pattern="[0-9]*" step="0.01" min="0" className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-tycoon-red" />
         </div>
       </div>
 

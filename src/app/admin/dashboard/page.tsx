@@ -318,11 +318,11 @@ export default function AdminDashboard() {
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-gray-600 uppercase mb-1">Volume (L)</label>
-                      <input required type="number" min="0" step="1" className="w-full p-2 border border-gray-200 rounded-lg outline-none" placeholder="e.g. 10000" value={supplyData.quantity} onChange={(e) => setSupplyData({...supplyData, quantity: e.target.value})} />
+                      <input required type="number" inputMode="decimal" pattern="[0-9]*" inputMode="decimal" pattern="[0-9]*" min="0" step="1" className="w-full p-2 border border-gray-200 rounded-lg outline-none" placeholder="e.g. 10000" value={supplyData.quantity} onChange={(e) => setSupplyData({...supplyData, quantity: e.target.value})} />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-gray-600 uppercase mb-1">Total Cost (₦)</label>
-                      <input required type="number" min="0" step="0.01" className="w-full p-2 border border-gray-200 rounded-lg outline-none" placeholder="e.g. 500000" value={supplyData.costPrice} onChange={(e) => setSupplyData({...supplyData, costPrice: e.target.value})} />
+                      <input required type="number" inputMode="decimal" pattern="[0-9]*" inputMode="decimal" pattern="[0-9]*" min="0" step="0.01" className="w-full p-2 border border-gray-200 rounded-lg outline-none" placeholder="e.g. 500000" value={supplyData.costPrice} onChange={(e) => setSupplyData({...supplyData, costPrice: e.target.value})} />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-gray-600 uppercase mb-1">Supplier Name</label>
@@ -423,7 +423,7 @@ export default function AdminDashboard() {
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Quantity (Liters)</label>
                 <input 
-                  type="number"
+                  type="number" inputMode="decimal" pattern="[0-9]*" inputMode="decimal" pattern="[0-9]*"
                   value={editSupplyData.quantity}
                   onChange={e => setEditSupplyData({...editSupplyData, quantity: e.target.value})}
                   className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-tycoon-red focus:ring-1 focus:ring-tycoon-red outline-none transition-all text-gray-900"
@@ -433,7 +433,7 @@ export default function AdminDashboard() {
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Cost Price (₦)</label>
                 <input 
-                  type="number"
+                  type="number" inputMode="decimal" pattern="[0-9]*" inputMode="decimal" pattern="[0-9]*"
                   value={editSupplyData.costPrice}
                   onChange={e => setEditSupplyData({...editSupplyData, costPrice: e.target.value})}
                   className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-tycoon-red focus:ring-1 focus:ring-tycoon-red outline-none transition-all text-gray-900"

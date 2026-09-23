@@ -66,7 +66,7 @@ export default function TestUrgencyPage() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Current Stock (Litres)</label>
             <input 
-              type="number" 
+              type="number" inputMode="decimal" pattern="[0-9]*" inputMode="decimal" pattern="[0-9]*" 
               value={stock} 
               onChange={(e) => setStock(Number(e.target.value))}
               className="w-full border border-gray-300 rounded p-2"
@@ -75,7 +75,7 @@ export default function TestUrgencyPage() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">7-Day Average Sales (Litres/Day)</label>
             <input 
-              type="number" 
+              type="number" inputMode="decimal" pattern="[0-9]*" inputMode="decimal" pattern="[0-9]*" 
               value={sales} 
               onChange={(e) => setSales(Number(e.target.value))}
               className="w-full border border-gray-300 rounded p-2"
@@ -93,15 +93,15 @@ export default function TestUrgencyPage() {
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <label className="block text-xs font-medium text-red-700 mb-1">Red Threshold (Days)</label>
-                <input type="number" value={redThreshold} onChange={(e) => setRedThreshold(Number(e.target.value))} className="w-full border border-red-300 rounded p-1 text-sm" />
+                <input type="number" inputMode="decimal" pattern="[0-9]*" inputMode="decimal" pattern="[0-9]*" value={redThreshold} onChange={(e) => setRedThreshold(Number(e.target.value))} className="w-full border border-red-300 rounded p-1 text-sm" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-yellow-700 mb-1">Yellow Threshold (Days)</label>
-                <input type="number" value={yellowThreshold} onChange={(e) => setYellowThreshold(Number(e.target.value))} className="w-full border border-yellow-300 rounded p-1 text-sm" />
+                <input type="number" inputMode="decimal" pattern="[0-9]*" inputMode="decimal" pattern="[0-9]*" value={yellowThreshold} onChange={(e) => setYellowThreshold(Number(e.target.value))} className="w-full border border-yellow-300 rounded p-1 text-sm" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-green-700 mb-1">Green Threshold (Days)</label>
-                <input type="number" value={greenThreshold} onChange={(e) => setGreenThreshold(Number(e.target.value))} className="w-full border border-green-300 rounded p-1 text-sm" />
+                <input type="number" inputMode="decimal" pattern="[0-9]*" inputMode="decimal" pattern="[0-9]*" value={greenThreshold} onChange={(e) => setGreenThreshold(Number(e.target.value))} className="w-full border border-green-300 rounded p-1 text-sm" />
               </div>
             </div>
           )}

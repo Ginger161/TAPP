@@ -280,7 +280,7 @@ export default function EODClient({ products }: { products: Product[] }) {
                           <div>
                             <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Start Meter (Opt)</label>
                             <input 
-                              type="number"
+                              type="number" inputMode="decimal" pattern="[0-9]*" inputMode="decimal" pattern="[0-9]*"
                               step="0.01"
                               value={batch.startMeter}
                               onChange={(e) => handleBatchChange(product.id, idx, 'startMeter', e.target.value)}
@@ -291,7 +291,7 @@ export default function EODClient({ products }: { products: Product[] }) {
                           <div>
                             <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Close Meter (Opt)</label>
                             <input 
-                              type="number"
+                              type="number" inputMode="decimal" pattern="[0-9]*" inputMode="decimal" pattern="[0-9]*"
                               step="0.01"
                               value={batch.closeMeter}
                               onChange={(e) => handleBatchChange(product.id, idx, 'closeMeter', e.target.value)}
@@ -302,7 +302,7 @@ export default function EODClient({ products }: { products: Product[] }) {
                           <div>
                             <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Volume (L) *</label>
                             <input 
-                              type="number"
+                              type="number" inputMode="decimal" pattern="[0-9]*" inputMode="decimal" pattern="[0-9]*"
                               step="0.01"
                               value={batch.volume}
                               onChange={(e) => handleBatchChange(product.id, idx, 'volume', e.target.value)}
@@ -313,7 +313,7 @@ export default function EODClient({ products }: { products: Product[] }) {
                           <div>
                             <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Selling Price (₦/L) *</label>
                             <input 
-                              type="number"
+                              type="number" inputMode="decimal" pattern="[0-9]*" inputMode="decimal" pattern="[0-9]*"
                               step="0.01"
                               value={batch.pricePerLiter}
                               onChange={(e) => handleBatchChange(product.id, idx, 'pricePerLiter', e.target.value)}
@@ -348,7 +348,7 @@ export default function EODClient({ products }: { products: Product[] }) {
                   <div className="max-w-xs">
                     <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">CLOSING VOLUME (L)</label>
                     <input 
-                      type="number"
+                      type="number" inputMode="decimal" pattern="[0-9]*" inputMode="decimal" pattern="[0-9]*"
                       step="0.01"
                       value={pData.dipVolume}
                       onChange={(e) => handleDipChange(product.id, e.target.value)}
@@ -380,7 +380,7 @@ export default function EODClient({ products }: { products: Product[] }) {
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-bold">₦</span>
                   <input 
-                    type="number"
+                    type="number" inputMode="decimal" pattern="[0-9]*" inputMode="decimal" pattern="[0-9]*"
                     step="0.01"
                     value={exp.amount}
                     onChange={(e) => handleExpenseChange(idx, 'amount', e.target.value)}
@@ -418,7 +418,7 @@ export default function EODClient({ products }: { products: Product[] }) {
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-bold">₦</span>
                 <input 
-                  type="number"
+                  type="number" inputMode="decimal" pattern="[0-9]*" inputMode="decimal" pattern="[0-9]*"
                   step="0.01"
                   value={posAmount}
                   onChange={(e) => setPosAmount(e.target.value)}
@@ -432,7 +432,7 @@ export default function EODClient({ products }: { products: Product[] }) {
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-bold">₦</span>
                 <input 
-                  type="number"
+                  type="number" inputMode="decimal" pattern="[0-9]*" inputMode="decimal" pattern="[0-9]*"
                   step="0.01"
                   value={cashAmount}
                   onChange={(e) => setCashAmount(e.target.value)}

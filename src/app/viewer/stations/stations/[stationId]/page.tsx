@@ -283,7 +283,7 @@ export default function AdminStationDashboard() {
                   New Value ({editingItem.type === 'sale' ? 'Liters' : 'Dollars'})
                 </label>
                 <input
-                  type="number"
+                  type="number" inputMode="decimal" pattern="[0-9]*"
                   step="0.01"
                   required
                   value={editValue}

@@ -83,7 +83,7 @@ export default function ManagerDashboardClient({ initialData }: { initialData: M
             {initialData.productStatus.map(prod => (
               <div 
                 key={prod.id} 
-                className={`p-4 rounded-xl shadow-md border-l-4 bg-white flex justify-between items-center ${
+                className={`p-6 rounded-xl shadow-md border-l-4 bg-white flex justify-between items-center ${
                   prod.status === 'Red' ? 'border-red-500' : 
                   prod.status === 'Green' ? 'border-green-500' : 'border-transparent'
                 }`}
@@ -120,34 +120,34 @@ export default function ManagerDashboardClient({ initialData }: { initialData: M
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-            <div className="lg:col-span-2 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+            <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
               <h3 className="text-xs font-semibold text-gray-500 uppercase mb-4">7-Day Sales Trend</h3>
               <SalesChart data={initialData.salesTrend} />
             </div>
             
             <div className="lg:col-span-1 grid grid-cols-2 gap-4">
-              <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
+              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
                 <div className="flex items-center gap-2 mb-2">
                   <TrendingUp className="text-gray-400" size={16} />
                   <h3 className="text-xs font-semibold text-gray-500 uppercase">Revenue</h3>
                 </div>
                 <p className="font-bold text-lg text-tycoon-charcoal truncate" title={`₦${initialData.revenue.toLocaleString()}`}>₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(initialData.revenue)}</p>
               </div>
-              <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
+              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
                 <div className="flex items-center gap-2 mb-2">
                   <Package className="text-gray-400" size={16} />
                   <h3 className="text-xs font-semibold text-gray-500 uppercase">COGS</h3>
                 </div>
                 <p className="font-bold text-lg text-tycoon-charcoal truncate" title={`₦${initialData.cogs.toLocaleString()}`}>₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(initialData.cogs)}</p>
               </div>
-              <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
+              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
                 <div className="flex items-center gap-2 mb-2">
                   <Wallet className="text-gray-400" size={16} />
                   <h3 className="text-xs font-semibold text-gray-500 uppercase">Expenses</h3>
                 </div>
                 <p className="font-bold text-lg text-tycoon-charcoal truncate" title={`₦${initialData.approvedExpenses.toLocaleString()}`}>₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(initialData.approvedExpenses)}</p>
               </div>
-              <div className={`p-4 rounded-xl shadow-sm border flex flex-col justify-between ${initialData.netProfit >= 0 ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'}`}>
+              <div className={`p-6 rounded-xl shadow-sm border flex flex-col justify-between ${initialData.netProfit >= 0 ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'}`}>
                 <div className="flex items-center gap-2 mb-2">
                   <DollarSign className={initialData.netProfit >= 0 ? 'text-emerald-500' : 'text-red-500'} size={16} />
                   <h3 className={`text-xs font-bold uppercase ${initialData.netProfit >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>Net Profit</h3>

@@ -277,7 +277,7 @@ export default function ViewerStationDashboardClient({
             {data.productStatus.map(prod => (
               <div 
                 key={prod.id} 
-                className={`p-4 rounded-xl shadow-md border-l-4 bg-white flex justify-between items-center ${
+                className={`p-6 rounded-xl shadow-md border-l-4 bg-white flex justify-between items-center ${
                   prod.status === 'Red' ? 'border-red-500' : 
                   prod.status === 'Green' ? 'border-green-500' : 'border-transparent'
                 }`}
@@ -306,7 +306,7 @@ export default function ViewerStationDashboardClient({
 
         {/* Sales Trend Chart */}
         <section>
-          <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 mb-6">
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 mb-6">
             <h3 className="text-xs font-semibold text-gray-500 uppercase mb-4">7-Day Sales Trend</h3>
             <SalesChart data={data.salesTrend} />
           </div>

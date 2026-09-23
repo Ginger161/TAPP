@@ -332,7 +332,7 @@ export default function AdminStationDashboardClient({
                                   setEditingItem({ id: sale.id, type: 'sale', name: sale.product_name, amount: sale.quantity_sold });
                                   setEditValue(sale.quantity_sold.toString());
                                 }}
-                                className="text-gray-400 hover:text-tycoon-red p-1 transition-colors self-center"
+                                className="text-gray-400 hover:text-tycoon-red w-11 h-11 flex items-center justify-center transition-colors self-center"
                               >
                                 <Edit2 size={16} />
                               </button>
@@ -375,7 +375,7 @@ export default function AdminStationDashboardClient({
                                   setEditingItem({ id: exp.id, type: 'expense', name: exp.expense_type, amount: exp.amount });
                                   setEditValue(exp.amount.toString());
                                 }}
-                                className="text-gray-400 hover:text-tycoon-red p-1 transition-colors"
+                                className="text-gray-400 hover:text-tycoon-red w-11 h-11 flex items-center justify-center transition-colors"
                               >
                                 <Edit2 size={16} />
                               </button>
@@ -457,28 +457,28 @@ export default function AdminStationDashboardClient({
             </div>
           </div>
           <div className={`grid grid-cols-2 md:grid-cols-4 gap-4 transition-opacity duration-200 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
-            <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <div className="flex items-center gap-2 mb-2">
                 <TrendingUp className="text-gray-400" size={16} />
                 <h3 className="text-xs font-semibold text-gray-500 uppercase">Revenue</h3>
               </div>
               <p className="font-bold text-lg text-tycoon-charcoal truncate" title={`₦${data.financialOverview.revenue.toLocaleString()}`}>₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(data.financialOverview.revenue)}</p>
             </div>
-            <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <div className="flex items-center gap-2 mb-2">
                 <Package className="text-gray-400" size={16} />
                 <h3 className="text-xs font-semibold text-gray-500 uppercase">COGS</h3>
               </div>
               <p className="font-bold text-lg text-tycoon-charcoal truncate" title={`₦${data.financialOverview.cogs.toLocaleString()}`}>₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(data.financialOverview.cogs)}</p>
             </div>
-            <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <div className="flex items-center gap-2 mb-2">
                 <Wallet className="text-gray-400" size={16} />
                 <h3 className="text-xs font-semibold text-gray-500 uppercase">Expenses</h3>
               </div>
               <p className="font-bold text-lg text-tycoon-charcoal truncate" title={`₦${data.financialOverview.approvedExpenses.toLocaleString()}`}>₦{Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(data.financialOverview.approvedExpenses)}</p>
             </div>
-            <div className={`p-4 rounded-xl shadow-sm border flex flex-col justify-between ${data.financialOverview.netProfit >= 0 ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'}`}>
+            <div className={`p-6 rounded-xl shadow-sm border flex flex-col justify-between ${data.financialOverview.netProfit >= 0 ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'}`}>
               <div className="flex items-center gap-2 mb-2">
                 <DollarSign className={data.financialOverview.netProfit >= 0 ? 'text-emerald-500' : 'text-red-500'} size={16} />
                 <h3 className={`text-xs font-bold uppercase ${data.financialOverview.netProfit >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>Net Profit</h3>
@@ -502,7 +502,7 @@ export default function AdminStationDashboardClient({
             {data.productStatus.map(prod => (
               <div 
                 key={prod.id} 
-                className={`p-4 rounded-xl shadow-md border-l-4 bg-white flex justify-between items-center ${
+                className={`p-6 rounded-xl shadow-md border-l-4 bg-white flex justify-between items-center ${
                   prod.status === 'Red' ? 'border-red-500' : 
                   prod.status === 'Green' ? 'border-green-500' : 'border-transparent'
                 }`}
@@ -531,7 +531,7 @@ export default function AdminStationDashboardClient({
 
         {/* Sales Trend Chart */}
         <section className={`transition-opacity duration-200 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
-          <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 mb-6">
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 mb-6">
             <h3 className="text-xs font-semibold text-gray-500 uppercase mb-4">{currentTfLabel} Sales Trend</h3>
             <SalesChart data={data.salesTrend} />
           </div>
@@ -560,7 +560,7 @@ export default function AdminStationDashboardClient({
                   New Value ({editingItem.type === 'sale' ? 'Liters' : 'Dollars'})
                 </label>
                 <input
-                  type="number"
+                  type="number" inputMode="decimal" pattern="[0-9]*"
                   step="0.01"
                   required
                   value={editValue}
