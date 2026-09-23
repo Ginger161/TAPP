@@ -301,8 +301,8 @@ export default function AnalyticsClient({
                   {selectedYears.length === 0 ? (
                     <div className="h-[400px] flex items-center justify-center text-gray-500">Please select at least one year.</div>
                   ) : chartMode === 'overlay' ? (
-                    <div className="h-[400px]">
-                      <ResponsiveContainer width="100%" height="100%">
+                    <div className="h-[400px] outline-none focus:outline-none" style={{ WebkitTapHighlightColor: 'transparent' }}>
+                      <ResponsiveContainer width="100%" height="100%" className="outline-none focus:outline-none">
                         <LineChart data={data} margin={{ top: 20, right: 10, left: 0, bottom: 20 }}>
                           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
                           <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#4b5563', fontWeight: 500 }} axisLine={false} tickLine={false} dy={10} minTickGap={15} />
@@ -331,9 +331,9 @@ export default function AnalyticsClient({
                         const colors = ['#C8102E', '#1E3A8A', '#374151', '#059669', '#D97706', '#7C3AED'];
                         const color = colors[idx % colors.length];
                         return (
-                          <div key={yr} className="h-[250px] bg-gray-50 rounded-xl p-4 border border-gray-100">
+                          <div key={yr} className="h-[250px] bg-gray-50 rounded-xl p-4 border border-gray-100 outline-none focus:outline-none" style={{ WebkitTapHighlightColor: 'transparent' }}>
                             <h4 className="font-bold text-gray-700 mb-2">{yr}</h4>
-                            <ResponsiveContainer width="100%" height="100%">
+                            <ResponsiveContainer width="100%" height="100%" className="outline-none focus:outline-none">
                               <LineChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
                                 <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#6b7280' }} axisLine={false} tickLine={false} dy={10} minTickGap={15} />
