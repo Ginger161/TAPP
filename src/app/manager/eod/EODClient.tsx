@@ -176,6 +176,29 @@ export default function EODClient({ products }: { products: Product[] }) {
 
     if (result && !result.error) {
       toast.success('EOD Log submitted successfully!');
+      
+      // Reset form state
+      setProductData(
+        products.reduce((acc, p) => ({
+          ...acc,
+          [p.id]: {
+            productId: p.id,
+            batches: [{ startMeter: '', closeMeter: '', volume: '', pricePerLiter: '' }],
+            dipVolume: ''
+          }
+        }), {})
+      );
+      setExpenses(
+        EXPENSE_CATEGORIES.map(cat => ({
+          type: cat,
+          amount: '',
+          description: ''
+        }))
+      );
+      setPosAmount('');
+      setCashAmount('');
+      setReportDate(getLocalWATDateString());
+
       router.push('/manager/dashboard');
     } else if (result && result.error) {
       toast.error(result.error);

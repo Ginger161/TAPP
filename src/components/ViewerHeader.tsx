@@ -12,12 +12,12 @@ export default function ViewerHeader() {
   const pathname = usePathname();
 
   return (
-    <div className="bg-white text-slate-900 p-4 shadow-md sticky top-0 z-[60] flex justify-between items-center shrink-0">
+    <div className="bg-white text-slate-900 px-4 py-2 shadow-md sticky top-0 z-[60] flex justify-between items-center shrink-0">
       <div className="flex items-center gap-6">
         <div className="flex items-center">
           <DynamicBackButton />
           <Link href="/viewer/dashboard" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <Image src="/logo.png" alt="Tycoon Logo" width={300} height={80} className="h-20 w-auto object-contain drop-shadow-md" priority />
+            <Image src="/logo.png" alt="Tycoon Logo" width={300} height={96} className="h-24 w-auto object-contain drop-shadow-md" priority />
             <span className="bg-slate-200 text-slate-700 text-xs px-2 py-0.5 rounded-full ml-1 align-middle">Viewer</span>
           </Link>
         </div>

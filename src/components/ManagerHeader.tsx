@@ -13,11 +13,11 @@ export default function ManagerHeader({ stationName }: { stationName: string }) 
   const pathname = usePathname();
 
   return (
-    <div className="bg-white text-slate-900 p-4 shadow-md sticky top-0 z-50 flex justify-between items-center">
+    <div className="bg-white text-slate-900 px-4 py-2 shadow-md sticky top-0 z-50 flex justify-between items-center">
       <div className="flex items-center gap-3">
         <DynamicBackButton />
         <div className="flex items-center gap-3">
-          <Image src="/logo.png" alt="Tycoon Logo" width={300} height={80} className="h-20 w-auto object-contain drop-shadow-md" priority />
+          <Image src="/logo.png" alt="Tycoon Logo" width={300} height={96} className="h-24 w-auto object-contain drop-shadow-md" priority />
           <div>
             <h1 className="text-xl font-bold leading-tight">Shift Operations</h1>
             <p className="text-xs text-slate-500">{stationName}</p>
