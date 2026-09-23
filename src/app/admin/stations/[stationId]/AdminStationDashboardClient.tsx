@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { getAdminStationDashboardData, adminEditTransaction, adminAcceptSupply } from './actions';
 import UrgencyBadge from '@/components/UrgencyBadge';
 import SalesChart, { SalesData } from '@/components/SalesChart';
-import { Truck, Edit2, X, Check, HelpCircle, Fuel, TrendingUp, DollarSign, Wallet, Package } from 'lucide-react';
+import { Truck, Edit2, X, Check, HelpCircle, Fuel, TrendingUp, DollarSign, Wallet, Package, ChevronDown, ChevronUp } from 'lucide-react';
 import { formatDateTimeToDDMMYYYY, formatDateToDDMMYYYY } from '@/utils/dateFormatter';
 import toast from 'react-hot-toast';
 import { catchNetworkError } from '@/utils/network';
@@ -80,6 +80,8 @@ export default function AdminStationDashboardClient({
   const [data, setData] = useState<ManagerData | { error: string } | null>(initialData);
   const [timeframe, setTimeframe] = useState<string>('30D');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [expandedDates, setExpandedDates] = useState<Record<string, boolean>>({});
+  const [selectedDateFilter, setSelectedDateFilter] = useState<string | null>(null);
   
   // Correction Modal State
   const [editingItem, setEditingItem] = useState<{ id: string, type: 'sale'|'expense', name: string, amount: number } | null>(null);
@@ -134,6 +136,12 @@ export default function AdminStationDashboardClient({
     }
     setIsLoading(false);
   };
+
+  useEffect(() => {
+    if (groupedLedger.length > 0 && Object.keys(expandedDates).length === 0) {
+      setExpandedDates({ [groupedLedger[0].sortKey]: true });
+    }
+  }, [groupedLedger]);
 
   useEffect(() => {
     if (initialMount.current) {
@@ -241,20 +249,51 @@ export default function AdminStationDashboardClient({
           
           
 
-          <div className="space-y-6">
+          <div className="flex items-center gap-4 mb-4">
+            <select
+              value={selectedDateFilter || ''}
+              onChange={(e) => setSelectedDateFilter(e.target.value || null)}
+              className="border border-gray-300 rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-tycoon-navy bg-white"
+            >
+              <option value="">Filter by Date...</option>
+              {groupedLedger.map(group => (
+                <option key={group.sortKey} value={group.sortKey}>{group.dateStr}</option>
+              ))}
+            </select>
+            {selectedDateFilter && (
+              <button
+                onClick={() => setSelectedDateFilter(null)}
+                className="text-sm font-semibold text-tycoon-navy hover:underline"
+              >
+                Clear Filter
+              </button>
+            )}
+          </div>
+
+          <div className="space-y-4">
             {groupedLedger.length === 0 ? (
               <div className="p-8 text-center text-gray-500 bg-white rounded-xl shadow-sm border border-gray-100">
                 No activity found for the selected timeframe.
               </div>
             ) : (
-              groupedLedger.map((group) => (
-                <div key={group.sortKey} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
-                  <div className="mb-4 pb-2 border-b border-gray-100">
+              (selectedDateFilter ? groupedLedger.filter(g => g.sortKey === selectedDateFilter) : groupedLedger).map((group) => (
+                <div key={group.sortKey} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                  <button 
+                    onClick={() => setExpandedDates(prev => ({ ...prev, [group.sortKey]: !prev[group.sortKey] }))}
+                    className="w-full flex items-center justify-between p-4 bg-white hover:bg-gray-50 transition-colors text-left"
+                  >
                     <h3 className="text-sm font-bold text-tycoon-charcoal">{group.dateStr}</h3>
-                  </div>
+                    <div className="flex items-center gap-3">
+                       {group.sales.length > 0 && <span className="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded-full">{group.sales.length} Sales</span>}
+                       {group.expenses.length > 0 && <span className="bg-red-100 text-red-800 text-xs font-bold px-2 py-1 rounded-full">{group.expenses.length} Expenses</span>}
+                       {expandedDates[group.sortKey] || selectedDateFilter ? <ChevronUp size={20} className="text-gray-400" /> : <ChevronDown size={20} className="text-gray-400" />}
+                    </div>
+                  </button>
 
-                  <div className="overflow-x-auto">
-                    <div className="min-w-[300px]">
+                  {(expandedDates[group.sortKey] || selectedDateFilter) && (
+                    <div className="p-4 pt-0 border-t border-gray-50">
+                      <div className="overflow-x-auto">
+                        <div className="min-w-[300px] mt-2">
                       {group.sales.length > 0 && (
                         <div className="mb-4">
                           <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Sales</h4>
@@ -333,8 +372,10 @@ export default function AdminStationDashboardClient({
                       </div>
                     </div>
                   )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               ))
             )}
