@@ -5,6 +5,7 @@ import { getViewerStationDashboardData } from './actions';
 import UrgencyBadge from '@/components/UrgencyBadge';
 import SalesChart, { SalesData } from '@/components/SalesChart';
 import { Truck, HelpCircle, Fuel } from 'lucide-react';
+import { formatDateToDDMMYYYY } from '@/utils/dateFormatter';
 
 export type ManagerData = {
   stationName: string;
@@ -28,6 +29,8 @@ export type ManagerData = {
     is_edited?: boolean;
     edited_by?: string;
     original_value?: number;
+    date?: string;
+    created_at?: string;
   }[];
   expenses: {
     id: string;
@@ -37,6 +40,8 @@ export type ManagerData = {
     is_edited?: boolean;
     edited_by?: string;
     original_value?: number;
+    date?: string;
+    created_at?: string;
   }[];
 };
 
@@ -48,6 +53,37 @@ export default function ViewerStationDashboardClient({
   stationId: string;
 }) {
   const [data, setData] = useState<ManagerData | { error: string } | null>(initialData);
+
+  const groupedLedger = React.useMemo(() => {
+    if (!data || 'error' in data) return [];
+    
+    const groups: Record<string, { dateStr: string, sortKey: string, sales: typeof data.sales, expenses: typeof data.expenses }> = {};
+    
+    data.sales.forEach(sale => {
+      const rawDate = sale.date || (sale.created_at ? sale.created_at.split('T')[0] : '1970-01-01');
+      const displayDate = sale.date ? formatDateToDDMMYYYY(sale.date) : (sale.created_at ? formatDateToDDMMYYYY(sale.created_at) : 'Unknown Date');
+      
+      if (!groups[rawDate]) groups[rawDate] = { dateStr: displayDate, sortKey: rawDate, sales: [], expenses: [] };
+      groups[rawDate].sales.push(sale);
+    });
+    
+    data.expenses.forEach(exp => {
+      const rawDate = exp.date || (exp.created_at ? exp.created_at.split('T')[0] : '1970-01-01');
+      const displayDate = exp.date ? formatDateToDDMMYYYY(exp.date) : (exp.created_at ? formatDateToDDMMYYYY(exp.created_at) : 'Unknown Date');
+      
+      if (!groups[rawDate]) groups[rawDate] = { dateStr: displayDate, sortKey: rawDate, sales: [], expenses: [] };
+      groups[rawDate].expenses.push(exp);
+    });
+    
+    const sortedGroups = Object.values(groups).sort((a, b) => b.sortKey.localeCompare(a.sortKey));
+    
+    sortedGroups.forEach(g => {
+      g.sales.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
+      g.expenses.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
+    });
+    
+    return sortedGroups;
+  }, [data]);
 
   useEffect(() => {
     // Optionally fetch fresh data occasionally or handle real-time here
@@ -136,70 +172,84 @@ export default function ViewerStationDashboardClient({
             <SalesChart data={data.salesTrend} />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Today's Sales Entries */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-              <div className="p-3 bg-gray-50 border-b border-gray-100 flex justify-between items-center">
-                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Today&apos;s Sales Entries</h3>
+          <div className="space-y-6">
+            {groupedLedger.length === 0 ? (
+              <div className="p-8 text-center text-gray-500 bg-white rounded-xl shadow-sm border border-gray-100">
+                No activity found for the selected timeframe.
               </div>
-              <div className="divide-y divide-gray-100">
-                {data.sales.length === 0 ? (
-                  <div className="p-4 text-center text-sm text-gray-500">No sales transactions recorded.</div>
-                ) : (
-                  data.sales.map(sale => (
-                    <div key={sale.id} className="p-4 flex justify-between items-center hover:bg-gray-50 transition-colors">
-                      <div>
-                        <span className="font-medium text-sm text-gray-800 block">{sale.product_name}</span>
-                        <span className="text-xs text-gray-500 block">Logged Entry</span>
-                        {sale.is_edited && (
-                          <div className="flex items-center gap-1 mt-0.5">
-                            <span className="text-xs text-slate-500">Edited by {sale.edited_by} (admin)</span>
-                            <span title={`Changed from ${sale.original_value?.toLocaleString()} to ${sale.quantity_sold.toLocaleString()}`}>
-                              <HelpCircle size={12} className="text-slate-400 cursor-help" />
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <span className="font-bold text-sm text-tycoon-charcoal">{Number(sale.quantity_sold).toLocaleString()} L</span>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
+            ) : (
+              groupedLedger.map((group) => (
+                <div key={group.sortKey} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
+                  <div className="mb-4 pb-2 border-b border-gray-100">
+                    <h3 className="text-sm font-bold text-tycoon-charcoal">{group.dateStr}</h3>
+                  </div>
 
-            {/* Today's Expenses Entries */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-              <div className="p-3 bg-gray-50 border-b border-gray-100 flex justify-between items-center">
-                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Today&apos;s Expenses</h3>
-              </div>
-              <div className="divide-y divide-gray-100">
-                {data.expenses.length === 0 ? (
-                  <div className="p-4 text-center text-sm text-gray-500">No expense records found.</div>
-                ) : (
-                  data.expenses.map(exp => (
-                    <div key={exp.id} className="p-4 flex justify-between items-center hover:bg-gray-50 transition-colors">
-                      <div>
-                        <span className="font-medium text-sm text-gray-800 block">{exp.expense_type}</span>
-                        <span className="text-xs text-gray-500 truncate max-w-[150px] md:max-w-[200px] block">{exp.description || 'No description'}</span>
-                        {exp.is_edited && (
-                          <div className="flex items-center gap-1 mt-0.5">
-                            <span className="text-xs text-slate-500">Edited by {exp.edited_by} (admin)</span>
-                            <span title={`Changed from ₦${exp.original_value?.toLocaleString()} to ₦${exp.amount.toLocaleString()}`}>
-                              <HelpCircle size={12} className="text-slate-400 cursor-help" />
-                            </span>
+                  <div className="overflow-x-auto">
+                    <div className="min-w-[300px]">
+                      {group.sales.length > 0 && (
+                        <div className="mb-4">
+                          <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Sales</h4>
+                          <div className="space-y-2">
+                        {group.sales.map(sale => (
+                          <div key={sale.id} className="p-3 bg-gray-50 rounded-lg flex justify-between items-center hover:bg-gray-100 transition-colors">
+                            <div>
+                              <span className="font-medium text-sm text-gray-800 block">{sale.product_name}</span>
+                              <span className="text-xs text-gray-500 block">Logged Entry</span>
+                              {sale.is_edited && (
+                                <div className="flex items-center gap-1 mt-0.5">
+                                  <span className="text-xs text-slate-500">Edited by {sale.edited_by} (admin)</span>
+                                  <span title={`Changed from ${sale.original_value?.toLocaleString()} to ${sale.quantity_sold.toLocaleString()}`}>
+                                    <HelpCircle size={12} className="text-slate-400 cursor-help" />
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-4">
+                              <span className="font-bold text-sm text-green-600">{Number(sale.quantity_sold).toLocaleString()} L</span>
+                            </div>
                           </div>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <span className="font-bold text-sm text-tycoon-charcoal">₦{Number(exp.amount).toLocaleString()}</span>
+                        ))}
                       </div>
                     </div>
-                  ))
-                )}
-              </div>
-            </div>
+                  )}
+
+                  {group.sales.length > 0 && group.expenses.length > 0 && (
+                    <div className="h-px bg-gray-100 my-4" />
+                  )}
+
+                  {group.expenses.length > 0 && (
+                    <div>
+                      <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Expenses</h4>
+                      <div className="space-y-2">
+                        {group.expenses.map(exp => (
+                          <div key={exp.id} className="p-3 bg-gray-50 rounded-lg flex justify-between items-center hover:bg-gray-100 transition-colors">
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="font-medium text-sm text-gray-800">{exp.expense_type}</span>
+                              </div>
+                              <span className="text-xs text-gray-500 truncate max-w-[150px] md:max-w-[200px] block mt-0.5">{exp.description || 'No description'}</span>
+                              {exp.is_edited && (
+                                <div className="flex items-center gap-1 mt-0.5">
+                                  <span className="text-xs text-slate-500">Edited by {exp.edited_by} (admin)</span>
+                                  <span title={`Changed from ₦${exp.original_value?.toLocaleString()} to ₦${exp.amount.toLocaleString()}`}>
+                                    <HelpCircle size={12} className="text-slate-400 cursor-help" />
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-4">
+                              <span className="font-bold text-sm text-red-600">₦{Number(exp.amount).toLocaleString()}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </section>
       </div>
