@@ -18,7 +18,7 @@ async function sendWebPush(userId: string, title: string, body: string) {
       try {
         await webpush.sendNotification(
           sub.subscription as any,
-          JSON.stringify({ title, body, icon: '/icon.png' })
+          JSON.stringify({ title, body, icon: '/icon-512x512.png', badge: '/icon-192x192.png' })
         );
       } catch (err) {
         console.error('Failed to send web push for user', userId, err);

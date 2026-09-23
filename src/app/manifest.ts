@@ -11,14 +11,16 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: '#1a202c', // Matches tycoon-charcoal roughly
     icons: [
       {
-        src: '/icon.png',
+        src: '/icon-192x192.png',
         sizes: '192x192',
         type: 'image/png',
+        purpose: 'maskable'
       },
       {
-        src: '/apple-icon.png',
+        src: '/icon-512x512.png',
         sizes: '512x512',
         type: 'image/png',
+        purpose: 'any'
       },
     ],
   }

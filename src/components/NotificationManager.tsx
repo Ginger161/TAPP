@@ -94,7 +94,8 @@ export default function NotificationManager() {
       const result = await sendTestPushNotification(subJson, {
         title: 'TAPP Test Alert',
         body: 'This is a test web push notification from the Tycoon Admin portal!',
-        icon: '/icon.png'
+        icon: '/icon-512x512.png',
+        badge: '/icon-192x192.png'
       })
 
       if (result.error) {
