@@ -35,9 +35,11 @@ type ExpenseState = {
 };
 
 const EXPENSE_CATEGORIES = [
-  'Solar remittance',
-  'POS charges',
+  'Solar Remittance',
+  'POS Charges',
   'Fuel to Generator',
+  'Repairs and Maintenance',
+  'Transportation',
   'Data Subscription',
   'Others'
 ];
@@ -159,6 +161,13 @@ export default function EODClient({ products }: { products: Product[] }) {
       amount: Number(exp.amount) || 0,
       description: exp.description
     }));
+
+    const othersExpense = payloadExpenses.find(e => e.type === 'Others');
+    if (othersExpense && othersExpense.amount > 0 && !othersExpense.description.trim()) {
+      toast.error('Please provide a comment for the "Others" expense.');
+      setIsSubmitting(false);
+      return;
+    }
 
     // No longer throwing error for completely empty payload because Tank Dips are mandatory, 
     // so payloadProducts will always exist and have dipVolumes.
