@@ -119,47 +119,8 @@ export default function ViewerStationDashboardClient({
       {/* Main Content Area */}
       <div className="px-4 sm:px-6 py-4 space-y-6 flex-1">
         
-        {/* Status Hero */}
-        <section>
-          <div className="flex justify-between items-center mb-3">
-            <h2 className="text-lg font-bold text-tycoon-charcoal flex items-center">
-              <span className="w-1 h-5 bg-red-600 rounded mr-2 inline-block"></span>
-              Current Stock - {data.stationName}
-            </h2>
-          </div>
-          <div className="grid gap-4 md:grid-cols-2">
-            {data.productStatus.map(prod => (
-              <div 
-                key={prod.id} 
-                className={`p-4 rounded-xl shadow-md border-l-4 bg-white flex justify-between items-center ${
-                  prod.status === 'Red' ? 'border-red-500' : 
-                  prod.status === 'Green' ? 'border-green-500' : 'border-transparent'
-                }`}
-              >
-                <div className="flex items-center">
-                  <div className={`p-3 rounded-full mr-4 ${
-                    prod.status === 'Red' ? 'bg-red-50 text-red-500' : 
-                    prod.status === 'Green' ? 'bg-green-50 text-green-500' : 'bg-gray-50 text-gray-400'
-                  }`}>
-                    <Fuel size={24} />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-gray-800 text-lg">{prod.name}</h3>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className={`font-bold text-2xl ${prod.stock < 0 ? 'text-red-600' : 'text-tycoon-navy'}`}>
-                    {prod.stock < 0 ? `-${Math.abs(prod.stock).toLocaleString()}` : `${prod.stock.toLocaleString()}`}
-                    <span className="text-sm text-gray-500 ml-1">L</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
         {/* Today's Ledger */}
-        <section>
+<section>
           <div className="flex justify-between items-center mb-3">
             <h2 className="text-lg font-bold text-tycoon-charcoal flex items-center">
               <span className="w-1 h-5 bg-red-600 rounded mr-2 inline-block"></span>
@@ -167,10 +128,7 @@ export default function ViewerStationDashboardClient({
             </h2>
           </div>
           
-          <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 mb-6">
-            <h3 className="text-xs font-semibold text-gray-500 uppercase mb-4">7-Day Sales Trend</h3>
-            <SalesChart data={data.salesTrend} />
-          </div>
+          
 
           <div className="space-y-6">
             {groupedLedger.length === 0 ? (
@@ -250,6 +208,53 @@ export default function ViewerStationDashboardClient({
                 </div>
               ))
             )}
+          </div>
+        </section>
+
+        {/* Status Hero */}
+<section>
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="text-lg font-bold text-tycoon-charcoal flex items-center">
+              <span className="w-1 h-5 bg-red-600 rounded mr-2 inline-block"></span>
+              Current Stock - {data.stationName}
+            </h2>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            {data.productStatus.map(prod => (
+              <div 
+                key={prod.id} 
+                className={`p-4 rounded-xl shadow-md border-l-4 bg-white flex justify-between items-center ${
+                  prod.status === 'Red' ? 'border-red-500' : 
+                  prod.status === 'Green' ? 'border-green-500' : 'border-transparent'
+                }`}
+              >
+                <div className="flex items-center">
+                  <div className={`p-3 rounded-full mr-4 ${
+                    prod.status === 'Red' ? 'bg-red-50 text-red-500' : 
+                    prod.status === 'Green' ? 'bg-green-50 text-green-500' : 'bg-gray-50 text-gray-400'
+                  }`}>
+                    <Fuel size={24} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-800 text-lg">{prod.name}</h3>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className={`font-bold text-2xl ${prod.stock < 0 ? 'text-red-600' : 'text-tycoon-navy'}`}>
+                    {prod.stock < 0 ? `-${Math.abs(prod.stock).toLocaleString()}` : `${prod.stock.toLocaleString()}`}
+                    <span className="text-sm text-gray-500 ml-1">L</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Sales Trend Chart */}
+        <section>
+          <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 mb-6">
+            <h3 className="text-xs font-semibold text-gray-500 uppercase mb-4">7-Day Sales Trend</h3>
+            <SalesChart data={data.salesTrend} />
           </div>
         </section>
       </div>
