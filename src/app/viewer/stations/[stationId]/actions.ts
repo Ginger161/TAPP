@@ -107,7 +107,7 @@ export async function getViewerStationDashboardData(stationId: string) {
 
   const { data: salesData } = await supabase
     .from('sales_transactions')
-    .select('date, quantity_sold, id, products(name), is_edited, edited_by, original_value')
+    .select('date, quantity_sold, id, products(name), is_edited, edited_by, original_value, selling_price, total_amount')
     .eq('station_id', stationId)
     .gte('date', minDateStr);
 
@@ -132,7 +132,9 @@ export async function getViewerStationDashboardData(stationId: string) {
         product_name: (sale.products as any)?.name,
         is_edited: sale.is_edited,
         edited_by: sale.edited_by,
-        original_value: sale.original_value
+        original_value: sale.original_value,
+        selling_price: sale.selling_price,
+        total_amount: sale.total_amount
       });
     }
   });

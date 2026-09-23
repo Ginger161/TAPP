@@ -34,6 +34,8 @@ export type ManagerData = {
     original_value?: number;
     date: string;
     created_at: string;
+    selling_price?: number;
+    total_amount?: number;
   }[];
   expenses: {
     id: string;
@@ -311,14 +313,26 @@ export default function AdminStationDashboardClient({
                                 </div>
                               )}
                             </div>
-                            <div className="flex items-center gap-4">
-                              <span className="font-bold text-sm text-green-600">{Number(sale.quantity_sold).toLocaleString()} L</span>
+                            <div className="flex items-center gap-4 text-right">
+                              <div className="flex flex-col items-end">
+                                <span className="font-bold text-sm text-gray-800">
+                                  {sale.total_amount ? `₦${Number(sale.total_amount).toLocaleString()}` : ''}
+                                </span>
+                                <span className="font-bold text-sm text-green-600">
+                                  {Number(sale.quantity_sold).toLocaleString()} L
+                                </span>
+                                {sale.selling_price ? (
+                                  <span className="text-xs text-gray-500">
+                                    @ ₦{Number(sale.selling_price).toLocaleString()}/L
+                                  </span>
+                                ) : null}
+                              </div>
                               <button 
                                 onClick={() => {
                                   setEditingItem({ id: sale.id, type: 'sale', name: sale.product_name, amount: sale.quantity_sold });
                                   setEditValue(sale.quantity_sold.toString());
                                 }}
-                                className="text-gray-400 hover:text-tycoon-red p-1 transition-colors"
+                                className="text-gray-400 hover:text-tycoon-red p-1 transition-colors self-center"
                               >
                                 <Edit2 size={16} />
                               </button>

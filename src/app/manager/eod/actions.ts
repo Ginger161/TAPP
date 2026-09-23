@@ -4,6 +4,7 @@ import { createClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { createNotification } from '@/utils/notifications';
 import { evaluateStockAndAlert } from '@/utils/stockAlerts';
+import { translateDbError } from '@/utils/errors';
 
 function getLocalWATDateString() {
   const d = new Date();
@@ -32,21 +33,21 @@ export type LegacyEODPayload = {
   date: string;
   products: {
     productId: string;
-    dipVolume?: number;
+    dipVolume?: number | string;
     batches: {
-      startMeter?: number;
-      closeMeter?: number;
+      startMeter?: number | string;
+      closeMeter?: number | string;
       volume: number;
       pricePerLiter: number;
     }[];
   }[];
   expenses: {
     type: string;
-    amount: number;
+    amount: number | string;
     description: string;
   }[];
-  pos: number;
-  cash: number;
+  pos: number | string;
+  cash: number | string;
 };
 
 export async function submitLegacyEOD(payload: LegacyEODPayload) {
@@ -55,6 +56,7 @@ export async function submitLegacyEOD(payload: LegacyEODPayload) {
 
   const date = payload.date || getLocalWATDateString();
   let hasError = false;
+  let lastErrorMessage = '';
   let totalGrossRevenue = 0;
 
   // 1. Process Sales & Dips
@@ -69,12 +71,15 @@ export async function submitLegacyEOD(payload: LegacyEODPayload) {
       const revenue = batch.volume * batch.pricePerLiter;
       totalGrossRevenue += revenue;
 
+      const startMeter = (batch.startMeter === "" || batch.startMeter == null) ? null : Number(batch.startMeter);
+      const closeMeter = (batch.closeMeter === "" || batch.closeMeter == null) ? null : Number(batch.closeMeter);
+
       const { error } = await supabase.from('sales_transactions').insert({
         station_id: stationId,
         product_id: product.productId,
         date,
-        start_meter: batch.startMeter ?? null,
-        close_meter: batch.closeMeter ?? null,
+        start_meter: startMeter,
+        close_meter: closeMeter,
         quantity_sold: batch.volume,
         selling_price: batch.pricePerLiter, // Strictly Unit Price
         total_amount: revenue, // Total Revenue
@@ -82,8 +87,9 @@ export async function submitLegacyEOD(payload: LegacyEODPayload) {
       });
 
       if (error) {
-        console.error('Error inserting sale batch:', error);
+        console.error('Error inserting sale batch:', error.message || error);
         hasError = true;
+        lastErrorMessage = translateDbError(error);
       } else {
         totalVolume += batch.volume;
       }
@@ -95,46 +101,54 @@ export async function submitLegacyEOD(payload: LegacyEODPayload) {
     }
 
     // Insert Dip
-    if (product.dipVolume !== undefined && product.dipVolume >= 0) {
+    const dipVolume = (product.dipVolume === "" || product.dipVolume == null) ? null : Number(product.dipVolume);
+    if (dipVolume !== null && dipVolume >= 0) {
       const { error } = await supabase.from('tank_dippings').insert({
         station_id: stationId,
         tank_id: `${product.productId}-tank`, // Mock tank ID or resolve if real tank exists
         product_id: product.productId,
         date,
-        dipped_volume: product.dipVolume
+        dipped_volume: dipVolume
       });
       if (error) {
-        console.error('Error inserting tank dip:', error);
+        console.error('Error inserting tank dip:', error.message || error);
         hasError = true;
+        lastErrorMessage = translateDbError(error);
       }
     }
   }
 
   // 2. Process Expenses
   let totalExpenses = 0;
-  for (const expense of payload.expenses) {
-    if (expense.amount >= 0) {
+  for (const expense of payload.expenses || []) {
+    const amount = Number(expense.amount) || 0;
+    const description = (expense.description === "" || expense.description == null) ? null : expense.description;
+
+    if (amount > 0) {
       const { error } = await supabase.from('expenses').insert({
         station_id: stationId,
         expense_type: expense.type,
-        amount: expense.amount,
+        amount: amount,
         date,
-        description: expense.description || null,
+        description: description,
         submitted_by_id: userId,
         status: 'approved' // Automatically approved!
       });
 
       if (error) {
-        console.error('Error inserting expense:', error);
+        console.error('Error inserting expense:', error.message || error);
         hasError = true;
+        lastErrorMessage = translateDbError(error);
       } else {
-        totalExpenses += expense.amount;
+        totalExpenses += amount;
       }
     }
   }
 
   // 3. Insert Daily Remittance
-  const balanceDue = totalGrossRevenue - totalExpenses - payload.pos - payload.cash;
+  const sanitizedPos = Number(payload.pos) || 0;
+  const sanitizedCash = Number(payload.cash) || 0;
+  const balanceDue = totalGrossRevenue - totalExpenses - sanitizedPos - sanitizedCash;
   
   const { error: remittanceError } = await supabase.from('daily_remittance').insert({
     station_id: stationId,
@@ -142,18 +156,19 @@ export async function submitLegacyEOD(payload: LegacyEODPayload) {
     manager_id: userId,
     gross_revenue: totalGrossRevenue,
     total_expenses: totalExpenses,
-    pos_to_account: payload.pos,
-    cash_to_bank: payload.cash,
+    pos_to_account: sanitizedPos,
+    cash_to_bank: sanitizedCash,
     balance_due: balanceDue
   });
 
   if (remittanceError) {
-    console.error('Error inserting daily remittance:', remittanceError);
+    console.error('Error inserting daily remittance:', remittanceError.message || remittanceError);
     hasError = true;
+    lastErrorMessage = translateDbError(remittanceError);
   }
 
   if (hasError) {
-    return { error: 'Some records failed to insert. Please review your dashboard and try again.' };
+    return { error: lastErrorMessage || 'We encountered a system error. Please wait a moment and try again, or contact the Admin if the issue persists.' };
   }
 
   // 4. Trigger Notification to Admins

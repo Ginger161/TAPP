@@ -219,7 +219,9 @@ export async function getAdminStationDashboardData(stationId: string, timeframe:
     edited_by: sale.edited_by,
     original_value: sale.original_value,
     date: sale.date,
-    created_at: sale.created_at
+    created_at: sale.created_at,
+    selling_price: sale.selling_price,
+    total_amount: sale.total_amount
   }));
 
   const { data: expenses } = await supabase
