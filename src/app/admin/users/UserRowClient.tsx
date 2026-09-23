@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { updateUserRole, toggleViewerSupplyPermission } from './actions'
 import toast from 'react-hot-toast'
 import { catchNetworkError } from '@/utils/network'
+import CustomDropdown from '@/components/CustomDropdown'
 
 export default function UserRowClient({
   userId,
@@ -38,23 +39,22 @@ export default function UserRowClient({
 
   return (
     <div className="flex flex-col gap-2">
-      <select
+      <CustomDropdown
         value={currentRole}
         disabled={isPending}
-        onChange={(e) => {
-          const newRole = e.target.value
+        onChange={(newRole) => {
           startTransition(async () => {
             const result = await catchNetworkError(updateUserRole(userId, newRole))
             if (result && result.error) toast.error(result.error)
             else toast.success('Role updated successfully')
           })
         }}
-        className="px-2 py-1 text-sm border rounded bg-white shadow-sm disabled:opacity-50 outline-none"
-      >
-        <option value="admin">Admin</option>
-        <option value="manager">Manager</option>
-        <option value="viewer">Viewer</option>
-      </select>
+        options={[
+          { value: 'admin', label: 'Admin' },
+          { value: 'manager', label: 'Manager' },
+          { value: 'viewer', label: 'Viewer' }
+        ]}
+      />
 
       {currentRole === 'viewer' && (
         <label className="flex items-center gap-2 text-xs text-gray-600 cursor-pointer">

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { createUser } from './actions'
 import toast from 'react-hot-toast'
 import { catchNetworkError } from '@/utils/network'
+import CustomDropdown from '@/components/CustomDropdown'
 
 export default function CreateUserForm({ stations }: { stations: { id: string, name: string }[] | null }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -35,21 +36,29 @@ export default function CreateUserForm({ stations }: { stations: { id: string, n
 
       <div>
         <label className="block text-sm font-medium mb-1.5" htmlFor="role">Role</label>
-        <select id="role" name="role" className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-blue-500">
-          <option value="manager">Manager</option>
-          <option value="admin">Admin</option>
-          <option value="viewer">Viewer</option>
-        </select>
+        <CustomDropdown
+          id="role"
+          name="role"
+          defaultValue="manager"
+          options={[
+            { value: 'manager', label: 'Manager' },
+            { value: 'admin', label: 'Admin' },
+            { value: 'viewer', label: 'Viewer' }
+          ]}
+        />
       </div>
 
       <div>
         <label className="block text-sm font-medium mb-1.5" htmlFor="stationId">Station Assignment (if Manager)</label>
-        <select id="stationId" name="stationId" className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-blue-500">
-          <option value="">None</option>
-          {stations?.map(s => (
-            <option key={s.id} value={s.id}>{s.name}</option>
-          ))}
-        </select>
+        <CustomDropdown
+          id="stationId"
+          name="stationId"
+          defaultValue=""
+          options={[
+            { value: '', label: 'None' },
+            ...(stations?.map(s => ({ value: s.id, label: s.name })) || [])
+          ]}
+        />
       </div>
 
       <div className="flex items-center gap-2">

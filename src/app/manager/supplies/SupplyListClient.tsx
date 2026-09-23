@@ -5,6 +5,7 @@ import { acceptSupply, rejectSupply, submitStockTransfer } from './actions'
 import { CheckCircle, XCircle, Clock, PackageCheck, ArrowRightLeft } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { catchNetworkError } from '@/utils/network'
+import CustomDropdown from '@/components/CustomDropdown'
 
 type SupplyTransaction = {
   id: string
@@ -317,16 +318,12 @@ function TransferOutModal({
         <form onSubmit={onSubmit} className="p-6 space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Product</label>
-            <select
+            <CustomDropdown
               required
               value={transferData.productId}
-              onChange={(e) => setTransferData({...transferData, productId: e.target.value})}
-              className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-tycoon-navy"
-            >
-              {products.map(p => (
-                <option key={p.id} value={p.id}>{p.name}</option>
-              ))}
-            </select>
+              onChange={(val) => setTransferData({...transferData, productId: val})}
+              options={products.map(p => ({ value: p.id, label: p.name }))}
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Volume (Liters)</label>

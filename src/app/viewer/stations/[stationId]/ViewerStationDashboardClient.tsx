@@ -6,6 +6,7 @@ import UrgencyBadge from '@/components/UrgencyBadge';
 import SalesChart, { SalesData } from '@/components/SalesChart';
 import { Truck, HelpCircle, Fuel, ChevronDown, ChevronUp } from 'lucide-react';
 import { formatDateToDDMMYYYY } from '@/utils/dateFormatter';
+import CustomDropdown from '@/components/CustomDropdown';
 
 export type ManagerData = {
   stationName: string;
@@ -139,16 +140,14 @@ export default function ViewerStationDashboardClient({
           
 
           <div className="flex items-center gap-4 mb-4">
-            <select
-              value={selectedDateFilter || ''}
-              onChange={(e) => setSelectedDateFilter(e.target.value || null)}
-              className="border border-gray-300 rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-tycoon-navy bg-white"
-            >
-              <option value="">Filter by Date...</option>
-              {groupedLedger.map(group => (
-                <option key={group.sortKey} value={group.sortKey}>{group.dateStr}</option>
-              ))}
-            </select>
+            <div className="w-48">
+              <CustomDropdown
+                value={selectedDateFilter || ''}
+                onChange={(val) => setSelectedDateFilter(val || null)}
+                placeholder="Filter by Date..."
+                options={groupedLedger.map(group => ({ value: group.sortKey, label: group.dateStr }))}
+              />
+            </div>
             {selectedDateFilter && (
               <button
                 onClick={() => setSelectedDateFilter(null)}

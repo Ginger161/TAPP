@@ -8,6 +8,7 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 import NotificationManager from '@/components/NotificationManager';
 import { createClient } from '@/utils/supabase/client';
+import CustomDropdown from '@/components/CustomDropdown';
 
 type DashboardData = {
   kpi: { volume: number, revenue: number, pendingVolume: number };
@@ -307,12 +308,13 @@ export default function AdminDashboard() {
                   <form onSubmit={handleSupplySubmit} className="space-y-4">
                     <div>
                       <label className="block text-xs font-semibold text-gray-600 uppercase mb-1">Product</label>
-                      <select required className="w-full min-w-0 max-w-[calc(100vw-3rem)] text-ellipsis overflow-hidden p-2 border border-gray-200 rounded-lg outline-none" value={supplyData.productId} onChange={(e) => setSupplyData({...supplyData, productId: e.target.value})}>
-                        <option value="">Select a product...</option>
-                        {deepDiveData.stockList.map(stock => (
-                          <option key={stock.id} value={stock.id}>{stock.name}</option>
-                        ))}
-                      </select>
+                      <CustomDropdown
+                        required
+                        value={supplyData.productId}
+                        onChange={(val) => setSupplyData({...supplyData, productId: val})}
+                        placeholder="Select a product..."
+                        options={deepDiveData.stockList.map(stock => ({ value: stock.id, label: stock.name }))}
+                      />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-gray-600 uppercase mb-1">Volume (L)</label>

@@ -8,6 +8,7 @@ import { catchNetworkError } from '@/utils/network'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { parseISOToDate, getLocalWATDateString } from '@/utils/dateFormatter'
+import CustomDropdown from '@/components/CustomDropdown'
 
 export default function NewSupplyFormClient({ 
   stations, 
@@ -38,22 +39,24 @@ export default function NewSupplyFormClient({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium mb-1.5" htmlFor="stationId">Station</label>
-          <select required id="stationId" name="stationId" className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-blue-500">
-            <option value="">Select Station...</option>
-            {stations?.map(s => (
-              <option key={s.id} value={s.id}>{s.name}</option>
-            ))}
-          </select>
+          <CustomDropdown 
+            required 
+            id="stationId" 
+            name="stationId" 
+            placeholder="Select Station..."
+            options={stations?.map(s => ({ value: s.id, label: s.name })) || []} 
+          />
         </div>
 
         <div>
           <label className="block text-sm font-medium mb-1.5" htmlFor="productId">Product</label>
-          <select required id="productId" name="productId" className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 outline-none focus:ring-2 focus:ring-blue-500">
-            <option value="">Select Product...</option>
-            {products?.map(p => (
-              <option key={p.id} value={p.id}>{p.name}</option>
-            ))}
-          </select>
+          <CustomDropdown 
+            required 
+            id="productId" 
+            name="productId" 
+            placeholder="Select Product..."
+            options={products?.map(p => ({ value: p.id, label: p.name })) || []} 
+          />
         </div>
       </div>
 

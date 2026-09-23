@@ -5,6 +5,7 @@ import { getViewerDashboardData, dispatchSupply, getStationDeepDive, getStationH
 import UrgencyBadge from '@/components/UrgencyBadge';
 import SalesChart, { SalesData } from '@/components/SalesChart';
 import Link from 'next/link';
+import CustomDropdown from '@/components/CustomDropdown';
 
 export type DashboardData = {
   kpi: { volume: number, revenue: number, pendingVolume: number };
@@ -331,21 +332,24 @@ export default function ViewerDashboardClient({ initialData }: { initialData: Da
               <form onSubmit={handleSupplySubmit} className="space-y-4">
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 uppercase mb-1">Station</label>
-                  <select required className="w-full p-2 border border-gray-200 rounded-lg outline-none" value={supplyData.stationId} onChange={(e) => setSupplyData({...supplyData, stationId: e.target.value, productId: ''})}>
-                    <option value="">Select a station...</option>
-                    {data.mapStations.map(station => (
-                      <option key={station.id} value={station.id}>{station.name}</option>
-                    ))}
-                  </select>
+                  <CustomDropdown
+                    required
+                    value={supplyData.stationId}
+                    onChange={(val) => setSupplyData({...supplyData, stationId: val, productId: ''})}
+                    placeholder="Select a station..."
+                    options={data.mapStations.map(station => ({ value: station.id, label: station.name }))}
+                  />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 uppercase mb-1">Product</label>
-                  <select required className="w-full p-2 border border-gray-200 rounded-lg outline-none" value={supplyData.productId} onChange={(e) => setSupplyData({...supplyData, productId: e.target.value})} disabled={!supplyData.stationId}>
-                    <option value="">Select a product...</option>
-                    {supplyData.stationId && data.mapStations.find(s => s.id === supplyData.stationId)?.products?.map(prod => (
-                      <option key={prod.id} value={prod.id}>{prod.name}</option>
-                    ))}
-                  </select>
+                  <CustomDropdown
+                    required
+                    value={supplyData.productId}
+                    onChange={(val) => setSupplyData({...supplyData, productId: val})}
+                    placeholder="Select a product..."
+                    options={supplyData.stationId ? (data.mapStations.find(s => s.id === supplyData.stationId)?.products?.map(prod => ({ value: prod.id, label: prod.name })) || []) : []}
+                    disabled={!supplyData.stationId}
+                  />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 uppercase mb-1">Volume (L)</label>

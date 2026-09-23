@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { formatDateTimeToDDMMYYYY } from '@/utils/dateFormatter';
 import { GlobalFinancialLog } from './actions';
 import { AuditLogEntry } from '../analytics/auditActions';
+import CustomDropdown from '@/components/CustomDropdown';
 
 export default function GlobalAnalyticsClient({
   financialLogs,
@@ -64,15 +65,17 @@ export default function GlobalAnalyticsClient({
           />
           
           {activeTab === 'financial' && (
-            <select
-              className="px-4 py-2 border border-gray-200 rounded-lg outline-none text-sm bg-white"
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
-            >
-              <option value="all">All Types</option>
-              <option value="sale">Sales Only</option>
-              <option value="expense">Expenses Only</option>
-            </select>
+            <div className="w-full sm:w-48">
+              <CustomDropdown
+                value={filterType}
+                onChange={(val) => setFilterType(val)}
+                options={[
+                  { value: 'all', label: 'All Types' },
+                  { value: 'sale', label: 'Sales Only' },
+                  { value: 'expense', label: 'Expenses Only' }
+                ]}
+              />
+            </div>
           )}
         </div>
 
